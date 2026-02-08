@@ -1,0 +1,18 @@
+{
+  "name": "search-bot",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:salary": "npm run dev --workspace=apps/salary-calculator",
+    "dev:mbti": "npm run dev --workspace=apps/mbti-test",
+    "dev:qr": "npm run dev --workspace=apps/qr-generator",
+    "dev:file": "npm run dev --workspace=apps/file-converter",
+    "build:all": "npm run build --workspaces --if-present",
+    "build:salary": "npm run build --workspace=apps/salary-calculator",
+    "build:mbti": "npm run build --workspace=apps/mbti-test",
+    "build:qr": "npm run build --workspace=apps/qr-generator",
+    "build:file": "npm run build --workspace=apps/file-converter"
+  }
+}

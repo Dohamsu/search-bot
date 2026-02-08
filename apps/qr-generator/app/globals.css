@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --qr-primary: #2563EB;
+  --qr-accent: #F59E0B;
+  --qr-bg: #FFFFFF;
+  --qr-sidebar: #0A0A0A;
+}
+
+@theme inline {
+  --font-space-grotesk: var(--font-space-grotesk-var);
+  --font-inter: var(--font-inter-var);
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  --salary-primary: #2563EB;
+  --salary-success: #16A34A;
+  --salary-text: #0F172A;
+  --salary-bg: #F8FAFC;
+  --salary-border: #E2E8F0;
+}
+
+@theme inline {
+  --font-inter: var(--font-inter-var);
+  --font-space: var(--font-space-grotesk-var);
+}
+
+body {
+  background: var(--salary-bg);
+  color: var(--salary-text);
+}
+
+/* 숫자 입력 스피너 제거 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Toast animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

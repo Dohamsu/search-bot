@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --file-primary: #0D6E6E;
+  --file-accent: #F97316;
+  --file-text: #1C1917;
+  --file-bg: #FAFAF9;
+}
+
+@theme inline {
+  --font-inter: "Inter", sans-serif;
+}
+
+body {
+  background: var(--file-bg);
+  color: var(--file-text);
+  font-family: var(--font-inter);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
