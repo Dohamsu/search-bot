@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>부가수입 창출 웹서비스 아이템 조사 보고서</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:#f1f5f9;color:#1e293b;line-height:1.7}
+  a{color:#2563eb;text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Header */
+  .header{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 50%,#3b82f6 100%);color:#fff;padding:3rem 1.5rem;text-align:center}
+  .header h1{font-size:2rem;font-weight:800;margin-bottom:.5rem;letter-spacing:-.02em}
+  .header .subtitle{font-size:1.05rem;opacity:.85;margin-bottom:1.2rem}
+  .header .meta{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;font-size:.85rem;opacity:.75}
+  .header .meta span{display:flex;align-items:center;gap:.35rem}
+
+  /* Container */
+  .container{max-width:1100px;margin:0 auto;padding:0 1rem}
+
+  /* Summary Dashboard */
+  .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:-2rem 0 2rem;position:relative;z-index:1}
+  .stat-card{background:#fff;border-radius:12px;padding:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center;transition:transform .2s,box-shadow .2s}
+  .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+  .stat-card .icon{font-size:1.8rem;margin-bottom:.4rem}
+  .stat-card .value{font-size:1.5rem;font-weight:800;color:#2563eb}
+  .stat-card .label{font-size:.8rem;color:#64748b;margin-top:.15rem}
+
+  /* Section */
+  .section{margin:2.5rem 0}
+  .section-title{font-size:1.4rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid #e2e8f0;display:flex;align-items:center;gap:.5rem}
+
+  /* Criteria */
+  .criteria-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+  .criteria-item{background:#fff;border-radius:10px;padding:1.2rem;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #2563eb}
+  .criteria-item h4{font-size:.95rem;margin-bottom:.3rem;color:#1e3a8a}
+  .criteria-item p{font-size:.85rem;color:#64748b}
+
+  /* Item Card */
+  .item-card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1.5rem;overflow:hidden;transition:box-shadow .2s}
+  .item-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.12)}
+  .item-card-header{padding:1.5rem 1.5rem 1rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.75rem}
+  .item-card-header .title-area{display:flex;align-items:center;gap:.75rem}
+  .item-card-header .num{background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0}
+  .item-card-header h3{font-size:1.2rem;font-weight:700}
+  .item-card-header .badges{display:flex;gap:.4rem;flex-wrap:wrap}
+  .badge{padding:.2rem .65rem;border-radius:20px;font-size:.72rem;font-weight:600}
+  .badge-blue{background:#dbeafe;color:#1d4ed8}
+  .badge-green{background:#dcfce7;color:#15803d}
+  .badge-orange{background:#fed7aa;color:#c2410c}
+  .badge-purple{background:#e9d5ff;color:#7c3aed}
+
+  .item-card-body{padding:0 1.5rem 1.5rem}
+  .item-overview{font-size:.92rem;color:#475569;margin-bottom:1rem;line-height:1.8}
+
+  .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem}
+  .detail-box{background:#f8fafc;border-radius:10px;padding:1rem}
+  .detail-box h4{font-size:.85rem;font-weight:700;color:#1e3a8a;margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
+  .detail-box ul{list-style:none;padding:0}
+  .detail-box li{font-size:.84rem;color:#475569;padding:.2rem 0;padding-left:1rem;position:relative}
+  .detail-box li::before{content:'•';position:absolute;left:0;color:#3b82f6;font-weight:bold}
+
+  .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  .pros,.cons{border-radius:10px;padding:1rem}
+  .pros{background:#f0fdf4;border:1px solid #bbf7d0}
+  .cons{background:#fef2f2;border:1px solid #fecaca}
+  .pros h4,.cons h4{font-size:.85rem;font-weight:700;margin-bottom:.4rem}
+  .pros h4{color:#15803d}
+  .cons h4{color:#dc2626}
+  .pros li::before{content:'✓';color:#16a34a;font-weight:bold}
+  .cons li::before{content:'✗';color:#dc2626;font-weight:bold}
+  .pros ul,.cons ul{list-style:none;padding:0}
+  .pros li,.cons li{font-size:.84rem;padding:.15rem 0 .15rem 1.2rem;position:relative}
+  .pros li::before,.cons li::before{position:absolute;left:0}
+
+  .success-case{background:#eff6ff;border-radius:10px;padding:1rem;margin-bottom:1rem;border:1px solid #bfdbfe}
+  .success-case h4{font-size:.85rem;font-weight:700;color:#1e3a8a;margin-bottom:.4rem;display:flex;align-items:center;gap:.35rem}
+  .success-case p{font-size:.84rem;color:#475569}
+
+  .card-footer{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;background:#f8fafc;border-top:1px solid #e2e8f0;flex-wrap:wrap;gap:.75rem}
+  .rating{display:flex;align-items:center;gap:.3rem}
+  .rating .stars{color:#f59e0b;font-size:1.1rem;letter-spacing:1px}
+  .rating .score{font-size:.85rem;color:#64748b;margin-left:.3rem}
+  .revenue-tag{font-size:.9rem;font-weight:700;color:#059669}
+
+  /* Comparison Table */
+  .table-wrapper{overflow-x:auto;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+  table{width:100%;border-collapse:collapse;background:#fff;font-size:.85rem}
+  thead{background:linear-gradient(135deg,#1e3a8a,#2563eb)}
+  th{color:#fff;padding:.85rem .75rem;text-align:left;font-weight:600;white-space:nowrap}
+  td{padding:.75rem;border-bottom:1px solid #e2e8f0;vertical-align:top}
+  tbody tr:hover{background:#f1f5f9}
+  tbody tr:last-child td{border-bottom:none}
+
+  /* Difficulty Indicator */
+  .diff{display:inline-flex;gap:3px;align-items:center}
+  .diff-dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+  .diff-dot.active{background:#2563eb}
+
+  /* Pattern Section */
+  .pattern-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}
+  .pattern-card{background:#fff;border-radius:12px;padding:1.3rem;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .pattern-card .p-icon{font-size:1.5rem;margin-bottom:.5rem}
+  .pattern-card h4{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:#1e3a8a}
+  .pattern-card p{font-size:.85rem;color:#64748b;line-height:1.7}
+
+  /* Sources */
+  .source-list{column-count:2;column-gap:2rem}
+  .source-list li{font-size:.83rem;color:#475569;break-inside:avoid;margin-bottom:.5rem;list-style:decimal;margin-left:1.2rem}
+
+  /* Footer */
+  .footer{text-align:center;padding:2rem 1rem;color:#94a3b8;font-size:.8rem;border-top:1px solid #e2e8f0;margin-top:3rem}
+
+  /* Responsive */
+  @media(max-width:768px){
+    .header h1{font-size:1.5rem}
+    .header .meta{flex-direction:column;align-items:center;gap:.4rem}
+    .dashboard{grid-template-columns:repeat(2,1fr);margin:-1.5rem 0 1.5rem}
+    .detail-grid{grid-template-columns:1fr}
+    .pros-cons{grid-template-columns:1fr}
+    .source-list{column-count:1}
+    .item-card-header{flex-direction:column}
+    .table-wrapper{font-size:.78rem}
+    th,td{padding:.5rem}
+    .pattern-grid{grid-template-columns:1fr}
+    .section-title{font-size:1.15rem}
+  }
+  @media(max-width:480px){
+    .dashboard{grid-template-columns:1fr}
+    .header{padding:2rem 1rem}
+  }
+
+  /* ===== 심층 분석 섹션 ===== */
+  .deep-dive{margin:0 1.5rem 1rem;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+  .deep-dive summary{padding:1rem 1.25rem;font-size:.95rem;font-weight:700;color:#1e3a8a;cursor:pointer;background:#f0f4ff;border-bottom:1px solid #e2e8f0;list-style:none;display:flex;align-items:center;gap:.5rem;transition:background .2s}
+  .deep-dive summary:hover{background:#dbeafe}
+  .deep-dive summary::before{content:'▶';font-size:.7rem;transition:transform .2s;display:inline-block}
+  .deep-dive[open] summary::before{transform:rotate(90deg)}
+  .deep-dive summary::-webkit-details-marker{display:none}
+  .deep-content{padding:1.25rem}
+
+  .deep-section{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px dashed #e2e8f0}
+  .deep-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+  .deep-section h4{font-size:1rem;font-weight:700;color:#1e3a8a;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+  .deep-section h5{font-size:.9rem;font-weight:600;color:#334155;margin:.75rem 0 .4rem}
+  .deep-section p{font-size:.85rem;color:#475569;line-height:1.8;margin-bottom:.5rem}
+
+  .step-list{list-style:none;padding:0;counter-reset:step}
+  .step-list li{position:relative;padding:.6rem .6rem .6rem 2.8rem;margin-bottom:.5rem;background:#f8fafc;border-radius:8px;font-size:.85rem;color:#334155;border:1px solid #e2e8f0;counter-increment:step}
+  .step-list li::before{content:counter(step);position:absolute;left:.6rem;top:50%;transform:translateY(-50%);width:1.6rem;height:1.6rem;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+  .step-list li strong{color:#1e3a8a}
+
+  .competitor-card{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem;margin-top:.5rem}
+  .competitor-card .comp-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:1rem}
+  .competitor-card .comp-item h6{font-size:.88rem;font-weight:700;color:#1e3a8a;margin-bottom:.3rem}
+  .competitor-card .comp-item p{font-size:.82rem;color:#64748b;margin:0}
+
+  .pricing-table{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:.5rem;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}
+  .pricing-table thead{background:#1e3a8a}
+  .pricing-table th{color:#fff;padding:.6rem .5rem;text-align:left;font-weight:600;font-size:.8rem}
+  .pricing-table td{padding:.55rem .5rem;border-bottom:1px solid #f1f5f9;color:#475569}
+  .pricing-table tbody tr:nth-child(even){background:#f8fafc}
+  .pricing-table tbody tr:hover{background:#eff6ff}
+
+  .revenue-flow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+  .revenue-flow .flow-item{flex:1;min-width:140px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:10px;padding:.75rem;text-align:center;position:relative}
+  .revenue-flow .flow-item::after{content:'→';position:absolute;right:-1rem;top:50%;transform:translateY(-50%);color:#93c5fd;font-size:1.2rem;font-weight:700}
+  .revenue-flow .flow-item:last-child::after{content:''}
+  .revenue-flow .flow-item .flow-label{font-size:.75rem;color:#64748b;margin-bottom:.2rem}
+  .revenue-flow .flow-item .flow-value{font-size:.88rem;font-weight:700;color:#1e3a8a}
+
+  .tech-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .6rem;border-radius:20px;font-size:.75rem;font-weight:600;background:#e0e7ff;color:#3730a3;margin:.15rem .2rem .15rem 0}
+
+  .deep-section ul:not(.step-list){list-style:none;padding:0}
+  .deep-section ul:not(.step-list) li{font-size:.85rem;color:#475569;padding:.2rem 0 .2rem 1rem;position:relative}
+  .deep-section ul:not(.step-list) li::before{content:'•';position:absolute;left:0;color:#3b82f6;font-weight:bold}
+
+  .deep-highlight{background:#fef9c3;border:1px solid #fde68a;border-radius:8px;padding:.75rem 1rem;margin:.5rem 0;font-size:.85rem;color:#854d0e}
+
+  @media(max-width:768px){
+    .deep-dive{margin:0 1rem .75rem}
+    .competitor-card{grid-template-columns:1fr}
+    .revenue-flow{flex-direction:column}
+    .revenue-flow .flow-item::after{content:'↓';right:auto;left:50%;top:auto;bottom:-.85rem;transform:translateX(-50%)}
+    .pricing-table{font-size:.75rem}
+    .pricing-table th,.pricing-table td{padding:.4rem .35rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <h1>💰 부가수입 창출 웹서비스 아이템 조사 보고서</h1>
+  <p class="subtitle">광고/결제 수입 등 부가수입을 창출할 수 있는 간단한 웹서비스 아이템 8선</p>
+  <div class="meta">
+    <span>📅 조사일: 2025년 2월</span>
+    <span>📊 분석 아이템: 8개</span>
+    <span>🎯 기준: 간단함 · 웹기반 · 모바일 친화 · 수익성</span>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ===== SUMMARY DASHBOARD ===== -->
+<div class="dashboard">
+  <div class="stat-card">
+    <div class="icon">📋</div>
+    <div class="value">8개</div>
+    <div class="label">선별된 아이템</div>
+  </div>
+  <div class="stat-card">
+    <div class="icon">💵</div>
+    <div class="value">$2K~$300K</div>
+    <div class="label">예상 월수익 범위</div>
+  </div>
+  <div class="stat-card">
+    <div class="icon">⚡</div>
+    <div class="value">낮음~중간</div>
+    <div class="label">기술 난이도</div>
+  </div>
+  <div class="stat-card">
+    <div class="icon">🚀</div>
+    <div class="value">1~4주</div>
+    <div class="label">MVP 개발 기간</div>
+  </div>
+</div>
+
+<!-- ===== 선정 기준 ===== -->
+<div class="section">
+  <h2 class="section-title">🎯 선정 기준</h2>
+  <div class="criteria-grid">
+    <div class="criteria-item">
+      <h4>간단한 서비스</h4>
+      <p>1인 개발자가 1~4주 내에 MVP를 만들 수 있는 수준의 기술적 복잡도</p>
+    </div>
+    <div class="criteria-item">
+      <h4>웹페이지 기반</h4>
+      <p>별도 앱 설치 없이 웹브라우저에서 바로 동작하는 서비스</p>
+    </div>
+    <div class="criteria-item">
+      <h4>모바일 친화</h4>
+      <p>반응형 디자인으로 모바일에서도 부담 없이 접근 가능</p>
+    </div>
+    <div class="criteria-item">
+      <h4>수익 창출 가능</h4>
+      <p>광고, 프리미엄 구독, 제휴마케팅 등 검증된 수익 모델 보유</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 아이템 상세 카드 ===== -->
+<div class="section">
+  <h2 class="section-title">📦 아이템 상세 분석</h2>
+
+  <!-- 아이템 1: 니치 계산기/비교 도구 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">1</div>
+        <h3>🧮 니치 계산기 / 비교 도구</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-green">난이도: 낮음</span>
+        <span class="badge badge-blue">광고 + 제휴마케팅</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        특정 분야에 특화된 계산기나 비교 도구를 제공하는 웹서비스. 대출 이자 계산기, 연봉 실수령액 계산기, 칼로리 계산기, 단위 변환기 등 SEO에 강력하고 반복 방문이 높은 유틸리티 서비스다. 사용자가 구글에서 "XX 계산기"를 검색할 때 상위 노출되면 안정적인 트래픽을 확보할 수 있다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>Google AdSense 디스플레이 광고 (CPM/CPC)</li>
+            <li>금융 상품 제휴마케팅 (대출, 보험 비교 시 수수료)</li>
+            <li>프리미엄 기능 (상세 리포트 PDF 다운로드)</li>
+            <li>기업용 화이트라벨 API 제공</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>프론트엔드: HTML/CSS/JS 또는 Next.js</li>
+            <li>백엔드: 불필요 (정적 사이트 가능)</li>
+            <li>호스팅: Vercel, Netlify (무료)</li>
+            <li>SEO 최적화가 핵심 성공 요인</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Calculator.net</strong> — 월 방문자 수천만 이상, 추정 월 광고수익 $15만+. 단순한 계산기 모음 사이트로 시작하여 거대 트래픽 허브로 성장.<br>
+        <strong>OmniCalculator</strong> — 3,700개 이상의 전문 계산기 보유, 월 1,700만~2,300만 방문. 폴란드 크라쿠프에서 $3만 시드 자금으로 시작하여 연매출 $420만+, 직원 62명 규모로 성장. NYT, The Guardian 등 주요 미디어 보도.<br>
+        <strong>CalculatorSoup</strong> — 1인 운영, 월 800만~1,300만 방문, 미국 수학 카테고리 5위, 78% 오가닉 검색 트래픽. 순수 AdSense 수익으로 월 $5만~$15만 추정.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>개발 난이도가 매우 낮음</li>
+            <li>SEO를 통한 오가닉 트래픽 확보 용이</li>
+            <li>유지보수 비용이 거의 없음</li>
+            <li>서버 비용 0원 가능 (정적 호스팅)</li>
+            <li>니치 분야 선점 시 경쟁 장벽 형성</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>SEO 상위 노출까지 3~6개월 소요</li>
+            <li>경쟁이 치열한 키워드 다수</li>
+            <li>광고 수익 단가가 낮을 수 있음</li>
+            <li>차별화 포인트 확보 어려움</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 심층 분석: 아이템 1 -->
+    <details class="deep-dive">
+      <summary>📌 심층 분석 보기 — 니치 계산기 실행 전략</summary>
+      <div class="deep-content">
+
+        <div class="deep-section">
+          <h4>🚀 구체적 실행 방법</h4>
+          <h5>최적 니치 추천: 금융 분야 (CPC $10-$50+, RPM $30+)</h5>
+          <ol class="step-list">
+            <li><strong>1순위: 연봉 실수령액 계산기</strong> — 한국 매년 연초 폭발적 검색량. 사람인 계산기가 1위지만 UX 개선 여지 큼</li>
+            <li><strong>2순위: 프리랜서 세금 계산기</strong> — 고의도 B2B 오디언스, 경쟁 적음</li>
+            <li><strong>3순위: 대출 이자/모기지 계산기</strong> — 제휴마케팅 고수익 (리드당 $85-$200)</li>
+            <li><strong>4순위: 복리 이자 계산기</strong> — 투자 관심층 타겟, 장기 트래픽</li>
+            <li><strong>5순위: 암호화폐 세금 계산기</strong> — 신규 니치, 낮은 경쟁, 높은 CPC</li>
+          </ol>
+
+          <h5>MVP 개발 로드맵</h5>
+          <div class="revenue-flow">
+            <div class="flow-item">
+              <div class="flow-label">Week 1</div>
+              <div class="flow-value">Next.js SSG 개발</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">Week 1-2</div>
+              <div class="flow-value">Vercel 배포</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">Week 2+</div>
+              <div class="flow-value">SEO 최적화</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">비용</div>
+              <div class="flow-value">$0 (무료 호스팅)</div>
+            </div>
+          </div>
+
+          <h5>기술 스택</h5>
+          <p>
+            <span class="tech-badge">Next.js SSG</span>
+            <span class="tech-badge">Vercel</span>
+            <span class="tech-badge">TailwindCSS</span>
+            <span class="tech-badge">TypeScript</span>
+            <span class="tech-badge">Google Analytics</span>
+          </p>
+
+          <h5>SEO 전략</h5>
+          <ul>
+            <li>롱테일 키워드 타겟팅: "2026년 연봉 실수령액 계산기", "프리랜서 종합소득세 계산"</li>
+            <li>각 계산기별 전용 랜딩 페이지 (/salary-calculator, /freelancer-tax 등)</li>
+            <li>연초(1~3월) 시즌성 키워드 집중 공략</li>
+            <li>구조화된 데이터(Schema.org) 마크업으로 리치 스니펫 확보</li>
+          </ul>
+        </div>
+
+        <div class="deep-section">
+          <h4>🔍 선행 서비스 상세 분석</h4>
+          <table class="pricing-table">
+            <thead>
+              <tr><th>서비스</th><th>월 방문자</th><th>수익 모델</th><th>주요 특징</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>OmniCalculator</strong></td><td>2,310만</td><td>AdSense 100%</td><td>3,700개 계산기, 연매출 $420만, 62명</td></tr>
+              <tr><td><strong>CalculatorSoup</strong></td><td>800만~1,300만</td><td>AdSense 100%</td><td>1인 운영, 월 $5만~$15만</td></tr>
+              <tr><td><strong>Calculator.net</strong></td><td>5,000만</td><td>AdSense</td><td>종합 계산기, 업계 최대 트래픽</td></tr>
+              <tr><td><strong>사람인 연봉계산기</strong></td><td>—</td><td>제휴/광고</td><td>한국 1위, 연초 트래픽 폭발</td></tr>
+              <tr><td><strong>핀다</strong></td><td>—</td><td>금융 제휴</td><td>연봉계산+대출비교 연계</td></tr>
+            </tbody>
+          </table>
+          <div class="deep-highlight">
+            💡 <strong>핵심 인사이트:</strong> CalculatorSoup는 1인 운영으로 월 $5만~$15만을 벌며, OmniCalculator는 $3만 시드로 시작해 연매출 $420만까지 성장. 니치 계산기는 검증된 1인 사이드 프로젝트 모델.
+          </div>
+        </div>
+
+        <div class="deep-section">
+          <h4>💰 수익원 연결 전략</h4>
+          <h5>1. 광고 수익</h5>
+          <ul>
+            <li><strong>Google AdSense</strong> — 금융 RPM $10-$30+ (일반 대비 3~10배)</li>
+            <li><strong>카카오 AdFit</strong> — 한국 트래픽 보완</li>
+            <li>배치 전략: 계산기 위 배너 / 결과 페이지(최고 참여도) / 사이드바</li>
+          </ul>
+
+          <h5>2. 제휴마케팅 (고수익)</h5>
+          <ul>
+            <li><strong>FinanceAds 네트워크:</strong> 3,000+ 금융 사이트, 30개+ 화이트라벨 비교 계산기 제공</li>
+            <li>금융 상품 리드당 $65-$200 커미션</li>
+            <li>대출/보험 비교 시 직접 링크 → 리드당 $85-$200</li>
+          </ul>
+
+          <h5>3. 프리미엄 기능</h5>
+          <ul>
+            <li>상세 PDF 리포트 다운로드 (세금 분석, 재정 계획)</li>
+            <li>API 제공 (기업/핀테크용)</li>
+          </ul>
+
+          <div class="revenue-flow" style="margin-top:1rem">
+            <div class="flow-item">
+              <div class="flow-label">무료 계산기</div>
+              <div class="flow-value">SEO 트래픽 유입</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">결과 페이지</div>
+              <div class="flow-value">광고 + 제휴 링크</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">전환</div>
+              <div class="flow-value">리드당 $65~$200</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </details>
+
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★☆</span>
+        <span class="score">추천 4.0/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $2,000 ~ $15,000</span>
+    </div>
+  </div>
+
+  <!-- 아이템 2: AI 문서 도구 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">2</div>
+        <h3>📄 AI 문서 도구 (PDF 변환/요약)</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-orange">난이도: 중간</span>
+        <span class="badge badge-purple">프리미엄 구독 + 광고</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        PDF 변환, 합치기, 분할, AI 기반 문서 요약 등 문서 관련 유틸리티를 웹에서 제공하는 서비스. 사무직 종사자, 학생 등 광범위한 사용자층을 보유하며, 무료 기본 기능 + 프리미엄 구독 모델로 높은 전환율을 달성할 수 있다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>프리미엄 구독 (월 $5~$12, 무제한 변환)</li>
+            <li>무료 사용자 대상 광고 (인터스티셜/배너)</li>
+            <li>AI 요약 기능 크레딧 과금</li>
+            <li>팀/기업용 플랜 (월 $20~$50/seat)</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>프론트엔드: React/Next.js</li>
+            <li>백엔드: Node.js + PDF 라이브러리 (pdf-lib, pdfjs)</li>
+            <li>AI: OpenAI API 또는 Claude API (요약 기능)</li>
+            <li>스토리지: AWS S3 (임시 파일 저장)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Smallpdf</strong> — 5억+ 사용자, 10만+ 기업 고객, 24개 언어 지원. 연매출 $830만~$1,100만, 76명 직원. 프리미엄 구독 월 $9~$12.<br>
+        <strong>iLovePDF</strong> — 월 2억 2,100만 방문(2025.11 기준), 스페인 기반, 프리미엄 + 광고 하이브리드 모델.<br>
+        <strong>PDF.ai</strong> — 1인 창업자(Damon Chen, 전 Cisco 엔지니어)가 $1만에 도메인 구매 후 부트스트랩으로 ARR $50만~$60만 달성. 월 100만 방문자, 35만이 오가닉 검색. 30% 제휴 프로그램으로 성장 가속.<br>
+        <strong>ChatPDF</strong> — 베를린 기반, 부트스트랩, 외부 투자 0, 4명 직원으로 연매출 $44만 달성.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>엄청난 시장 수요 (사무직 필수 도구)</li>
+            <li>높은 재방문율 및 사용 빈도</li>
+            <li>프리미엄 전환율이 비교적 높음</li>
+            <li>AI 기능 추가로 차별화 용이</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>기존 강자들과의 경쟁 (Smallpdf, iLovePDF)</li>
+            <li>서버 비용 발생 (파일 처리)</li>
+            <li>파일 보안/개인정보 이슈 관리 필요</li>
+            <li>AI API 비용 부담</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★☆</span>
+        <span class="score">추천 4.2/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $12,000 ~ $50,000</span>
+    </div>
+  </div>
+
+  <!-- 아이템 3: MBTI/성격 테스트 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">3</div>
+        <h3>🧠 MBTI / 성격 테스트 플랫폼</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-green">난이도: 낮음</span>
+        <span class="badge badge-blue">광고 + 유료 상세 리포트</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        MBTI, 성격 유형, 심리 테스트, 궁합 테스트 등을 제공하는 플랫폼. 한국에서 특히 MBTI 열풍이 강하며, SNS 공유를 통한 바이럴 효과가 뛰어나다. 테스트 결과 공유 시 자연스럽게 신규 사용자가 유입되는 바이럴 루프 구조가 핵심이다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>결과 페이지 광고 (높은 CPM, 체류시간 길음)</li>
+            <li>상세 분석 리포트 유료 판매 ($3~$10)</li>
+            <li>궁합/팀 분석 프리미엄 기능</li>
+            <li>기업용 팀빌딩 테스트 라이선스</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>프론트엔드: React + 애니메이션 라이브러리</li>
+            <li>백엔드: Firebase 또는 Supabase (서버리스)</li>
+            <li>결과 이미지 생성: Canvas API / html2canvas</li>
+            <li>SNS 공유 API 연동 (카카오톡, 인스타그램)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>16Personalities</strong> — 전 세계 10억 회 이상 테스트 완료, 45개+ 언어 지원. 월 오가닉 트래픽 가치 $702만, 81,389개 키워드 랭킹. 글로벌 순위 3,293위. 무료 테스트 + 유료 프리미엄 가이드/커리어 분석 모델.<br>
+        <strong>푸망(Poomang)</strong> — 2020년 12월 런칭, 누적 테스트 완료 7,500만 회, 회원 79만명, 360개+ 테스트 제작. 1년 만에 1,000만 누적 사용자 달성. B2B 브랜드 협업 + 광고 수익. 서울 기반, 11~50명 직원.<br>
+        <strong>테스트잇/심콩/테스트모아</strong> — 한국 심리테스트 플랫폼들, Google AdSense·카카오 AdFit 광고 수익. 인터랙티브 콘텐츠 특성상 일반 디스플레이 대비 300% 높은 광고 수익 달성. 단일 테스트당 25,000명+ 참여.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>바이럴 효과 극대화 (SNS 공유)</li>
+            <li>초기 개발 비용 매우 낮음</li>
+            <li>한국 시장에서 특히 인기</li>
+            <li>반복 제작으로 컨텐츠 확장 용이</li>
+            <li>서버 비용 거의 없음</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>트래픽 유지가 어려움 (일회성 방문)</li>
+            <li>지속적인 새 테스트 콘텐츠 제작 필요</li>
+            <li>트렌드 의존성이 높음</li>
+            <li>콘텐츠 저작권 이슈 가능성</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 심층 분석: 아이템 3 -->
+    <details class="deep-dive">
+      <summary>📌 심층 분석 보기 — MBTI/성격 테스트 실행 전략</summary>
+      <div class="deep-content">
+
+        <div class="deep-section">
+          <h4>🚀 구체적 실행 방법</h4>
+          <h5>바이럴 테스트 유형 추천</h5>
+          <ol class="step-list">
+            <li><strong>MBTI 변형 (캐릭터 매칭)</strong> — "어떤 디즈니 캐릭터?", "어떤 해리포터 기숙사?" 등 친숙한 IP 연계</li>
+            <li><strong>궁합 테스트</strong> — 연애/친구/직업 궁합 → 2인 참여로 자연스러운 2배 바이럴 효과</li>
+            <li><strong>동물/식물 유형</strong> — 가벼운 참여 유도, 귀여운 결과 이미지로 공유율↑</li>
+            <li><strong>트렌드 연계</strong> — 시즌별: 크리스마스 유형, 여름 바캉스 유형, 새해 운세 등</li>
+          </ol>
+
+          <h5>바이럴 계수(V) 설계</h5>
+          <div class="deep-highlight">
+            🎯 <strong>목표 V &gt; 1.0</strong> (완료율 × 공유율 × 재방문율)<br>
+            성격 테스트 평균 V = 0.3-0.7 → 좋은 디자인 시 1.0+ 달성 가능<br>
+            V &gt; 1.0이면 사용자가 기하급수적으로 증가하는 자기 증식 구조
+          </div>
+
+          <h5>결과 페이지 설계 원칙</h5>
+          <ol class="step-list">
+            <li><strong>큰 결과 제목 + 긍정적 해석</strong> — 사용자가 공유하고 싶은 매력적 결과</li>
+            <li><strong>시각적 결과 카드</strong> — 공유용 이미지 자동 생성 (html2canvas/Canvas API)</li>
+            <li><strong>공유 버튼</strong> — 카카오톡 / 인스타그램 스토리 / 페이스북 / 트위터</li>
+            <li><strong>CTA 배치</strong> — "친구와 비교하기" 또는 "프리미엄 상세 결과 보기"</li>
+          </ol>
+
+          <h5>SNS 공유 전략</h5>
+          <ul>
+            <li><strong>KakaoTalk:</strong> 메시지 템플릿(결과 이미지+링크), 한국 90%+ 사용률</li>
+            <li><strong>Instagram:</strong> Story 형식 결과 카드, #MBTI #성격테스트 해시태그</li>
+            <li><strong>결과 이미지:</strong> 정사각형(1080×1080) + 세로형(1080×1920) 두 버전 자동 생성</li>
+          </ul>
+        </div>
+
+        <div class="deep-section">
+          <h4>🔍 선행 서비스 상세 분석</h4>
+          <table class="pricing-table">
+            <thead>
+              <tr><th>서비스</th><th>규모</th><th>수익 모델</th><th>가격/특징</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>16Personalities</strong></td><td>10억 회 테스트<br>월 트래픽 가치 $702만</td><td>프리미엄 리포트</td><td>Career Suite 40+페이지 (일회성 결제)</td></tr>
+              <tr><td><strong>푸망(Poomang)</strong></td><td>누적 7,500만 회<br>79만 회원</td><td>B2B 브랜드 협업 + 광고</td><td>월 매출 1억 원, TIPS 선정</td></tr>
+              <tr><td><strong>방구석연구소</strong></td><td>MAU 100만+<br>네이버 급상승 1위</td><td>B2B 콜라보 + 광고</td><td>11번가/피피픽 등 기업 협업</td></tr>
+              <tr><td><strong>Truity</strong></td><td>—</td><td>프리미엄 리포트 + B2B</td><td>$19 리포트, $66~ 기업용</td></tr>
+              <tr><td><strong>BuzzFeed Quizzes</strong></td><td>미디어 규모</td><td>네이티브 광고 + 커뮤니티</td><td>퀴즈 전담팀 → 트래픽 60% 증가</td></tr>
+            </tbody>
+          </table>
+          <div class="deep-highlight">
+            💡 <strong>핵심 인사이트:</strong> 푸망은 B2B 브랜드 협업으로 월 매출 1억 원 달성. 방구석연구소는 기업 콜라보(11번가 "전생템 테스트" 등)로 수익화. 한국 시장은 B2B 협업이 핵심 수익 모델.
+          </div>
+        </div>
+
+        <div class="deep-section">
+          <h4>💰 수익원 연결 전략</h4>
+
+          <h5>1. 광고 수익</h5>
+          <ul>
+            <li><strong>AdSense / 카카오 AdFit</strong> — 질문 사이 / 결과 페이지(95% 전환율 지점)</li>
+            <li>인터랙티브 콘텐츠 → 일반 디스플레이 대비 <strong>300% 높은 광고 수익</strong></li>
+          </ul>
+
+          <h5>2. 프리미엄 리포트 ($19-$29 일회성)</h5>
+          <ul>
+            <li>40+ 페이지 상세 분석 PDF (성격, 커리어, 대인관계, 성장 가이드)</li>
+            <li>전환율 1-5%: 월 1만 사용자 × 3% × $19 = <strong>$5,700/월</strong></li>
+          </ul>
+
+          <h5>3. B2B 브랜드 협업 (푸망 모델)</h5>
+          <div class="competitor-card">
+            <div class="comp-item">
+              <h6>소규모 협업</h6>
+              <p>300만~1,000만 원<br>커스텀 테스트 제작 + 결과 페이지 브랜드 연계</p>
+            </div>
+            <div class="comp-item">
+              <h6>대규모 협업</h6>
+              <p>1,000만~5,000만 원<br>전용 캠페인 + 데이터 리포트</p>
+            </div>
+            <div class="comp-item">
+              <h6>실제 사례</h6>
+              <p>7-Eleven "MyBTI" 젤리<br>마켓컬리 쿠폰 연계<br>11번가 "전생템 테스트"</p>
+            </div>
+          </div>
+
+          <h5>4. 제휴마케팅</h5>
+          <ul>
+            <li>결과 기반 맞춤 추천: 커리어 가이드, 데이팅 앱, 온라인 강좌</li>
+            <li>"당신의 유형에 맞는 추천" 형식으로 자연스러운 전환</li>
+          </ul>
+
+          <div class="revenue-flow" style="margin-top:1rem">
+            <div class="flow-item">
+              <div class="flow-label">무료 테스트</div>
+              <div class="flow-value">바이럴 유입</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">결과 페이지</div>
+              <div class="flow-value">광고 + 공유 CTA</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">전환</div>
+              <div class="flow-value">리포트 $19~$29</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">B2B</div>
+              <div class="flow-value">협업 300만~5,000만 원</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </details>
+
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★★</span>
+        <span class="score">추천 4.5/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $5,000 ~ $50,000</span>
+    </div>
+  </div>
+
+  <!-- 아이템 4: QR코드 생성/관리 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">4</div>
+        <h3>📱 QR코드 생성 / 관리 플랫폼</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-green">난이도: 낮음</span>
+        <span class="badge badge-purple">프리미엄 구독 + 광고</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        맞춤형 QR코드 생성, 디자인 커스터마이징, 스캔 추적·분석 기능을 제공하는 플랫폼. 코로나 이후 QR코드 사용이 일상화되면서 지속적인 수요가 있으며, 특히 소상공인·마케터·이벤트 기획자들의 반복 이용률이 높다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>무료: 기본 QR 생성 (로고 없음, 추적 불가)</li>
+            <li>프로 플랜: 월 $7~$15 (커스텀 디자인, 스캔 추적)</li>
+            <li>비즈니스 플랜: 월 $30~$50 (대량 생성, API, 팀 관리)</li>
+            <li>생성 페이지 광고 수익</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>QR 생성: qrcode.js, node-qrcode 라이브러리</li>
+            <li>커스터마이징: Canvas API (로고 삽입, 색상 변경)</li>
+            <li>추적 시스템: 리다이렉트 URL + 분석 DB</li>
+            <li>호스팅: Vercel + Supabase/PlanetScale</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Beaconstac (현 Uniqode)</strong> — 시리즈 A $2,500만 투자 유치(Telescope Partners, Accel), 2만+ 고객, 전년 대비 매출 200% 성장. 2024년 1월 Uniqode로 리브랜딩. 엔터프라이즈 중심 QR 분석/추적 서비스.<br>
+        <strong>QRCode Monkey</strong> — 무료 QR 생성기, 상업적 무료 사용 + 무제한 스캔. 2024년 2월 Egoditor에 인수. 프리미엄 기능으로 수익화.<br>
+        <strong>QR Code Generator</strong> — 프리미엄 모델: 무료 정적 QR, 동적 QR코드 월 $5~(Flex 플랜). QR 스캔 수 2025년 4,177만 회(4년간 433% 증가). 업계 평균 성공 QR 비즈니스 연매출 $180만.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>개발 난이도 낮음 (오픈소스 라이브러리 활용)</li>
+            <li>B2B/B2C 모두 수요 있음</li>
+            <li>반복 사용 고객 확보 용이</li>
+            <li>추가 기능으로 차별화 가능</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>무료 대안이 많아 유료 전환 어려움</li>
+            <li>경쟁 서비스 다수 존재</li>
+            <li>기술적 진입 장벽이 낮아 쉽게 따라잡힘</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 심층 분석: 아이템 4 -->
+    <details class="deep-dive">
+      <summary>📌 심층 분석 보기 — QR코드 플랫폼 실행 전략</summary>
+      <div class="deep-content">
+
+        <div class="deep-section">
+          <h4>🚀 구체적 실행 방법</h4>
+          <h5>핵심 차별화: Static vs Dynamic QR코드</h5>
+          <div class="competitor-card">
+            <div class="comp-item">
+              <h6>Static QR (무료)</h6>
+              <p>URL 고정, 추적 불가<br>→ 무료로 제공하여 사용자 유입<br>SEO 트래픽의 핵심 랜딩</p>
+            </div>
+            <div class="comp-item">
+              <h6>Dynamic QR (유료 핵심)</h6>
+              <p>URL 편집 가능, 스캔 추적, 분석<br>→ 유료 전환의 핵심 기능<br>QR 재인쇄 없이 목적지 변경</p>
+            </div>
+          </div>
+
+          <h5>고수익 유즈케이스</h5>
+          <ol class="step-list">
+            <li><strong>식당/카페 디지털 메뉴</strong> — 소상공인 B2B, 메뉴 수시 변경 필요 → Dynamic QR 필수</li>
+            <li><strong>명함/네트워킹 (vCard QR)</strong> — 전문직 종사자 타겟, 반복 구매</li>
+            <li><strong>이벤트/행사 관리</strong> — 출입 관리, 참가 확인, 설문 연결</li>
+            <li><strong>마케팅 캠페인 추적</strong> — 오프라인 광고 → 온라인 전환 측정</li>
+            <li><strong>상품 라벨/지속가능성 정보</strong> — 제조업 B2B, ESG 트렌드 연계</li>
+          </ol>
+
+          <h5>Dynamic QR 구현 아키텍처</h5>
+          <div class="revenue-flow">
+            <div class="flow-item">
+              <div class="flow-label">사용자 스캔</div>
+              <div class="flow-value">yoursite.com/qr/abc123</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">서버 로그</div>
+              <div class="flow-value">IP, UA, 시간 기록</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">리다이렉트</div>
+              <div class="flow-value">목적지 URL 이동</div>
+            </div>
+          </div>
+
+          <h5>기술 스택</h5>
+          <p>
+            <span class="tech-badge">qr-code-styling</span>
+            <span class="tech-badge">Next.js</span>
+            <span class="tech-badge">Supabase</span>
+            <span class="tech-badge">Vercel</span>
+            <span class="tech-badge">Canvas API</span>
+          </p>
+
+          <h5>MVP 비용</h5>
+          <p>~$30-40/월 (DigitalOcean $5-15 + DB $15). 커스텀 디자인: qr-code-styling 라이브러리 (로고, 색상, 패턴, 눈 모양 커스터마이징)</p>
+        </div>
+
+        <div class="deep-section">
+          <h4>🔍 선행 서비스 상세 분석</h4>
+          <table class="pricing-table">
+            <thead>
+              <tr><th>서비스</th><th>무료 플랜</th><th>유료 시작가</th><th>특징</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>QR Code Generator</strong></td><td>무제한 정적 + 동적 2개</td><td>$8.52/월</td><td>세밀한 분석, 커스터마이징</td></tr>
+              <tr><td><strong>QR Tiger</strong></td><td>—</td><td>$7/월 (12 동적)</td><td>140개국, 24/7 채팅 지원</td></tr>
+              <tr><td><strong>QRCode Monkey</strong></td><td>100% 무료 정적</td><td>프리미엄 구독</td><td>스캔 무제한, API 판매</td></tr>
+              <tr><td><strong>Flowcode</strong></td><td>2개 코드, 500스캔</td><td>$5/월</td><td>$3,000만 투자유치, 엔터프라이즈</td></tr>
+              <tr><td><strong>Uniqode (Beaconstac)</strong></td><td>있음</td><td>$15/월</td><td>$2,500만 투자, GA4 연동</td></tr>
+              <tr><td><strong>ME-QR</strong></td><td>있음</td><td>$5.75/월</td><td>1000+ 무료 디자인 프레임</td></tr>
+            </tbody>
+          </table>
+          <div class="deep-highlight">
+            💡 <strong>시장 규모:</strong> QR코드 결제 시장 $147억(2024) → $382억(2030), CAGR 17%.<br>
+            <strong>한국 기회:</strong> mQR.kr 정도로 로컬 경쟁사 부족 → 한국 특화(카카오 연동, 한글 UX) 시 선점 가능.
+          </div>
+        </div>
+
+        <div class="deep-section">
+          <h4>💰 수익원 연결 전략</h4>
+          <h5>1. 프리미엄 구독 (핵심 수익)</h5>
+          <table class="pricing-table">
+            <thead>
+              <tr><th>플랜</th><th>가격</th><th>포함 기능</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Free</strong></td><td>$0</td><td>무제한 정적 QR (추적/편집 불가)</td></tr>
+              <tr><td><strong>Pro</strong></td><td>$7-15/월</td><td>동적 QR + 분석 + 커스텀 디자인 + 로고</td></tr>
+              <tr><td><strong>Business</strong></td><td>$30-50/월</td><td>대량 생성 + API + 팀 관리</td></tr>
+              <tr><td><strong>Enterprise</strong></td><td>$250+/월</td><td>SLA, CRM 연동, 화이트라벨</td></tr>
+            </tbody>
+          </table>
+
+          <h5>2. API 판매</h5>
+          <ul>
+            <li>QR 이미지당 $0.0065-$0.009 (대량 할인)</li>
+            <li>개발자/SaaS 기업 대상 → 안정적 반복 수익</li>
+          </ul>
+
+          <h5>3. 화이트라벨</h5>
+          <ul>
+            <li>마케팅 에이전시에 리브랜딩 판매 (소매가 50%)</li>
+          </ul>
+
+          <h5>4. 광고</h5>
+          <ul>
+            <li>무료 QR 생성 페이지에 AdSense 배치</li>
+            <li>무료 사용자의 높은 트래픽을 광고 수익으로 전환</li>
+          </ul>
+        </div>
+
+      </div>
+    </details>
+
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★☆☆</span>
+        <span class="score">추천 3.5/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $5,000 ~ $30,000</span>
+    </div>
+  </div>
+
+  <!-- 아이템 5: AI 카피라이팅/SNS 캡션 생성기 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">5</div>
+        <h3>✍️ AI 카피라이팅 / SNS 캡션 생성기</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-orange">난이도: 중간</span>
+        <span class="badge badge-purple">크레딧 과금 + 구독</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        AI를 활용하여 인스타그램 캡션, 유튜브 제목, 블로그 글, 광고 카피, 이메일 제목 등을 자동 생성하는 도구. SNS 마케터, 소상공인, 크리에이터들이 주요 고객층이며, GPT/Claude API를 래핑하여 특화된 프롬프트 엔지니어링으로 차별화한다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>크레딧 기반: 무료 5회/일, 이후 크레딧 구매</li>
+            <li>월 구독: $9~$29/월 (무제한 생성)</li>
+            <li>프로 플랜: 팀 기능, API 접근, 브랜드 보이스 설정</li>
+            <li>제휴 마케팅 (SNS 관리 도구 추천)</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>AI: OpenAI GPT-4 API 또는 Claude API</li>
+            <li>프론트: Next.js + TailwindCSS</li>
+            <li>인증/결제: Clerk + Stripe</li>
+            <li>DB: Supabase 또는 PlanetScale</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Jasper.ai</strong> — 연매출 $8,800만(2025.6), 총 투자 $1.31억($1.25억 시리즈 A, $15억 밸류에이션), 10만+ 고객. 크리에이터 $39/월, 프로 $99/월. 마케터 85%가 AI 라이팅 도구 사용.<br>
+        <strong>Copy.ai</strong> — 총 투자 $1,390만(Wing VC, Sequoia, Tiger Global), 38만+ 사용자, 5천+ 유료 고객에서 월 $31만 수익. 무료 플랜 + $49/월 유료.<br>
+        <strong>Rytr</strong> — 소규모 AI 라이팅 어시스턴트, 무료(1만자/월), $9/월(무제한), $29/월(프리미엄). 40+ 유즈케이스, 35개 언어. 1인/소규모 팀 사이드 프로젝트 참고 모델.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>시장 수요 폭발적 (AI + 콘텐츠)</li>
+            <li>높은 고객 생애 가치 (LTV)</li>
+            <li>한국어 특화 시 경쟁 우위</li>
+            <li>확장 가능성 무궁무진</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>AI API 비용이 수익을 잠식할 수 있음</li>
+            <li>ChatGPT 직접 사용과의 차별화 필요</li>
+            <li>대형 업체와의 경쟁 치열</li>
+            <li>AI 환각(hallucination) 품질 관리 필요</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★☆</span>
+        <span class="score">추천 4.3/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $2,000 ~ $300,000</span>
+    </div>
+  </div>
+
+  <!-- 아이템 6: 파일 변환 서비스 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">6</div>
+        <h3>🔄 파일 변환 서비스</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-orange">난이도: 중간</span>
+        <span class="badge badge-blue">광고 + 프리미엄 구독</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        이미지, 비디오, 오디오, 문서 등 다양한 파일 포맷 간 변환을 웹에서 제공하는 서비스. "PNG to JPG", "MP4 to GIF", "HEIC to JPG" 등 구체적인 변환 니즈를 타겟팅하여 SEO 트래픽을 확보한다. 매일 수십만 건의 검색이 발생하는 꾸준한 수요가 특징이다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>무료 변환 시 광고 노출 (배너/인터스티셜)</li>
+            <li>프리미엄: 광고 제거 + 대용량 + 배치 변환 ($6~$15/월)</li>
+            <li>API 액세스: 개발자/기업 대상 ($29~$99/월)</li>
+            <li>데스크탑 앱 판매 (일회성 $20~$40)</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>변환 엔진: FFmpeg (비디오/오디오), Sharp (이미지)</li>
+            <li>웹 워커: 브라우저 내 변환 (서버 부담 감소)</li>
+            <li>백엔드: Node.js / Python (서버사이드 변환)</li>
+            <li>스토리지: 임시 파일 처리 (자동 삭제)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Zamzar</strong> — 2006년 설립, 1,100+ 파일 포맷 지원. 무료 + Basic $18/월(50건/일), Pro $30/월(100건/일), Business $70/월(500건/일). 20년간 꾸준히 수익 창출, API 크레딧 판매도 병행. 수익의 2% 자선 기부.<br>
+        <strong>Convertio</strong> — 월 2,540만 방문, 72% 오가닉 검색 트래픽, 추정 기업 가치 $350만. 300+ 포맷 지원, 프리미엄 + 광고 하이브리드 모델.<br>
+        <strong>CloudConvert</strong> — 개발자 중심, 강력한 API(Zapier/Make.com 연동), 구독 + 건당 과금 모델.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>거대한 꾸준한 검색 수요</li>
+            <li>SEO 롱테일 키워드 다수</li>
+            <li>브라우저 내 변환으로 서버 비용 절감 가능</li>
+            <li>한 번 만들면 유지보수 최소</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>경쟁 서비스 매우 많음</li>
+            <li>서버사이드 변환 시 인프라 비용 발생</li>
+            <li>대용량 파일 처리 시 기술적 챌린지</li>
+            <li>보안 이슈 (악성 파일 업로드 대응)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 심층 분석: 아이템 6 -->
+    <details class="deep-dive">
+      <summary>📌 심층 분석 보기 — 파일 변환 서비스 실행 전략</summary>
+      <div class="deep-content">
+
+        <div class="deep-section">
+          <h4>🚀 구체적 실행 방법</h4>
+          <h5>최적 니치 추천 (검색량 높고 경쟁 낮은 변환)</h5>
+          <ol class="step-list">
+            <li><strong>1순위: HEIC → JPG</strong> — 아이폰 사용자 필수, 매일 수만 건 검색. "heic to jpg" 키워드 경쟁도 중간</li>
+            <li><strong>2순위: WebP → PNG/JPG</strong> — 웹 최적화 포맷 증가로 수요 급증</li>
+            <li><strong>3순위: SVG → PNG</strong> — 벡터 → 래스터 변환, 디자이너/개발자 수요</li>
+            <li><strong>4순위: 이미지 압축</strong> — JPG/PNG 용량 줄이기, 높은 재방문율</li>
+            <li><strong>5순위: PNG → SVG</strong> — 벡터화, AI 트레이싱 기능으로 차별화 가능</li>
+          </ol>
+
+          <h5>하이브리드 전략 (추천)</h5>
+          <div class="competitor-card">
+            <div class="comp-item">
+              <h6>클라이언트 사이드 (이미지 변환)</h6>
+              <p>서버 비용 $0, 프라이버시 강점<br>"파일이 서버에 업로드되지 않습니다"<br>→ 강력한 마케팅 차별화</p>
+            </div>
+            <div class="comp-item">
+              <h6>서버 사이드 (비디오/문서)</h6>
+              <p>FFmpeg, LibreOffice 활용<br>대용량/복잡 포맷 처리<br>프리미엄 기능으로 과금</p>
+            </div>
+          </div>
+
+          <h5>SEO 전략</h5>
+          <ul>
+            <li>변환 유형별 전용 랜딩 페이지: <code>/heic-to-jpg</code>, <code>/webp-to-png</code>, <code>/compress-image</code></li>
+            <li>각 페이지에 "How to" 가이드 콘텐츠 + 계산기 도구 = 검색 노출 극대화</li>
+            <li>구조화된 데이터(HowTo Schema) 마크업</li>
+          </ul>
+
+          <h5>기술 스택</h5>
+          <p>
+            <span class="tech-badge">Web Workers</span>
+            <span class="tech-badge">Canvas API</span>
+            <span class="tech-badge">FFmpeg.wasm</span>
+            <span class="tech-badge">Sharp</span>
+            <span class="tech-badge">Next.js</span>
+            <span class="tech-badge">Vercel</span>
+          </p>
+
+          <div class="deep-highlight">
+            💡 <strong>실제 수익 사례:</strong> 한 인디 해커가 범용 파일 변환기를 만들어 2주 만에 $1,000/월, 8주 만에 $10,000/월 달성 → 현재 $4,000/월 반복 수익 유지 중.
+          </div>
+        </div>
+
+        <div class="deep-section">
+          <h4>🔍 선행 서비스 상세 분석</h4>
+          <table class="pricing-table">
+            <thead>
+              <tr><th>서비스</th><th>무료 플랜</th><th>유료 시작가</th><th>포맷 수</th><th>특징</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Convertio</strong></td><td>10건/일</td><td>$6/월</td><td>300+</td><td>72% 오가닉, OCR 지원</td></tr>
+              <tr><td><strong>Zamzar</strong></td><td>2건/24시간</td><td>$9/월</td><td>1,100+</td><td>20년 운영, Fortune 500 고객</td></tr>
+              <tr><td><strong>CloudConvert</strong></td><td>크레딧 제</td><td>$8 (일회성)</td><td>200+</td><td>API 중심, SDK 6종, S3 연동</td></tr>
+              <tr><td><strong>FreeConvert</strong></td><td>~18건/일</td><td>$9.99/월</td><td>2,000+</td><td>브라우저 기반</td></tr>
+              <tr><td><strong>iLoveIMG</strong></td><td>2,500크레딧/월</td><td>구독</td><td>이미지 특화</td><td>WordPress 플러그인</td></tr>
+            </tbody>
+          </table>
+          <div class="deep-highlight">
+            💡 <strong>한국 경쟁:</strong> Allinpdf.com (PDF 특화), 반디컷 (비디오) 정도로 로컬 서비스 부족. 한국어 UX + 프라이버시 강조로 차별화 가능.
+          </div>
+        </div>
+
+        <div class="deep-section">
+          <h4>💰 수익원 연결 전략</h4>
+
+          <h5>1. 광고 (AdSense)</h5>
+          <ul>
+            <li>도구 니치 RPM $2-$5</li>
+            <li>배치: 업로드 영역 위 / 변환 중(스티키) / 다운로드 페이지</li>
+            <li>데스크탑 트래픽이 모바일 대비 2-3배 수익 (파일 변환은 데스크탑 편향)</li>
+          </ul>
+
+          <h5>2. 프리미엄 구독 ($6-10/월)</h5>
+          <table class="pricing-table">
+            <thead>
+              <tr><th>플랜</th><th>가격</th><th>포함 기능</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Free</strong></td><td>$0</td><td>5-10건/일, 50MB 제한, 광고 있음</td></tr>
+              <tr><td><strong>Pro</strong></td><td>$6-10/월</td><td>무제한, 1GB+, 배치 처리, 광고 제거, 우선 처리</td></tr>
+            </tbody>
+          </table>
+
+          <h5>3. API 판매 (크레딧 기반, CloudConvert 모델)</h5>
+          <ul>
+            <li>Starter $30/100건, Pro 건당 $0.001-$0.01</li>
+            <li>SaaS/기업 대상 안정적 B2B 반복 수익</li>
+          </ul>
+
+          <h5>수익 시뮬레이션 (월 10만 방문자 기준)</h5>
+          <div class="revenue-flow">
+            <div class="flow-item">
+              <div class="flow-label">유료 전환 2%</div>
+              <div class="flow-value">600명 × $8/월</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">구독 수익</div>
+              <div class="flow-value">$4,800/월</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">광고 수익</div>
+              <div class="flow-value">$90/월</div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-label">합계</div>
+              <div class="flow-value">~$4,890/월</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </details>
+
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★☆</span>
+        <span class="score">추천 3.8/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $10,000 ~ $50,000</span>
+    </div>
+  </div>
+
+  <!-- 아이템 7: 여행 일정 플래너 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">7</div>
+        <h3>✈️ 여행 일정 플래너</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-orange">난이도: 중간</span>
+        <span class="badge badge-blue">프리미엄 + 제휴 수수료</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        여행 일정을 드래그&드롭으로 계획하고, 지도 위에 경로를 표시하며, AI 추천으로 최적 일정을 생성하는 서비스. 숙소/항공 예약 제휴 링크를 통한 수수료 수익이 핵심이며, 한국의 여행 열풍과 맞물려 높은 성장 잠재력을 보유하고 있다.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>숙소 제휴: Booking.com, 야놀자 등 예약 수수료 (3~8%)</li>
+            <li>항공 제휴: Skyscanner, 네이버 항공 등</li>
+            <li>프리미엄: 오프라인 접근, 팀 일정, AI 추천 ($5~$10/월)</li>
+            <li>여행 보험, 현지 투어 제휴</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>지도: Google Maps API 또는 Mapbox</li>
+            <li>프론트: React + 드래그&드롭 라이브러리</li>
+            <li>AI: 여행지 추천 알고리즘 (GPT API 활용)</li>
+            <li>DB: Supabase (일정 저장, 공유 기능)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Wanderlog</strong> — Y Combinator 출신, General Catalyst·Abstract Ventures로부터 $150만 시드 투자. 5~7명 직원으로 연매출 $100만(2024). 무료 핵심 기능 + Wanderlog Pro + 숙소/액티비티 제휴 수수료.<br>
+        <strong>트리플(Triple)</strong> — 한국 여행 플래닝 앱, 3년 만에 600만 사용자 달성. 총 투자 약 632억 원(야놀자 $910만 포함). 2022년 야놀자가 인터파크와 함께 약 3,000억 원에 인수. 예약·제휴·인앱 광고 수익.<br>
+        <strong>TripIt (SAP Concur)</strong> — 이메일 기반 자동 일정 생성, 2011년 SAP Concur에 $120M에 인수. 출장 관리 통합으로 기업 시장 확장.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>높은 제휴 마케팅 수익 잠재력</li>
+            <li>사용자 경험이 핵심 경쟁력</li>
+            <li>여행 수요 회복세 (포스트 코로나)</li>
+            <li>SNS 공유를 통한 바이럴 가능</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>지도 API 비용 발생 (트래픽 증가 시)</li>
+            <li>개발 복잡도가 상대적으로 높음</li>
+            <li>기존 여행 앱과의 경쟁</li>
+            <li>계절성 트래픽 변동</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★☆</span>
+        <span class="score">추천 3.7/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: ₩180만 ~ ₩1,000만</span>
+    </div>
+  </div>
+
+  <!-- 아이템 8: 뉴스레터/콘텐츠 큐레이션 -->
+  <div class="item-card">
+    <div class="item-card-header">
+      <div class="title-area">
+        <div class="num">8</div>
+        <h3>📬 뉴스레터 / 콘텐츠 큐레이션</h3>
+      </div>
+      <div class="badges">
+        <span class="badge badge-orange">난이도: 중간</span>
+        <span class="badge badge-purple">구독 + 광고 + 스폰서</span>
+      </div>
+    </div>
+    <div class="item-card-body">
+      <p class="item-overview">
+        특정 분야(테크, 투자, AI, 트렌드 등)의 콘텐츠를 큐레이션하여 이메일 뉴스레터로 전달하거나, 웹 아카이브로 제공하는 서비스. 구독자 기반이 쌓이면 안정적 수입원이 되며, 스폰서십·유료 구독·광고를 통해 수익화한다. 최소 콘텐츠 제작 능력이 있다면 기술 없이도 시작 가능.
+      </p>
+      <div class="detail-grid">
+        <div class="detail-box">
+          <h4>💰 수익 모델 상세</h4>
+          <ul>
+            <li>스폰서 광고: 구독자 수 기반 CPM ($20~$50/1K 구독자)</li>
+            <li>유료 구독: 프리미엄 콘텐츠 ($5~$15/월)</li>
+            <li>제휴 마케팅: 추천 제품/서비스 링크 수수료</li>
+            <li>유료 커뮤니티/강의 연계 판매</li>
+          </ul>
+        </div>
+        <div class="detail-box">
+          <h4>🛠️ 기술 스택</h4>
+          <ul>
+            <li>뉴스레터: Substack, Beehiiv, ConvertKit</li>
+            <li>웹 아카이브: Next.js + MDX</li>
+            <li>AI 큐레이션: RSS 수집 + GPT 요약 자동화</li>
+            <li>분석: 자체 구독자 분석 대시보드</li>
+          </ul>
+        </div>
+      </div>
+      <div class="success-case">
+        <h4>🏆 성공 사례</h4>
+        <p><strong>Morning Brew</strong> — 비즈니스 뉴스 큐레이션, 구독자 400만+, Insider에 약 $7,500만에 인수(추정). Substack 생태계에서 50명+ 저자가 연 $50만+ 수익, 상위 10개 뉴스레터 합산 연 $2,500만+.<br>
+        <strong>Beehiiv</strong> — 뉴스레터 플랫폼, ARR $3,000만~$3,200만(2025), 투자 ~$5,000만(시리즈 B $3,300만, Lightspeed+NEA). 75,000+ 뉴스레터, 월 3.5억 리더. 크리에이터/퍼블리셔 $2,500만+ 수익 창출 지원.<br>
+        <strong>뉴닉(Newneek)</strong> — MZ세대 뉴스, 구독자 150만+. 2024년 퍼블리 멤버십 사업부 인수하여 수익 강화. 브랜드 파트너십·스폰서·유료 멤버십 수익.<br>
+        <strong>어피티(Uppity)</strong> — 2030세대 경제 뉴스레터, 구독자 50만+, '머니레터' 매일 발행. 스폰서십·브랜드 파트너십 수익.</p>
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>기술 개발 없이도 시작 가능 (Substack 활용)</li>
+            <li>구독자 자산은 플랫폼 독립적</li>
+            <li>높은 고객 충성도 (이메일 직접 전달)</li>
+            <li>다양한 수익화 경로 확보 가능</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>단점</h4>
+          <ul>
+            <li>구독자 확보에 장기적 노력 필요</li>
+            <li>꾸준한 콘텐츠 생산 부담</li>
+            <li>이메일 전달률 관리 필요</li>
+            <li>수익화까지 시간이 오래 걸림</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="rating">
+        <span class="stars">★★★★☆</span>
+        <span class="score">추천 4.0/5</span>
+      </div>
+      <span class="revenue-tag">예상 월수익: $8,000 ~ $50,000</span>
+    </div>
+  </div>
+
+</div><!-- /아이템 상세 -->
+
+<!-- ===== 수익 모델 비교표 ===== -->
+<div class="section">
+  <h2 class="section-title">📊 수익 모델 비교표</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>아이템</th>
+          <th>주 수익 모델</th>
+          <th>기술 난이도</th>
+          <th>초기 비용</th>
+          <th>예상 월수익</th>
+          <th>수익화 속도</th>
+          <th>추천 점수</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>🧮 니치 계산기</td>
+          <td>광고 + 제휴</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot"></span><span class="diff-dot"></span></span> 낮음</td>
+          <td>$0~$20</td>
+          <td>$2K~$15K</td>
+          <td>3~6개월</td>
+          <td>⭐ 4.0</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>📄 AI 문서 도구</td>
+          <td>구독 + 광고</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot active"></span><span class="diff-dot"></span></span> 중간</td>
+          <td>$20~$100</td>
+          <td>$12K~$50K</td>
+          <td>2~4개월</td>
+          <td>⭐ 4.2</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>🧠 MBTI/성격 테스트</td>
+          <td>광고 + 유료 리포트</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot"></span><span class="diff-dot"></span></span> 낮음</td>
+          <td>$0~$20</td>
+          <td>$5K~$50K</td>
+          <td>1~2개월</td>
+          <td>⭐ 4.5</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>📱 QR코드 플랫폼</td>
+          <td>프리미엄 구독</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot"></span><span class="diff-dot"></span></span> 낮음</td>
+          <td>$0~$30</td>
+          <td>$5K~$30K</td>
+          <td>2~4개월</td>
+          <td>⭐ 3.5</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>✍️ AI 카피라이팅</td>
+          <td>크레딧 + 구독</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot active"></span><span class="diff-dot"></span></span> 중간</td>
+          <td>$50~$200</td>
+          <td>$2K~$300K</td>
+          <td>1~3개월</td>
+          <td>⭐ 4.3</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>🔄 파일 변환</td>
+          <td>광고 + 구독</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot active"></span><span class="diff-dot"></span></span> 중간</td>
+          <td>$20~$100</td>
+          <td>$10K~$50K</td>
+          <td>3~6개월</td>
+          <td>⭐ 3.8</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>✈️ 여행 일정 플래너</td>
+          <td>제휴 + 프리미엄</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot active"></span><span class="diff-dot"></span></span> 중간</td>
+          <td>$30~$150</td>
+          <td>₩180만~₩1,000만</td>
+          <td>3~6개월</td>
+          <td>⭐ 3.7</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>📬 뉴스레터</td>
+          <td>스폰서 + 구독</td>
+          <td><span class="diff"><span class="diff-dot active"></span><span class="diff-dot active"></span><span class="diff-dot"></span></span> 중간</td>
+          <td>$0~$50</td>
+          <td>$8K~$50K</td>
+          <td>6~12개월</td>
+          <td>⭐ 4.0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 핵심 성공 패턴 ===== -->
+<div class="section">
+  <h2 class="section-title">🔑 핵심 성공 패턴</h2>
+  <div class="pattern-grid">
+    <div class="pattern-card">
+      <div class="p-icon">🎯</div>
+      <h4>SEO 퍼스트 전략</h4>
+      <p>계산기, 파일 변환 등 유틸리티 서비스는 검색 트래픽이 핵심이다. 롱테일 키워드를 타겟팅하고, 각 기능별 전용 랜딩 페이지를 만들어 검색 노출을 극대화한다. 콘텐츠 마케팅과 병행하면 6개월 내 의미 있는 트래픽 확보 가능.</p>
+    </div>
+    <div class="pattern-card">
+      <div class="p-icon">🔄</div>
+      <h4>프리미엄(Freemium) 모델</h4>
+      <p>무료로 핵심 기능을 제공하여 사용자를 확보하고, 고급 기능(광고 제거, 대량 처리, 팀 기능 등)을 유료로 전환한다. 무료 사용자 중 2~5%가 유료 전환되면 의미 있는 수익이 발생한다. 단, 무료 기능이 너무 제한적이면 이탈률이 높아진다.</p>
+    </div>
+    <div class="pattern-card">
+      <div class="p-icon">📱</div>
+      <h4>바이럴 루프 설계</h4>
+      <p>MBTI 테스트처럼 결과를 자연스럽게 공유하게 만드는 구조가 중요하다. 결과 이미지 자동 생성, 카카오톡/인스타그램 공유 버튼, 친구 비교 기능 등으로 사용자가 자발적으로 서비스를 홍보하게 만든다. 이렇게 확보된 트래픽은 광고비 0원이다.</p>
+    </div>
+    <div class="pattern-card">
+      <div class="p-icon">💡</div>
+      <h4>니치 시장 선점</h4>
+      <p>거대 시장보다 특화된 니치 시장을 공략한다. "범용 계산기"보다 "프리랜서 세금 계산기", "범용 파일 변환"보다 "HEIC to JPG 전문"처럼 좁지만 깊은 영역을 선점하면 적은 마케팅 비용으로도 해당 분야 1위가 될 수 있다.</p>
+    </div>
+    <div class="pattern-card">
+      <div class="p-icon">🤖</div>
+      <h4>AI 래핑 전략</h4>
+      <p>GPT/Claude API를 단순 래핑하되, 특정 도메인에 최적화된 프롬프트와 UX를 제공하는 것이 핵심이다. "AI 전체"보다 "인스타 캡션 AI", "여행 일정 AI"처럼 구체적 사용 사례에 집중하면 범용 AI 대비 높은 전환율을 달성할 수 있다.</p>
+    </div>
+    <div class="pattern-card">
+      <div class="p-icon">📈</div>
+      <h4>복합 수익 모델</h4>
+      <p>단일 수익원에 의존하지 말고 광고 + 프리미엄 + 제휴마케팅을 조합한다. 트래픽 초기에는 광고 수익으로 비용을 충당하고, 사용자 기반이 쌓이면 프리미엄/구독 모델을 추가한다. 성숙기에는 API/B2B 판매로 확장한다.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 참고 자료 / 출처 ===== -->
+<div class="section">
+  <h2 class="section-title">📚 참고 자료 / 출처</h2>
+  <ol class="source-list">
+    <li><a href="https://boringcashcow.com/check/omnicalculator.com" target="_blank">BoringCashCow</a> — OmniCalculator 매출 분석</li>
+    <li><a href="https://getlatka.com/companies/smallpdf.com" target="_blank">Latka - Smallpdf</a> — Smallpdf 매출 데이터</li>
+    <li><a href="https://getlatka.com/companies/chatpdf.com" target="_blank">Latka - ChatPDF</a> — ChatPDF 매출 데이터</li>
+    <li><a href="https://www.starterstory.com/pdf-ai-breakdown" target="_blank">Starter Story - PDF.ai</a> — PDF.ai 창업자 Damon Chen 사례 분석</li>
+    <li><a href="https://getlatka.com/companies/pdf.ai" target="_blank">Latka - PDF.ai</a> — PDF.ai 매출 및 고객 데이터</li>
+    <li><a href="https://inpages.ai/insight/marketing-strategy/16personalities.com" target="_blank">Inpages - 16Personalities</a> — 트래픽 및 키워드 분석</li>
+    <li><a href="https://poomang.com/en-US" target="_blank">푸망(Poomang)</a> — 한국 심리테스트 플랫폼</li>
+    <li><a href="https://techcrunch.com/2023/01/17/beaconstac-lands-25m-investment-for-its-qr-code-management-platform/" target="_blank">TechCrunch - Beaconstac</a> — $2,500만 투자 유치 기사</li>
+    <li><a href="https://www.starterstory.com/ideas/qr-code-business" target="_blank">Starter Story - QR Code</a> — QR 비즈니스 시장 분석</li>
+    <li><a href="https://getlatka.com/companies/jasper.ai" target="_blank">Latka - Jasper.ai</a> — Jasper 매출 데이터</li>
+    <li><a href="https://getlatka.com/companies/wanderlog.com" target="_blank">Latka - Wanderlog</a> — Wanderlog 매출 데이터</li>
+    <li><a href="https://pickool.net/triple-secured-its-strategic-funding-from-yanolja-and-the-investors/" target="_blank">Pickool - Triple</a> — 트리플 투자 및 인수 정보</li>
+    <li><a href="https://sacra.com/c/beehiiv/" target="_blank">Sacra - Beehiiv</a> — Beehiiv ARR 및 성장 분석</li>
+    <li><a href="https://flex.team/blog/2025/04/16/newneek/" target="_blank">Flex - 뉴닉</a> — 뉴닉 150만 구독자 성공 사례</li>
+    <li><a href="https://uppity.co.kr/" target="_blank">어피티(Uppity)</a> — 머니레터 뉴스레터</li>
+    <li><a href="https://www.similarweb.com" target="_blank">SimilarWeb</a> — 웹사이트 트래픽 분석</li>
+    <li><a href="https://www.indiehackers.com" target="_blank">Indie Hackers</a> — 1인 개발자 수익 공유 커뮤니티</li>
+    <li><a href="https://mktclarity.com/blogs/news/ai-tools-top" target="_blank">Market Clarity</a> — 수익성 높은 AI 도구 Top 29</li>
+    <!-- 심층 분석 추가 출처 -->
+    <li><a href="https://www.calculatorsoup.com" target="_blank">CalculatorSoup</a> — 1인 운영 계산기 사이트, 월 800만~1,300만 방문 사례</li>
+    <li><a href="https://www.calculator.net" target="_blank">Calculator.net</a> — 월 5,000만 방문 종합 계산기 사이트</li>
+    <li><a href="https://www.financeads.net" target="_blank">FinanceAds</a> — 금융 제휴마케팅 네트워크, 3,000+ 금융 사이트</li>
+    <li><a href="https://www.saramin.co.kr/zf_user/tools/salary-calculator" target="_blank">사람인 연봉계산기</a> — 한국 1위 연봉 계산기 서비스</li>
+    <li><a href="https://finda.co.kr" target="_blank">핀다(Finda)</a> — 연봉계산+대출비교 연계 핀테크 서비스</li>
+    <li><a href="https://www.truity.com" target="_blank">Truity</a> — 성격 테스트 프리미엄 리포트 모델 ($19~$66)</li>
+    <li><a href="https://banggoo.tistory.com" target="_blank">방구석연구소</a> — 한국 심리테스트 플랫폼, MAU 100만+</li>
+    <li><a href="https://www.buzzfeed.com/quizzes" target="_blank">BuzzFeed Quizzes</a> — 퀴즈 전담팀 운영으로 트래픽 60% 증가 사례</li>
+    <li><a href="https://www.qrcode-tiger.com" target="_blank">QR Tiger</a> — 140개국 QR코드 플랫폼, 월 $7~</li>
+    <li><a href="https://www.flowcode.com" target="_blank">Flowcode</a> — $3,000만 투자유치 QR 플랫폼</li>
+    <li><a href="https://www.uniqode.com" target="_blank">Uniqode (구 Beaconstac)</a> — GA4 연동 QR 분석/추적 서비스</li>
+    <li><a href="https://me-qr.com" target="_blank">ME-QR</a> — 1000+ 무료 디자인 프레임 QR 서비스</li>
+    <li><a href="https://www.grandviewresearch.com/industry-analysis/qr-code-payment-market" target="_blank">Grand View Research</a> — QR코드 결제 시장 규모 ($147억→$382억)</li>
+    <li><a href="https://convertio.co" target="_blank">Convertio</a> — 월 2,540만 방문, 300+ 포맷 파일 변환</li>
+    <li><a href="https://www.zamzar.com" target="_blank">Zamzar</a> — 20년 운영 파일 변환, 1,100+ 포맷</li>
+    <li><a href="https://cloudconvert.com" target="_blank">CloudConvert</a> — API 중심 파일 변환, SDK 6종</li>
+    <li><a href="https://www.freeconvert.com" target="_blank">FreeConvert</a> — 브라우저 기반 2,000+ 포맷 변환</li>
+    <li><a href="https://www.iloveimg.com" target="_blank">iLoveIMG</a> — 이미지 특화 변환/편집 도구</li>
+    <li><a href="https://www.qrcode-monkey.com" target="_blank">QRCode Monkey</a> — 100% 무료 정적 QR + API 판매</li>
+    <li><a href="https://allinpdf.com" target="_blank">Allinpdf</a> — 한국 PDF 특화 변환 서비스</li>
+  </ol>
+</div>
+
+</div><!-- /.container -->
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p>💰 부가수입 창출 웹서비스 아이템 조사 보고서 | 2025년 2월 작성</p>
+  <p style="margin-top:.3rem">본 보고서는 공개된 데이터와 커뮤니티 정보를 기반으로 작성되었으며, 실제 수익은 실행력과 시장 상황에 따라 달라질 수 있습니다.</p>
+</footer>
+
+</body>
+</html>
