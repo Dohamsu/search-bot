@@ -14,21 +14,36 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+
 export const metadata: Metadata = {
-  title: "MBTI 성격 유형 테스트 - 무료 16가지 성격 검사",
+  metadataBase: new URL(BASE_URL),
+  title: "16가지 성격 유형 테스트 | MBTI 기반 무료 검사",
   description:
-    "16가지 질문으로 나의 MBTI 성격 유형을 알아보세요. 무료 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 MBTI까지!",
+    "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 성격 유형까지! MBTI 기반 성격 검사.",
   keywords: [
     "MBTI 테스트",
     "성격유형 검사",
     "MBTI 무료",
     "MBTI 궁합",
     "성격 테스트",
+    "16가지 성격 유형",
   ],
   openGraph: {
-    title: "MBTI 성격 유형 테스트",
-    description: "16가지 질문으로 나의 MBTI를 알아보세요",
+    title: "16가지 성격 유형 테스트 | 무료 성격 검사",
+    description: "16가지 질문으로 나의 성격 유형을 알아보세요",
     type: "website",
+    url: BASE_URL,
+    locale: "ko_KR",
+    siteName: "16가지 성격 유형 테스트",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "16가지 성격 유형 테스트 | MBTI 기반 무료 검사",
+    description: "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천까지!",
+  },
+  alternates: {
+    canonical: BASE_URL,
   },
 };
 
@@ -40,9 +55,51 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
+  const webAppJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "16가지 성격 유형 테스트",
+    description:
+      "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 성격 유형까지!",
+    url: BASE_URL,
+    applicationCategory: "EntertainmentApplication",
+    operatingSystem: "All",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "KRW",
+    },
+    inLanguage: "ko",
+    browserRequirements: "Requires JavaScript",
+  };
+
+  const quizJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    name: "16가지 성격 유형 테스트",
+    description: "16가지 질문으로 나의 성격 유형을 알아보는 무료 테스트",
+    educationalAlignment: {
+      "@type": "AlignmentObject",
+      alignmentType: "educationalSubject",
+      targetName: "성격 심리학",
+    },
+    about: {
+      "@type": "Thing",
+      name: "성격 유형 검사",
+    },
+  };
+
   return (
     <html lang="ko">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(quizJsonLd) }}
+        />
         {gaId && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />

@@ -287,10 +287,12 @@ export default function Home() {
       )}
 
       <main className="flex-1 flex flex-col min-h-screen">
+        <h1 className="sr-only">QR Studio - 무료 QR코드 생성기</h1>
         <header className="lg:hidden flex items-center justify-between px-4 h-14 bg-white border-b border-zinc-200">
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="p-2 cursor-pointer"
+            aria-label="메뉴 열기"
           >
             <Menu className="w-5 h-5 text-zinc-700" />
           </button>
@@ -303,6 +305,7 @@ export default function Home() {
           <button
             onClick={() => showToast('설정 기능은 준비 중입니다')}
             className="p-2 cursor-pointer"
+            aria-label="설정"
           >
             <Settings className="w-5 h-5 text-zinc-700" />
           </button>
@@ -310,7 +313,7 @@ export default function Home() {
 
         {!showHistory && (
           <div className="hidden lg:block bg-white px-10 pt-8">
-            <h1 className="text-2xl font-bold text-zinc-900 mb-4">QR코드 생성</h1>
+            <h2 className="text-2xl font-bold text-zinc-900 mb-4">QR코드 생성</h2>
             <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
           </div>
         )}
@@ -322,7 +325,7 @@ export default function Home() {
         )}
 
         {showHistory && (
-          <div className="lg:hidden flex-1 p-5 pb-24">
+          <section className="lg:hidden flex-1 p-5 pb-24" aria-label="생성 히스토리">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-zinc-900">히스토리</h2>
               {history.length > 0 && (
@@ -352,11 +355,11 @@ export default function Home() {
                 ))}
               </div>
             )}
-          </div>
+          </section>
         )}
 
         {!showHistory && (
-          <div className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-8">
+          <section className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-8" aria-label="QR코드 생성기">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
               <div className="flex-1 flex flex-col gap-6">
                 {activeTab === 'url' && (
@@ -754,7 +757,7 @@ export default function Home() {
                 />
               </div>
             </div>
-          </div>
+          </section>
         )}
       </main>
 

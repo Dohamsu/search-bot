@@ -59,7 +59,7 @@ function drawResultCard(
   ctx.fillStyle = "rgba(255,255,255,0.9)";
   ctx.font = "bold 28px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("나의 MBTI 결과", w / 2, 120);
+  ctx.fillText("나의 성격 유형 결과", w / 2, 120);
 
   const typeGradient = ctx.createLinearGradient(w / 2 - 150, 0, w / 2 + 150, 0);
   typeGradient.addColorStop(0, "#8B5CF6");
@@ -129,7 +129,7 @@ function drawResultCard(
   ctx.fillStyle = "rgba(255,255,255,0.8)";
   ctx.font = "24px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("MBTI 성격 유형 테스트 | mbti-test.vercel.app", w / 2, h - 80);
+  ctx.fillText("16가지 성격 유형 테스트 | mbti-test.vercel.app", w / 2, h - 80);
 }
 
 function wrapText(

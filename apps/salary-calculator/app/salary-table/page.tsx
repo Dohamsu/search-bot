@@ -3,15 +3,78 @@ import Link from "next/link";
 import { Calculator, ArrowLeft, TableProperties } from "lucide-react";
 import { calculateSalary } from "../lib/salary";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com";
+
 export const metadata: Metadata = {
   title: "연봉 실수령액 표 2025 | 1000만원~1억원 실수령액 총정리",
   description:
     "2025년 기준 연봉 1000만원부터 1억원까지 100만원 단위 실수령액 표입니다. 4대보험, 소득세 공제 후 실제 수령액을 한눈에 확인하세요.",
-  openGraph: {
-    title: "연봉 실수령액 표 2025",
-    description: "연봉별 월 실수령액을 한눈에 비교",
-    type: "website",
+  alternates: {
+    canonical: `${SITE_URL}/salary-table`,
   },
+  openGraph: {
+    title: "연봉 실수령액 표 2025 | 1000만원~1억원 실수령액 총정리",
+    description:
+      "2025년 기준 연봉 1000만원부터 1억원까지 100만원 단위로 월 실수령액을 계산한 표입니다. 4대보험, 소득세 공제 후 실제 수령액을 한눈에 확인하세요.",
+    type: "website",
+    url: `${SITE_URL}/salary-table`,
+    locale: "ko_KR",
+    siteName: "연봉 실수령액 계산기",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "연봉 실수령액 표 2025",
+    description:
+      "연봉 1000만원~1억원까지 월 실수령액을 한눈에 비교하세요.",
+  },
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "연봉 5000만원의 월 실수령액은 얼마인가요?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "연봉 5000만원(비과세 월 10만원, 부양가족 1명 기준)의 월 실수령액은 약 350만원 내외입니다. 국민연금, 건강보험, 장기요양보험, 고용보험, 소득세, 지방소득세를 공제한 금액입니다.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "4대보험은 연봉에서 얼마나 공제되나요?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "4대보험 공제율은 국민연금 4.5%, 건강보험 3.545%, 장기요양보험 건강보험료의 12.81%, 고용보험 0.9%입니다. 총 약 9.4% 정도가 4대보험으로 공제됩니다.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "연봉과 월급의 차이는 무엇인가요?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "연봉은 1년간 받는 총 급여(세전)이고, 월급은 연봉을 12로 나눈 세전 월 급여입니다. 실수령액은 월급에서 4대보험과 소득세를 공제한 실제 통장에 들어오는 금액입니다.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "비과세액이란 무엇인가요?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "비과세액은 급여 중 세금이 부과되지 않는 항목으로, 대표적으로 식대(월 20만원 한도)가 있습니다. 비과세액이 클수록 실수령액이 늘어납니다. 일반적으로 월 10만~20만원 정도입니다.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "연봉 실수령액 계산 시 부양가족 수는 어떤 영향을 주나요?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "부양가족 수는 소득세 계산에 영향을 줍니다. 부양가족이 많을수록 근로소득 간이세액표에 의해 소득세가 줄어들어 실수령액이 증가합니다. 본인도 부양가족 1명으로 포함됩니다.",
+      },
+    },
+  ],
 };
 
 function formatCurrency(amount: number): string {
@@ -60,7 +123,13 @@ export default function SalaryTablePage() {
   const rows = generateTableData();
 
   return (
-    <div className="min-h-screen bg-[var(--salary-bg)]">
+    <main className="min-h-screen bg-[var(--salary-bg)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
+        }}
+      />
       <nav className="flex h-16 items-center justify-between border-b border-[var(--salary-border)] bg-white px-4 md:px-8">
         <div className="flex items-center gap-4 md:gap-8">
           <Link href="/" className="flex items-center gap-2">
@@ -85,8 +154,8 @@ export default function SalaryTablePage() {
         </Link>
       </nav>
 
-      <div className="mx-auto max-w-5xl px-4 py-8 md:px-8">
-        <div className="mb-8">
+      <section className="mx-auto max-w-5xl px-4 py-8 md:px-8" aria-label="연봉 실수령액 표">
+        <header className="mb-8">
           <h1 className="text-2xl font-bold text-[var(--salary-text)] md:text-3xl">
             2025 연봉 실수령액 표
           </h1>
@@ -94,7 +163,7 @@ export default function SalaryTablePage() {
             연봉 1,000만원부터 1억원까지 100만원 단위로 월 실수령액을 계산한
             표입니다. 비과세 월 10만원, 부양가족 1명(본인), 자녀 0명 기준입니다.
           </p>
-        </div>
+        </header>
 
         <div className="overflow-x-auto rounded-xl border border-[var(--salary-border)] bg-white">
           <table className="w-full text-sm">
@@ -154,7 +223,7 @@ export default function SalaryTablePage() {
           </table>
         </div>
 
-        <div className="mt-8 rounded-xl border border-[var(--salary-border)] bg-white p-6">
+        <aside className="mt-8 rounded-xl border border-[var(--salary-border)] bg-white p-6" aria-label="계산 기준 안내">
           <h2 className="text-lg font-bold text-[var(--salary-text)]">
             계산 기준 안내
           </h2>
@@ -200,7 +269,7 @@ export default function SalaryTablePage() {
             * 비과세 월 100,000원 기준이며, 실제 수령액은 개인별 공제 항목에 따라
             달라질 수 있습니다.
           </p>
-        </div>
+        </aside>
 
         <div className="mt-6 text-center">
           <Link
@@ -211,7 +280,7 @@ export default function SalaryTablePage() {
             내 연봉으로 직접 계산하기
           </Link>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

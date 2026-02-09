@@ -17,7 +17,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
 
   const handleShare = useCallback(async () => {
     const url = typeof window !== "undefined" ? `${window.location.origin}/result/${result.type}` : "";
-    const text = `나의 MBTI는 ${result.type} - ${result.title}! ${url}`;
+    const text = `나의 성격 유형은 ${result.type} - ${result.title}! ${url}`;
 
     const showCopiedFeedback = () => {
       setShareLabel("복사 완료!");
@@ -27,7 +27,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "MBTI 테스트 결과", text, url });
+        await navigator.share({ title: "성격 유형 테스트 결과", text, url });
         return;
       } catch (e) {
         if (e instanceof Error && e.name === "AbortError") return;
@@ -137,6 +137,9 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
               </span>
             ))}
           </div>
+          <p className="mt-3 text-xs leading-relaxed text-gray-400">
+            * 공개된 정보 기반 추정이며, 본인이 직접 확인한 것이 아닐 수 있습니다.
+          </p>
         </motion.div>
       )}
 

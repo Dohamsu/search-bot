@@ -4,6 +4,8 @@ import { getResult, getAllTypes } from "../../lib/results";
 import ResultHeader from "../../components/ResultHeader";
 import ResultClientWrapper from "../../components/ResultClientWrapper";
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+
 interface ResultPageProps {
   params: Promise<{ type: string }>;
 }
@@ -23,13 +25,26 @@ export async function generateMetadata({
     return { title: "결과를 찾을 수 없습니다" };
   }
 
+  const pageUrl = `${BASE_URL}/result/${result.type}`;
+
   return {
-    title: `${result.type} - ${result.title} | MBTI 성격 유형 테스트`,
+    title: `${result.type} - ${result.title} | 16가지 성격 유형 테스트`,
     description: `${result.type} ${result.title}: ${result.description} 추천 직업: ${result.careers.join(", ")}`,
     openGraph: {
-      title: `나의 MBTI는 ${result.type} - ${result.title}`,
+      title: `나의 성격 유형은 ${result.type} - ${result.title}`,
       description: result.description,
       type: "article",
+      url: pageUrl,
+      locale: "ko_KR",
+      siteName: "16가지 성격 유형 테스트",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `나의 성격 유형은 ${result.type} - ${result.title}`,
+      description: result.description,
+    },
+    alternates: {
+      canonical: pageUrl,
     },
   };
 }
@@ -45,13 +60,42 @@ export default async function ResultPage({ params }: ResultPageProps) {
 
   const result = getResult(upperType);
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `${result.type} - ${result.title}`,
+    description: result.description,
+    url: `${BASE_URL}/result/${result.type}`,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/result/${result.type}`,
+    },
+    about: {
+      "@type": "Thing",
+      name: `${result.type} 성격 유형`,
+      description: result.description,
+    },
+    keywords: `MBTI, ${result.type}, ${result.title}, 성격유형, ${result.careers.join(", ")}`,
+    inLanguage: "ko",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "16가지 성격 유형 테스트",
+      url: BASE_URL,
+    },
+  };
+
   return (
-    <div className="flex min-h-dvh flex-col">
+    <main className="flex min-h-dvh flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+
       <ResultHeader type={result.type} title={result.title} />
 
-      <div className="mx-auto flex w-full max-w-lg flex-col gap-4 px-5 py-6">
+      <article className="mx-auto flex w-full max-w-lg flex-col gap-4 px-5 py-6">
         <ResultClientWrapper result={result} />
-      </div>
-    </div>
+      </article>
+    </main>
   );
 }

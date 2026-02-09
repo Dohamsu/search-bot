@@ -92,7 +92,7 @@ export default function Home() {
   const [reverseAnnual, setReverseAnnual] = useState<number | null>(null);
   const [validationMsg, setValidationMsg] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const resultRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLElement>(null);
 
   const validate = useCallback((): string | null => {
     if (mode === "normal") {
@@ -197,8 +197,37 @@ export default function Home() {
   const hourlyRate = Math.round(currentAnnualSalary / 12 / STANDARD_MONTHLY_HOURS);
   const dailyRate = Math.round(hourlyRate * 8);
 
+  const pageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "연봉 실수령액 계산기 2025",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com",
+    description:
+      "2025년 기준 4대보험, 소득세를 자동으로 공제하여 연봉 실수령액을 계산하는 무료 온라인 도구입니다. 역산 계산, 시급/일급 환산 기능도 제공합니다.",
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "All",
+    featureList: [
+      "연봉 실수령액 계산",
+      "월급 역산 계산",
+      "시급/일급 환산",
+      "4대보험 공제 계산",
+      "소득세 자동 계산",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "KRW",
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-[var(--salary-bg)]">
+    <main className="min-h-screen bg-[var(--salary-bg)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(pageJsonLd),
+        }}
+      />
       <NavBar />
 
       <div className="flex h-14 items-center justify-between border-b border-[var(--salary-border)] bg-white px-4 md:hidden">
@@ -216,7 +245,7 @@ export default function Home() {
       </div>
 
       <div className="flex min-h-[calc(100vh-64px)] flex-col md:flex-row">
-        <div className="w-full shrink-0 border-b border-[var(--salary-border)] bg-white p-6 md:w-[480px] md:border-b-0 md:border-r md:p-8">
+        <section className="w-full shrink-0 border-b border-[var(--salary-border)] bg-white p-6 md:w-[480px] md:border-b-0 md:border-r md:p-8" aria-label="급여 정보 입력">
           <div className="mb-6">
             <h1 className="text-[22px] font-bold text-[var(--salary-text)]">
               {mode === "normal" ? "연봉 실수령액 계산" : "월급 → 연봉 역산"}
@@ -298,9 +327,9 @@ export default function Home() {
           >
             {mode === "normal" ? "계산하기" : "역산하기"}
           </button>
-        </div>
+        </section>
 
-        <div ref={resultRef} className="flex-1 overflow-y-auto p-4 pb-20 md:p-8 md:pb-8">
+        <section ref={resultRef} className="flex-1 overflow-y-auto p-4 pb-20 md:p-8 md:pb-8" aria-label="계산 결과">
           <div className="mx-auto flex max-w-xl flex-col gap-5">
             {mode === "reverse" && reverseAnnual && (
               <div className="rounded-xl border border-[var(--salary-primary)]/20 bg-blue-50 p-5">
@@ -376,12 +405,15 @@ export default function Home() {
                 </div>
               </div>
             )}
+            <p className="mt-6 text-xs leading-relaxed text-slate-400">
+              본 계산 결과는 2025년 근로소득 간이세액표 기준 참고용이며, 법적 효력이 없습니다. 실제 수령액은 연말정산, 추가 공제 항목 등에 따라 달라질 수 있으므로, 정확한 세금 계산은 국세청 또는 세무 전문가에게 문의하시기 바랍니다.
+            </p>
           </div>
-        </div>
+        </section>
       </div>
 
 
       <BottomTabBar />
-    </div>
+    </main>
   );
 }
