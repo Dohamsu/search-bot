@@ -262,6 +262,32 @@ export default function Home() {
         </aside>
       </div>
 
+      <footer className="mt-auto border-t border-[#E7E5E4] bg-transparent py-6 px-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs text-[#78716C]">
+          <span>© 2025 FileFlow</span>
+          <div className="flex items-center gap-4">
+            <a
+              href="/privacy"
+              className="hover:text-[var(--file-primary)] hover:underline transition-colors"
+            >
+              개인정보처리방침
+            </a>
+            <a
+              href="/terms"
+              className="hover:text-[var(--file-primary)] hover:underline transition-colors"
+            >
+              이용약관
+            </a>
+            <a
+              href="mailto:rlawlsdnjswk@gmail.com"
+              className="hover:text-[var(--file-primary)] hover:underline transition-colors"
+            >
+              문의: rlawlsdnjswk@gmail.com
+            </a>
+          </div>
+        </div>
+      </footer>
+
     </main>
   );
 }

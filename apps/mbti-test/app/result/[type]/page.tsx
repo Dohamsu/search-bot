@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getResult, getAllTypes } from "../../lib/results";
 import ResultHeader from "../../components/ResultHeader";
 import ResultClientWrapper from "../../components/ResultClientWrapper";
+import Footer from "../../components/Footer";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
 
@@ -96,6 +97,8 @@ export default async function ResultPage({ params }: ResultPageProps) {
       <article className="mx-auto flex w-full max-w-lg flex-col gap-4 px-5 py-6">
         <ResultClientWrapper result={result} />
       </article>
+
+      <Footer />
     </main>
   );
 }

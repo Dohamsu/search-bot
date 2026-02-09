@@ -9,6 +9,7 @@ import { calculateMBTI } from "./lib/calculator";
 import ProgressHeader from "./components/ProgressHeader";
 import QuestionCard from "./components/QuestionCard";
 import AnswerCard from "./components/AnswerCard";
+import Footer from "./components/Footer";
 
 type Screen = "start" | "quiz";
 
@@ -51,47 +52,50 @@ export default function Home() {
 
   if (screen === "start") {
     return (
-      <div className="flex min-h-dvh flex-col items-center justify-center px-6">
-        <motion.div
-          className="flex max-w-md flex-col items-center gap-6 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+      <div className="flex min-h-dvh flex-col">
+        <div className="flex flex-1 flex-col items-center justify-center px-6">
           <motion.div
-            className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[var(--mbti-primary)] to-[var(--mbti-secondary)]"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="flex max-w-md flex-col items-center gap-6 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <Sparkles className="h-10 w-10 text-white" />
+            <motion.div
+              className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[var(--mbti-primary)] to-[var(--mbti-secondary)]"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            >
+              <Sparkles className="h-10 w-10 text-white" />
+            </motion.div>
+
+            <div>
+              <h1 className="font-heading mb-2 text-3xl font-extrabold text-[var(--mbti-text)] md:text-4xl">
+                16가지 성격 유형 테스트
+              </h1>
+              <p className="text-base text-gray-500">
+                Jung의 심리유형 이론에 기반한 성격 유형 검사
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2 text-sm text-gray-400">
+              <span>16문항 / 약 3분 소요</span>
+              <span className="text-xs text-gray-300">본 검사는 공식 MBTI 검사가 아닌, Jung의 심리유형 이론에 기반한 자체 제작 검사입니다.</span>
+            </div>
+
+            <motion.button
+              onClick={handleStart}
+              aria-label="성격 유형 테스트 시작하기"
+              className="mt-4 flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-10 py-4 text-lg font-semibold text-white shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              테스트 시작하기
+              <ArrowRight className="h-5 w-5" />
+            </motion.button>
           </motion.div>
-
-          <div>
-            <h1 className="font-heading mb-2 text-3xl font-extrabold text-[var(--mbti-text)] md:text-4xl">
-              16가지 성격 유형 테스트
-            </h1>
-            <p className="text-base text-gray-500">
-              Jung의 심리유형 이론에 기반한 성격 유형 검사
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2 text-sm text-gray-400">
-            <span>16문항 / 약 3분 소요</span>
-            <span className="text-xs text-gray-300">본 검사는 공식 MBTI 검사가 아닌, Jung의 심리유형 이론에 기반한 자체 제작 검사입니다.</span>
-          </div>
-
-          <motion.button
-            onClick={handleStart}
-            aria-label="성격 유형 테스트 시작하기"
-            className="mt-4 flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-10 py-4 text-lg font-semibold text-white shadow-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            테스트 시작하기
-            <ArrowRight className="h-5 w-5" />
-          </motion.button>
-        </motion.div>
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -146,6 +150,8 @@ export default function Home() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <Footer />
     </div>
   );
 }
