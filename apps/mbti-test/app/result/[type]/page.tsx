@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   return {
     title: `${result.type} - ${result.title} | 16가지 성격 유형 테스트`,
-    description: `${result.type} ${result.title}: ${result.description} 추천 직업: ${result.careers.join(", ")}`,
+    description: `${result.type} ${result.title}: ${result.description} MBTI와 유사한 성격 유형 분석. 추천 직업: ${result.careers.join(", ")}`,
     openGraph: {
       title: `나의 성격 유형은 ${result.type} - ${result.title}`,
       description: result.description,
@@ -75,7 +75,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
       name: `${result.type} 성격 유형`,
       description: result.description,
     },
-    keywords: `${result.type}, ${result.title}, 성격유형, 성격 테스트, ${result.careers.join(", ")}`,
+    keywords: `${result.type}, ${result.title}, MBTI ${result.type}, 성격유형, 성격 테스트, ${result.careers.join(", ")}`,
     inLanguage: "ko",
     isPartOf: {
       "@type": "WebSite",

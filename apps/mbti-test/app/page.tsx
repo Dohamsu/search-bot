@@ -72,12 +72,13 @@ export default function Home() {
               16가지 성격 유형 테스트
             </h1>
             <p className="text-base text-gray-500">
-              16가지 질문으로 알아보는 나의 성격 유형
+              Jung의 심리유형 이론에 기반한 성격 유형 검사
             </p>
           </div>
 
           <div className="flex flex-col gap-2 text-sm text-gray-400">
             <span>16문항 / 약 3분 소요</span>
+            <span className="text-xs text-gray-300">본 검사는 공식 MBTI 검사가 아닌, Jung의 심리유형 이론에 기반한 자체 제작 검사입니다.</span>
           </div>
 
           <motion.button
