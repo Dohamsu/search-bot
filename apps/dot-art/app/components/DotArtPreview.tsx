@@ -20,7 +20,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
 
-  // 컨테이너 실제 너비 측정
+  // 컨테이너 실제 너비 측정 (항상 같은 div에 ref가 붙으므로 안정적)
   useEffect(() => {
     if (!containerRef.current) return;
     const measure = () => {
@@ -33,7 +33,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
     return () => observer.disconnect();
   }, []);
 
-  // 컨테이너 크기에 딱 맞게 렌더링 (CSS 스케일링 없음)
+  // 컨테이너 크기에 딱 맞게 렌더링
   useEffect(() => {
     if (!grid || !canvasRef.current || containerWidth <= 0) return;
     const gridSize = grid.length;
@@ -62,29 +62,29 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
     downloadCanvasAsPNG(exportCanvas, filename);
   };
 
-  if (!grid) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 p-12 text-center">
-        <div className="text-4xl mb-3">🎨</div>
-        <p className="text-gray-400 text-sm">
-          텍스트를 입력하고 생성 버튼을 눌러보세요
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4" ref={containerRef}>
-      <div className="flex items-center justify-center rounded-2xl bg-gray-50 p-6 border border-gray-100">
-        <canvas ref={canvasRef} />
+      <div className="flex items-center justify-center rounded-2xl bg-gray-50 p-6 border border-gray-100 min-h-[200px]">
+        {grid ? (
+          <canvas ref={canvasRef} />
+        ) : (
+          <div className="flex flex-col items-center text-center">
+            <div className="text-4xl mb-3">🎨</div>
+            <p className="text-gray-400 text-sm">
+              텍스트를 입력하고 생성 버튼을 눌러보세요
+            </p>
+          </div>
+        )}
       </div>
-      <button
-        onClick={handleDownload}
-        className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:bg-indigo-600 transition-colors"
-      >
-        <Download size={18} />
-        PNG 다운로드
-      </button>
+      {grid && (
+        <button
+          onClick={handleDownload}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:bg-indigo-600 transition-colors"
+        >
+          <Download size={18} />
+          PNG 다운로드
+        </button>
+      )}
     </div>
   );
 }
