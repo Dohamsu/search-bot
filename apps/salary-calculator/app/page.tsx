@@ -7,7 +7,6 @@ import InputField from "./components/InputField";
 import ResultCard from "./components/ResultCard";
 import BreakdownCard from "./components/BreakdownCard";
 import BottomTabBar from "./components/BottomTabBar";
-import CrossLinks from "./components/CrossLinks";
 import { calculateSalary, type SalaryResult } from "./lib/salary";
 
 function parseNumber(value: string): number {
@@ -381,9 +380,6 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="hidden md:block">
-        <CrossLinks />
-      </div>
 
       <BottomTabBar />
     </div>

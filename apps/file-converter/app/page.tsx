@@ -9,7 +9,6 @@ import ConvertOptions from "./components/ConvertOptions";
 import FileList from "./components/FileList";
 import PopularCard from "./components/PopularCard";
 import BottomTabBar from "./components/BottomTabBar";
-import CrossLinks from "./components/CrossLinks";
 import { generateId, getFileExtension } from "./lib/fileUtils";
 import { convertImage, isImageConversion } from "./lib/converter";
 import type { FileItem } from "./lib/fileUtils";
@@ -260,7 +259,6 @@ export default function Home() {
         </div>
       </div>
 
-      <CrossLinks />
     </div>
   );
 }
