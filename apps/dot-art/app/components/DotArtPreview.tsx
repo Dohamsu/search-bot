@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, Minimize2 } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
 import { renderDotGrid, downloadCanvasAsPNG, fitDotSize, RenderOptions } from "../lib/canvasRenderer";
+
+const THUMB_SCALES = [1, 2, 3] as const;
 
 interface DotArtPreviewProps {
   grid: DotGrid | null;
@@ -17,8 +19,10 @@ interface DotArtPreviewProps {
 
 export default function DotArtPreview({ grid, options, filename = "dot-art" }: DotArtPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const thumbCanvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [thumbScale, setThumbScale] = useState<number>(2);
 
   // 컨테이너 실제 너비 측정 (항상 같은 div에 ref가 붙으므로 안정적)
   useEffect(() => {
@@ -46,6 +50,18 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
     };
     renderDotGrid(canvasRef.current, grid, renderOpts);
   }, [grid, options, containerWidth]);
+
+  // 축소 미리보기 렌더링
+  useEffect(() => {
+    if (!grid || !thumbCanvasRef.current) return;
+    const renderOpts: RenderOptions = {
+      dotSize: thumbScale,
+      gap: 0,
+      dotShape: options.dotShape,
+      bgColor: options.bgColor,
+    };
+    renderDotGrid(thumbCanvasRef.current, grid, renderOpts);
+  }, [grid, options.dotShape, options.bgColor, thumbScale]);
 
   const handleDownload = () => {
     if (!grid) return;
@@ -76,6 +92,43 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
           </div>
         )}
       </div>
+
+      {/* 축소 미리보기 */}
+      {grid && (
+        <div className="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
+          <div className="flex items-center justify-center rounded-lg bg-white border border-gray-200 p-2">
+            <canvas
+              ref={thumbCanvasRef}
+              style={{ imageRendering: "pixelated" }}
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-gray-500 mb-1.5">
+              <Minimize2 size={12} />
+              축소 미리보기
+            </div>
+            <div className="flex gap-1">
+              {THUMB_SCALES.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setThumbScale(s)}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                    thumbScale === s
+                      ? "bg-indigo-500 text-white"
+                      : "bg-gray-200 text-gray-500 hover:bg-gray-300"
+                  }`}
+                >
+                  {s}x
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-[10px] text-gray-400">
+              {grid.length}×{grid.length}px · 실제 픽셀 크기
+            </p>
+          </div>
+        </div>
+      )}
+
       {grid && (
         <button
           onClick={handleDownload}

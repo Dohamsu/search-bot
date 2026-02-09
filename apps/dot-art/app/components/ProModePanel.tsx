@@ -148,11 +148,11 @@ export default function ProModePanel({ gridSize, palette, onGenerate, onError }:
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !loading && !isCoolingDown && handleGenerate()}
-          placeholder="예: a cute dragon, a knight with a sword"
+          placeholder="예: 귀여운 고양이, a cute dragon"
           className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
         <p className="mt-1.5 text-xs text-gray-400">
-          영어로 입력하면 더 좋은 결과를 얻을 수 있습니다
+          한국어·영어 모두 입력 가능합니다 (한국어는 자동 번역)
         </p>
       </div>
 
