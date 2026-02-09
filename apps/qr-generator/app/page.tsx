@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Link,
   Menu,
-  Settings,
   QrCode,
   Wifi,
   User,
@@ -234,14 +233,6 @@ export default function Home() {
   };
 
   const handleBottomTabChange = (tab: string) => {
-    if (tab === 'scan') {
-      showToast('스캔 기능은 준비 중입니다');
-      return;
-    }
-    if (tab === 'settings') {
-      showToast('설정 기능은 준비 중입니다');
-      return;
-    }
     setBottomTab(tab);
   };
 
@@ -297,13 +288,7 @@ export default function Home() {
               QR Studio
             </span>
           </div>
-          <button
-            onClick={() => showToast('설정 기능은 준비 중입니다')}
-            className="p-2 cursor-pointer"
-            aria-label="설정"
-          >
-            <Settings className="w-5 h-5 text-zinc-700" />
-          </button>
+          <div className="w-9" />
         </header>
 
         {!showHistory && (
