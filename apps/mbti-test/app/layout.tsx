@@ -20,17 +20,20 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: "16가지 성격 유형 테스트 | 무료 성격 검사",
   description:
-    "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 성격 유형까지!",
+    "Jung의 심리유형 이론에 기반한 무료 성격 유형 테스트. MBTI와 유사한 16가지 유형(ENFP, INTJ 등)을 16개 질문으로 알아보세요. 결과 이미지 공유, 유형별 직업 추천까지!",
   keywords: [
+    "MBTI 테스트",
+    "MBTI 유형",
     "성격유형 검사",
     "성격 테스트",
     "16가지 성격 유형",
+    "MBTI 무료",
     "성격유형 테스트",
     "무료 성격 검사",
   ],
   openGraph: {
     title: "16가지 성격 유형 테스트 | 무료 성격 검사",
-    description: "16가지 질문으로 나의 성격 유형을 알아보세요",
+    description: "Jung의 심리유형 이론 기반 무료 성격 검사. MBTI와 유사한 16가지 유형을 알아보세요",
     type: "website",
     url: BASE_URL,
     locale: "ko_KR",
@@ -39,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "16가지 성격 유형 테스트 | 무료 성격 검사",
-    description: "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천까지!",
+    description: "Jung의 심리유형 이론에 기반한 무료 성격 유형 테스트. MBTI와 유사한 16가지 유형을 알아보세요. 결과 이미지 공유, 직업 추천까지!",
   },
   alternates: {
     canonical: BASE_URL,
@@ -59,7 +62,7 @@ export default function RootLayout({
     "@type": "WebApplication",
     name: "16가지 성격 유형 테스트",
     description:
-      "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 성격 유형까지!",
+      "Jung의 심리유형 이론에 기반한 무료 성격 유형 테스트. MBTI와 유사한 16가지 유형(ENFP, INTJ 등)을 16개 질문으로 알아보세요.",
     url: BASE_URL,
     applicationCategory: "EntertainmentApplication",
     operatingSystem: "All",
@@ -76,7 +79,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Quiz",
     name: "16가지 성격 유형 테스트",
-    description: "16가지 질문으로 나의 성격 유형을 알아보는 무료 테스트",
+    description: "Jung의 심리유형 이론에 기반한 16가지 성격 유형 무료 테스트. MBTI와 유사한 유형 분류를 제공합니다.",
     educationalAlignment: {
       "@type": "AlignmentObject",
       alignmentType: "educationalSubject",
