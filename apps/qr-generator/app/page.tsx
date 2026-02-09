@@ -260,7 +260,6 @@ export default function Home() {
         <Sidebar
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          onProClick={() => showToast('Pro 업그레이드는 준비 중입니다')}
         />
       </div>
 
@@ -275,10 +274,6 @@ export default function Home() {
               activeTab={activeTab}
               onTabChange={(tab) => {
                 handleTabChange(tab);
-                setMobileMenuOpen(false);
-              }}
-              onProClick={() => {
-                showToast('Pro 업그레이드는 준비 중입니다');
                 setMobileMenuOpen(false);
               }}
             />
