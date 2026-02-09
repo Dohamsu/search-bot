@@ -15,9 +15,9 @@ import type { FileItem } from "./lib/fileUtils";
 import type { ConvertOptions as ConvertOptionsType } from "./lib/converter";
 
 const popularConversions = [
-  { from: "PDF", to: "DOCX", variant: "red" as const },
   { from: "PNG", to: "JPG", variant: "blue" as const },
   { from: "HEIC", to: "PNG", variant: "green" as const },
+  { from: "JPG", to: "WEBP", variant: "red" as const },
 ];
 
 export default function Home() {
@@ -131,34 +131,18 @@ export default function Home() {
           );
         }
       } else {
-        await new Promise<void>((resolve) => {
-          let progress = 0;
-          const interval = setInterval(() => {
-            progress += Math.random() * 25 + 10;
-            if (progress >= 60) {
-              clearInterval(interval);
-              setFiles((prev) =>
-                prev.map((f) =>
-                  f.id === file.id
-                    ? {
-                        ...f,
-                        status: "error",
-                        progress: 0,
-                        errorMessage: `${from} -> ${to} 변환은 Pro 기능입니다 (서버 변환 필요)`,
-                      }
-                    : f
-                )
-              );
-              resolve();
-            } else {
-              setFiles((prev) =>
-                prev.map((f) =>
-                  f.id === file.id ? { ...f, progress: Math.round(progress) } : f
-                )
-              );
-            }
-          }, 300);
-        });
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.id === file.id
+              ? {
+                  ...f,
+                  status: "error",
+                  progress: 0,
+                  errorMessage: `${from} → ${to} 변환은 지원하지 않는 형식입니다`,
+                }
+              : f
+          )
+        );
       }
     },
     []

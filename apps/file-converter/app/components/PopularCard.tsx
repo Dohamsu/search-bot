@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Image, ImagePlus } from "lucide-react";
+import { ArrowRightLeft, Image, ImagePlus } from "lucide-react";
 
 interface PopularCardProps {
   from: string;
@@ -11,7 +11,7 @@ interface PopularCardProps {
 
 const variantConfig = {
   red: {
-    icon: FileText,
+    icon: ArrowRightLeft,
     bgClass: "bg-[#FEF2F2]",
   },
   blue: {
