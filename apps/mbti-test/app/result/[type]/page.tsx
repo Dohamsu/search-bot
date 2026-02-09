@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getResult, getAllTypes } from "../../lib/results";
 import ResultHeader from "../../components/ResultHeader";
 import ResultClientWrapper from "../../components/ResultClientWrapper";
-import CrossLinks from "../../components/CrossLinks";
 
 interface ResultPageProps {
   params: Promise<{ type: string }>;
@@ -53,8 +52,6 @@ export default async function ResultPage({ params }: ResultPageProps) {
       <div className="mx-auto flex w-full max-w-lg flex-col gap-4 px-5 py-6">
         <ResultClientWrapper result={result} />
       </div>
-
-      <CrossLinks />
     </div>
   );
 }
