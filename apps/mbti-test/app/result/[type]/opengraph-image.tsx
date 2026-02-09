@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getResult } from "../../lib/results";
 
 export const runtime = "edge";
-export const alt = "MBTI 성격 유형 테스트 결과";
+export const alt = "16가지 성격 유형 테스트 결과";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -48,7 +48,7 @@ export default async function OgImage({
               marginBottom: 12,
             }}
           >
-            나의 MBTI 결과
+            나의 성격 유형 결과
           </div>
 
           <div
@@ -109,7 +109,7 @@ export default async function OgImage({
             marginTop: 32,
           }}
         >
-          MBTI 성격 유형 테스트 | 전체 인구의 {result.percentage}%
+          16가지 성격 유형 테스트 | 전체 인구의 {result.percentage}%
         </div>
       </div>
     ),

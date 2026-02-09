@@ -116,7 +116,7 @@ export default function PrivacyPage() {
             개인정보처리방침에 관한 문의사항이 있으시면 아래 연락처로 문의해 주세요.
           </p>
           <p className="mt-2">
-            이메일: contact@example.com
+            이메일: rlawlsdnjswk@gmail.com
           </p>
         </section>
 

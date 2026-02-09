@@ -161,7 +161,7 @@ export default function PrivacyPage() {
               바랍니다.
             </p>
             <p className="mt-2 text-sm text-[#78716C]">
-              이메일: contact@example.com
+              이메일: rlawlsdnjswk@gmail.com
             </p>
           </section>
         </div>

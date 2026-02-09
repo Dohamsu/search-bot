@@ -132,8 +132,8 @@ export default function PrivacyPage() {
           </p>
           <p className="text-gray-700 mt-2">
             이메일:{" "}
-            <a href="mailto:contact@example.com" className="text-blue-600 hover:underline">
-              contact@example.com
+            <a href="mailto:rlawlsdnjswk@gmail.com" className="text-blue-600 hover:underline">
+              rlawlsdnjswk@gmail.com
             </a>
           </p>
         </section>
