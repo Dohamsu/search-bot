@@ -359,7 +359,7 @@ export default function Home() {
         )}
 
         {!showHistory && (
-          <section className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-8" aria-label="QR코드 생성기">
+          <section className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-4" aria-label="QR코드 생성기">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
               <div className="flex-1 flex flex-col gap-6">
                 {activeTab === 'url' && (
@@ -759,6 +759,33 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        <footer className="hidden lg:block bg-white border-t border-zinc-200 py-4 px-10">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-zinc-500">
+            <a
+              href="/privacy"
+              className="hover:text-zinc-700 hover:underline transition-colors"
+            >
+              개인정보처리방침
+            </a>
+            <span className="text-zinc-300">|</span>
+            <a
+              href="/terms"
+              className="hover:text-zinc-700 hover:underline transition-colors"
+            >
+              이용약관
+            </a>
+            <span className="text-zinc-300">|</span>
+            <a
+              href="mailto:rlawlsdnjswk@gmail.com"
+              className="hover:text-zinc-700 hover:underline transition-colors"
+            >
+              문의: rlawlsdnjswk@gmail.com
+            </a>
+            <span className="text-zinc-300">|</span>
+            <span>© 2025</span>
+          </div>
+        </footer>
       </main>
 
       <BottomBar activeItem={bottomTab} onItemChange={handleBottomTabChange} />
