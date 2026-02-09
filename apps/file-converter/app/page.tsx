@@ -185,7 +185,7 @@ export default function Home() {
   }, [files, fromFormat, toFormat, quality, maxWidth, maxHeight, maintainAspectRatio, convertSingleFile]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--file-bg)]">
+    <main className="flex min-h-screen flex-col bg-[var(--file-bg)]">
       <NavBar />
 
       <div className="flex md:hidden h-14 items-center justify-center border-b border-[#E7E5E4] bg-white">
@@ -194,10 +194,12 @@ export default function Home() {
         </span>
       </div>
 
+      <h1 className="sr-only">무료 온라인 파일 변환기 - PNG, JPG, WebP, HEIC 이미지 변환</h1>
+
       <BottomTabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="flex flex-1 flex-col md:flex-row gap-8 p-4 md:p-10">
-        <div className="flex flex-1 flex-col gap-6">
+        <section className="flex flex-1 flex-col gap-6" aria-label="파일 변환">
           <DropZone onFilesAdded={handleFilesAdded} />
 
           <FormatSelector
@@ -229,24 +231,25 @@ export default function Home() {
             onRetry={handleRetryFile}
           />
 
-          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-[#D1FAE5] bg-[#ECFDF5] px-4 py-3.5">
+          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-[#D1FAE5] bg-[#ECFDF5] px-4 py-3.5" role="status">
             <div className="relative">
-              <ShieldCheck size={20} className="text-[#059669]" />
+              <ShieldCheck size={20} className="text-[#059669]" aria-hidden="true" />
               <Lock
                 size={8}
                 className="absolute -bottom-0.5 -right-0.5 text-[#059669] animate-pulse"
+                aria-hidden="true"
               />
             </div>
             <span className="text-sm font-medium text-[#065F46]">
               100% 브라우저 처리 - 파일이 서버에 업로드되지 않습니다
             </span>
           </div>
-        </div>
+        </section>
 
-        <div className="hidden md:flex w-[280px] shrink-0 flex-col gap-4">
-          <h3 className="text-sm font-semibold text-[var(--file-text)]">
+        <aside className="hidden md:flex w-[280px] shrink-0 flex-col gap-4" aria-label="인기 변환">
+          <h2 className="text-sm font-semibold text-[var(--file-text)]">
             인기 변환
-          </h3>
+          </h2>
           {popularConversions.map((conv) => (
             <PopularCard
               key={`${conv.from}-${conv.to}`}
@@ -256,9 +259,9 @@ export default function Home() {
               onClick={handlePopularCardClick}
             />
           ))}
-        </div>
+        </aside>
       </div>
 
-    </div>
+    </main>
   );
 }

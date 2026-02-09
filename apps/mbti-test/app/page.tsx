@@ -69,7 +69,7 @@ export default function Home() {
 
           <div>
             <h1 className="font-heading mb-2 text-3xl font-extrabold text-[var(--mbti-text)] md:text-4xl">
-              MBTI 성격 유형 테스트
+              16가지 성격 유형 테스트
             </h1>
             <p className="text-base text-gray-500">
               16가지 질문으로 알아보는 나의 성격 유형
@@ -82,7 +82,7 @@ export default function Home() {
 
           <motion.button
             onClick={handleStart}
-            aria-label="MBTI 성격 유형 테스트 시작하기"
+            aria-label="성격 유형 테스트 시작하기"
             className="mt-4 flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-10 py-4 text-lg font-semibold text-white shadow-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
