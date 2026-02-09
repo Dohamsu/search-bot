@@ -5,6 +5,20 @@ export interface MBTIResult {
   traits: string[];
   compatible: string[];
   percentage: number;
+  careers: string[];
+  celebrities: string[];
+}
+
+const MBTI_TYPES = [
+  "ENFP", "INTJ", "INFP", "ESTJ", "ISFJ", "ENTP",
+  "ISFP", "ENTJ", "INTP", "ESFP", "ISTP", "ESFJ",
+  "INFJ", "ENFJ", "ISTJ", "ESTP",
+] as const;
+
+export type MBTIType = (typeof MBTI_TYPES)[number];
+
+export function getAllTypes(): MBTIType[] {
+  return [...MBTI_TYPES];
 }
 
 const detailedResults: Record<string, MBTIResult> = {
@@ -21,6 +35,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["INTJ", "INFJ"],
     percentage: 8,
+    careers: ["마케터", "작가", "상담사", "배우", "이벤트 플래너"],
+    celebrities: ["로버트 다우니 주니어", "로빈 윌리엄스", "윌 스미스"],
   },
   INTJ: {
     type: "INTJ",
@@ -35,6 +51,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ENFP", "ENTP"],
     percentage: 2,
+    careers: ["전략 컨설턴트", "소프트웨어 아키텍트", "과학자", "투자 분석가", "교수"],
+    celebrities: ["일론 머스크", "마크 저커버그", "크리스토퍼 놀란"],
   },
   INFP: {
     type: "INFP",
@@ -49,6 +67,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ENFJ", "ENTJ"],
     percentage: 4,
+    careers: ["작가", "심리상담사", "그래픽 디자이너", "사회복지사", "음악가"],
+    celebrities: ["윌리엄 셰익스피어", "에드거 앨런 포", "팀 버튼"],
   },
   ESTJ: {
     type: "ESTJ",
@@ -63,6 +83,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ISTP", "ISFP"],
     percentage: 9,
+    careers: ["경영 관리자", "판사", "금융 분석가", "군 장교", "프로젝트 매니저"],
+    celebrities: ["헨리 포드", "미셸 오바마", "이순신"],
   },
   ISFJ: {
     type: "ISFJ",
@@ -77,6 +99,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ESFP", "ESTP"],
     percentage: 14,
+    careers: ["간호사", "교사", "사서", "사회복지사", "행정 관리자"],
+    celebrities: ["마더 테레사", "비욘세", "앤 해서웨이"],
   },
   ENTP: {
     type: "ENTP",
@@ -91,6 +115,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["INFJ", "INTJ"],
     percentage: 3,
+    careers: ["기업가", "변호사", "발명가", "프로듀서", "정치 전략가"],
+    celebrities: ["토머스 에디슨", "벤자민 프랭클린", "사샤 바론 코언"],
   },
   ISFP: {
     type: "ISFP",
@@ -105,6 +131,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ESTJ", "ESFJ"],
     percentage: 9,
+    careers: ["디자이너", "사진작가", "셰프", "플로리스트", "수의사"],
+    celebrities: ["마이클 잭슨", "밥 딜런", "오드리 헵번"],
   },
   ENTJ: {
     type: "ENTJ",
@@ -119,6 +147,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["INFP", "INTP"],
     percentage: 2,
+    careers: ["CEO", "변호사", "경영 컨설턴트", "정치인", "기업가"],
+    celebrities: ["스티브 잡스", "마거릿 대처", "나폴레옹"],
   },
   INTP: {
     type: "INTP",
@@ -133,6 +163,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ENTJ", "ESTJ"],
     percentage: 3,
+    careers: ["소프트웨어 개발자", "데이터 과학자", "철학자", "수학자", "게임 디자이너"],
+    celebrities: ["아인슈타인", "빌 게이츠", "래리 페이지"],
   },
   ESFP: {
     type: "ESFP",
@@ -147,6 +179,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ISFJ", "ISTJ"],
     percentage: 9,
+    careers: ["연예인", "이벤트 플래너", "영업사원", "여행 가이드", "스타일리스트"],
+    celebrities: ["아이유", "엘비스 프레슬리", "마릴린 먼로"],
   },
   ISTP: {
     type: "ISTP",
@@ -161,6 +195,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ESTJ", "ESFJ"],
     percentage: 5,
+    careers: ["엔지니어", "파일럿", "정비사", "소방관", "외과의사"],
+    celebrities: ["마이클 조던", "클린트 이스트우드", "톰 크루즈"],
   },
   ESFJ: {
     type: "ESFJ",
@@ -175,6 +211,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ISFP", "ISTP"],
     percentage: 12,
+    careers: ["교사", "간호사", "이벤트 기획자", "인사 관리자", "고객 서비스"],
+    celebrities: ["테일러 스위프트", "제니퍼 가너", "앤디 코엔"],
   },
   INFJ: {
     type: "INFJ",
@@ -189,6 +227,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ENFP", "ENTP"],
     percentage: 2,
+    careers: ["상담 심리사", "작가", "인권 변호사", "교수", "코치"],
+    celebrities: ["마틴 루터 킹", "간디", "레이디 가가"],
   },
   ENFJ: {
     type: "ENFJ",
@@ -203,6 +243,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["INFP", "ISFP"],
     percentage: 3,
+    careers: ["교사", "HR 매니저", "외교관", "심리치료사", "소셜 워커"],
+    celebrities: ["오바마", "오프라 윈프리", "마틴 루터 킹"],
   },
   ISTJ: {
     type: "ISTJ",
@@ -217,6 +259,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ESFP", "ESTP"],
     percentage: 11,
+    careers: ["회계사", "공무원", "은행원", "감사관", "법무사"],
+    celebrities: ["워렌 버핏", "나탈리 포트만", "안젤라 메르켈"],
   },
   ESTP: {
     type: "ESTP",
@@ -231,6 +275,8 @@ const detailedResults: Record<string, MBTIResult> = {
     ],
     compatible: ["ISFJ", "ISTJ"],
     percentage: 4,
+    careers: ["기업가", "세일즈 매니저", "소방관", "스포츠 에이전트", "마케터"],
+    celebrities: ["도널드 트럼프", "마돈나", "잭 니콜슨"],
   },
 };
 
@@ -248,6 +294,8 @@ export function getResult(type: string): MBTIResult {
       ],
       compatible: ["ENFP", "INTJ"],
       percentage: 5,
+      careers: ["다양한 분야에서 활약 가능"],
+      celebrities: [],
     }
   );
 }

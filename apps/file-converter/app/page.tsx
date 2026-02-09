@@ -1,16 +1,19 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Lock } from "lucide-react";
 import NavBar from "./components/NavBar";
 import DropZone from "./components/DropZone";
 import FormatSelector from "./components/FormatSelector";
+import ConvertOptions from "./components/ConvertOptions";
 import FileList from "./components/FileList";
 import PopularCard from "./components/PopularCard";
 import BottomTabBar from "./components/BottomTabBar";
+import CrossLinks from "./components/CrossLinks";
 import { generateId, getFileExtension } from "./lib/fileUtils";
 import { convertImage, isImageConversion } from "./lib/converter";
 import type { FileItem } from "./lib/fileUtils";
+import type { ConvertOptions as ConvertOptionsType } from "./lib/converter";
 
 const popularConversions = [
   { from: "PDF", to: "DOCX", variant: "red" as const },
@@ -20,12 +23,16 @@ const popularConversions = [
 
 export default function Home() {
   const [files, setFiles] = useState<FileItem[]>([]);
-  const [fromFormat, setFromFormat] = useState("PDF");
-  const [toFormat, setToFormat] = useState("DOCX");
+  const [fromFormat, setFromFormat] = useState("PNG");
+  const [toFormat, setToFormat] = useState("JPG");
   const [isConverting, setIsConverting] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  // Cleanup object URLs on unmount to prevent memory leaks
+  const [quality, setQuality] = useState(0.92);
+  const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined);
+  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
+  const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
+
   useEffect(() => {
     return () => {
       files.forEach((f) => {
@@ -36,6 +43,12 @@ export default function Home() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const showQualitySlider =
+    isImageConversion(fromFormat, toFormat) &&
+    (toFormat.toUpperCase() === "JPG" || toFormat.toUpperCase() === "WEBP");
+
+  const showConvertOptions = isImageConversion(fromFormat, toFormat);
 
   const handleFilesAdded = useCallback((newFiles: File[]) => {
     const items: FileItem[] = newFiles.map((file) => ({
@@ -77,7 +90,7 @@ export default function Home() {
   }, []);
 
   const convertSingleFile = useCallback(
-    async (file: FileItem, from: string, to: string) => {
+    async (file: FileItem, from: string, to: string, options?: ConvertOptionsType) => {
       setFiles((prev) =>
         prev.map((f) =>
           f.id === file.id ? { ...f, status: "converting", progress: 0, errorMessage: undefined } : f
@@ -86,7 +99,7 @@ export default function Home() {
 
       if (isImageConversion(from, to)) {
         try {
-          const result = await convertImage(file.file, to);
+          const result = await convertImage(file.file, to, options);
           if (result) {
             setFiles((prev) =>
               prev.map((f) =>
@@ -96,7 +109,6 @@ export default function Home() {
               )
             );
           } else {
-            // convertImage returned null -- source file is not a supported image
             setFiles((prev) =>
               prev.map((f) =>
                 f.id === file.id
@@ -120,7 +132,6 @@ export default function Home() {
           );
         }
       } else {
-        // Non-image conversion: not supported in the browser -- show error after brief simulated progress
         await new Promise<void>((resolve) => {
           let progress = 0;
           const interval = setInterval(() => {
@@ -160,31 +171,33 @@ export default function Home() {
 
     setIsConverting(true);
 
+    const options: ConvertOptionsType = {
+      quality,
+      maxWidth,
+      maxHeight,
+      maintainAspectRatio,
+    };
+
     for (const file of pendingFiles) {
-      await convertSingleFile(file, fromFormat, toFormat);
+      await convertSingleFile(file, fromFormat, toFormat, options);
     }
 
     setIsConverting(false);
-  }, [files, fromFormat, toFormat, convertSingleFile]);
+  }, [files, fromFormat, toFormat, quality, maxWidth, maxHeight, maintainAspectRatio, convertSingleFile]);
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--file-bg)]">
-      {/* Desktop NavBar */}
       <NavBar />
 
-      {/* Mobile AppBar */}
       <div className="flex md:hidden h-14 items-center justify-center border-b border-[#E7E5E4] bg-white">
         <span className="text-lg font-bold text-[var(--file-primary)]">
           FileFlow
         </span>
       </div>
 
-      {/* Mobile Tabs */}
       <BottomTabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Content */}
       <div className="flex flex-1 flex-col md:flex-row gap-8 p-4 md:p-10">
-        {/* Main Column */}
         <div className="flex flex-1 flex-col gap-6">
           <DropZone onFilesAdded={handleFilesAdded} />
 
@@ -197,22 +210,40 @@ export default function Home() {
             isConverting={isConverting}
           />
 
+          {showConvertOptions && (
+            <ConvertOptions
+              quality={quality}
+              maxWidth={maxWidth}
+              maxHeight={maxHeight}
+              maintainAspectRatio={maintainAspectRatio}
+              onQualityChange={setQuality}
+              onMaxWidthChange={setMaxWidth}
+              onMaxHeightChange={setMaxHeight}
+              onMaintainAspectRatioChange={setMaintainAspectRatio}
+              showQuality={showQualitySlider}
+            />
+          )}
+
           <FileList
             files={files}
             onDelete={handleDeleteFile}
             onRetry={handleRetryFile}
           />
 
-          {/* Mobile privacy badge */}
-          <div className="flex md:hidden items-center justify-center gap-2 rounded-lg bg-[#F5F5F4] px-4 py-3">
-            <ShieldCheck size={16} className="text-[var(--file-primary)]" />
-            <span className="text-xs text-[#78716C]">
-              모든 파일은 1시간 후 자동 삭제됩니다
+          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-[#D1FAE5] bg-[#ECFDF5] px-4 py-3.5">
+            <div className="relative">
+              <ShieldCheck size={20} className="text-[#059669]" />
+              <Lock
+                size={8}
+                className="absolute -bottom-0.5 -right-0.5 text-[#059669] animate-pulse"
+              />
+            </div>
+            <span className="text-sm font-medium text-[#065F46]">
+              100% 브라우저 처리 - 파일이 서버에 업로드되지 않습니다
             </span>
           </div>
         </div>
 
-        {/* Side Panel - Desktop only */}
         <div className="hidden md:flex w-[280px] shrink-0 flex-col gap-4">
           <h3 className="text-sm font-semibold text-[var(--file-text)]">
             인기 변환
@@ -228,6 +259,8 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      <CrossLinks />
     </div>
   );
 }

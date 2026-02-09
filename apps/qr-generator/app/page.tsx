@@ -1,14 +1,28 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Link, Menu, Settings, QrCode, Wifi, User, Mail, ChevronDown } from 'lucide-react';
+import {
+  Link,
+  Menu,
+  Settings,
+  QrCode,
+  Wifi,
+  User,
+  Mail,
+  ChevronDown,
+  MessageSquare,
+  MapPin,
+  CalendarDays,
+} from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import TabBar from './components/TabBar';
 import QRPreview from './components/QRPreview';
+import QRCustomizer from './components/QRCustomizer';
 import HistoryItem from './components/HistoryItem';
 import BottomBar from './components/BottomBar';
 import Toast from './components/Toast';
-import { generateQR } from './lib/qr';
+import { generateQR, type QROptions } from './lib/qr';
+import { applyLogoToQR } from './lib/qrWithLogo';
 import { getHistory, addHistory, clearHistory, type HistoryEntry } from './lib/history';
 
 const quickChips = [
@@ -44,6 +58,32 @@ function buildQrContent(
       if (subject) return `mailto:${email}?subject=${encodeURIComponent(subject)}`;
       return `mailto:${email}`;
     }
+    case 'sms': {
+      const phone = fields.phone ?? '';
+      const body = fields.body ?? '';
+      return `smsto:${phone}:${body}`;
+    }
+    case 'location': {
+      const lat = fields.lat ?? '';
+      const lng = fields.lng ?? '';
+      const label = fields.label ?? '';
+      if (label) return `geo:${lat},${lng}?q=${encodeURIComponent(label)}`;
+      return `geo:${lat},${lng}`;
+    }
+    case 'calendar': {
+      const title = fields.title ?? '';
+      const dtstart = (fields.dtstart ?? '').replace(/[-:]/g, '').replace('T', 'T');
+      const dtend = (fields.dtend ?? '').replace(/[-:]/g, '').replace('T', 'T');
+      const loc = fields.location ?? '';
+      return [
+        'BEGIN:VEVENT',
+        `SUMMARY:${title}`,
+        `DTSTART:${dtstart}`,
+        `DTEND:${dtend}`,
+        `LOCATION:${loc}`,
+        'END:VEVENT',
+      ].join('\n');
+    }
     default:
       return fields.main ?? '';
   }
@@ -60,6 +100,12 @@ function getDisplayContent(tab: string, fields: Record<string, string>): string 
       return `${fields.name ?? ''} ${fields.tel ?? ''}`.trim();
     case 'email':
       return fields.email ?? '';
+    case 'sms':
+      return `${fields.phone ?? ''} ${fields.body ?? ''}`.trim();
+    case 'location':
+      return fields.label || `${fields.lat ?? ''}, ${fields.lng ?? ''}`;
+    case 'calendar':
+      return fields.title ?? '';
     default:
       return fields.main ?? '';
   }
@@ -76,6 +122,12 @@ function isFieldsFilled(tab: string, fields: Record<string, string>): boolean {
       return !!(fields.name && fields.name.trim()) || !!(fields.tel && fields.tel.trim());
     case 'email':
       return !!(fields.email && fields.email.trim());
+    case 'sms':
+      return !!(fields.phone && fields.phone.trim());
+    case 'location':
+      return !!(fields.lat && fields.lat.trim()) && !!(fields.lng && fields.lng.trim());
+    case 'calendar':
+      return !!(fields.title && fields.title.trim()) && !!(fields.dtstart && fields.dtstart.trim());
     default:
       return !!(fields.main && fields.main.trim());
   }
@@ -86,10 +138,18 @@ export default function Home() {
   const [bottomTab, setBottomTab] = useState('generate');
   const [fields, setFields] = useState<Record<string, string>>({});
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrContent, setQrContent] = useState<string>('');
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [qrOptions, setQrOptions] = useState<QROptions>({
+    width: 200,
+    darkColor: '#111827',
+    lightColor: '#FFFFFF',
+    errorCorrectionLevel: 'M',
+  });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
 
   useEffect(() => {
     setHistory(getHistory());
@@ -108,6 +168,7 @@ export default function Home() {
     setActiveTab(tab);
     setFields({});
     setQrDataUrl(null);
+    setQrContent('');
     if (bottomTab !== 'generate') {
       setBottomTab('generate');
     }
@@ -121,7 +182,18 @@ export default function Home() {
     setIsGenerating(true);
     try {
       const content = buildQrContent(tab, f);
-      const dataUrl = await generateQR(content);
+      setQrContent(content);
+
+      const opts: QROptions = logoFile
+        ? { ...qrOptions, errorCorrectionLevel: 'H' }
+        : qrOptions;
+
+      let dataUrl = await generateQR(content, opts);
+
+      if (logoFile) {
+        dataUrl = await applyLogoToQR(dataUrl, logoFile);
+      }
+
       setQrDataUrl(dataUrl);
       const display = getDisplayContent(tab, f);
       addHistory({ type: tab, content: display });
@@ -131,7 +203,7 @@ export default function Home() {
     } finally {
       setIsGenerating(false);
     }
-  }, [fields, activeTab]);
+  }, [fields, activeTab, qrOptions, logoFile]);
 
   const handleHistoryClick = (content: string, type?: string) => {
     const tab = type ?? 'url';
@@ -175,12 +247,15 @@ export default function Home() {
 
   const canGenerate = isFieldsFilled(activeTab, fields);
 
-  // Decide what to show based on bottomTab (mobile)
   const showHistory = bottomTab === 'history';
+
+  const inputClass =
+    'w-full h-12 px-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition';
+  const inputWithIconClass =
+    'w-full h-12 pl-11 pr-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition';
 
   return (
     <div className="flex min-h-screen bg-[#F9FAFB]">
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar
           activeTab={activeTab}
@@ -189,7 +264,6 @@ export default function Home() {
         />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
@@ -212,9 +286,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col min-h-screen">
-        {/* Mobile AppBar */}
         <header className="lg:hidden flex items-center justify-between px-4 h-14 bg-white border-b border-zinc-200">
           <button
             onClick={() => setMobileMenuOpen(true)}
@@ -236,7 +308,6 @@ export default function Home() {
           </button>
         </header>
 
-        {/* Desktop TabBar */}
         {!showHistory && (
           <div className="hidden lg:block bg-white px-10 pt-8">
             <h1 className="text-2xl font-bold text-zinc-900 mb-4">QR코드 생성</h1>
@@ -244,14 +315,12 @@ export default function Home() {
           </div>
         )}
 
-        {/* Mobile Tabs */}
         {!showHistory && (
           <div className="lg:hidden bg-white">
             <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
           </div>
         )}
 
-        {/* History Full View (mobile) */}
         {showHistory && (
           <div className="lg:hidden flex-1 p-5 pb-24">
             <div className="flex items-center justify-between mb-4">
@@ -286,13 +355,10 @@ export default function Home() {
           </div>
         )}
 
-        {/* Main Generate Content */}
         {!showHistory && (
           <div className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-8">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
-              {/* Left Column */}
               <div className="flex-1 flex flex-col gap-6">
-                {/* Input Section */}
                 {activeTab === 'url' && (
                   <div className="flex flex-col gap-2">
                     <label htmlFor="qr-input-url" className="text-sm font-semibold text-zinc-700">
@@ -307,7 +373,7 @@ export default function Home() {
                         onChange={(e) => updateField('main', e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="https://example.com"
-                        className="w-full h-12 pl-11 pr-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                        className={inputWithIconClass}
                       />
                     </div>
                   </div>
@@ -344,7 +410,7 @@ export default function Home() {
                           onChange={(e) => updateField('ssid', e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder="Wi-Fi 네트워크 이름"
-                          className="w-full h-12 pl-11 pr-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                          className={inputWithIconClass}
                         />
                       </div>
                     </div>
@@ -359,7 +425,7 @@ export default function Home() {
                         onChange={(e) => updateField('password', e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Wi-Fi 비밀번호"
-                        className="w-full h-12 px-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                        className={inputClass}
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -400,7 +466,7 @@ export default function Home() {
                           onChange={(e) => updateField('name', e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder="홍길동"
-                          className="w-full h-12 pl-11 pr-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                          className={inputWithIconClass}
                         />
                       </div>
                     </div>
@@ -415,7 +481,7 @@ export default function Home() {
                         onChange={(e) => updateField('tel', e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="010-1234-5678"
-                        className="w-full h-12 px-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                        className={inputClass}
                       />
                     </div>
                   </div>
@@ -436,7 +502,7 @@ export default function Home() {
                           onChange={(e) => updateField('email', e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder="example@email.com"
-                          className="w-full h-12 pl-11 pr-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                          className={inputWithIconClass}
                         />
                       </div>
                     </div>
@@ -451,13 +517,159 @@ export default function Home() {
                         onChange={(e) => updateField('subject', e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="이메일 제목"
-                        className="w-full h-12 px-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition"
+                        className={inputClass}
                       />
                     </div>
                   </div>
                 )}
 
-                {/* Quick Chips - Only for URL tab on Mobile */}
+                {activeTab === 'sms' && (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-sms-phone" className="text-sm font-semibold text-zinc-700">
+                        전화번호
+                      </label>
+                      <div className="relative">
+                        <MessageSquare className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                        <input
+                          id="qr-sms-phone"
+                          type="tel"
+                          value={fields.phone ?? ''}
+                          onChange={(e) => updateField('phone', e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          placeholder="010-1234-5678"
+                          className={inputWithIconClass}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-sms-body" className="text-sm font-semibold text-zinc-700">
+                        메시지 (선택)
+                      </label>
+                      <textarea
+                        id="qr-sms-body"
+                        value={fields.body ?? ''}
+                        onChange={(e) => updateField('body', e.target.value)}
+                        placeholder="SMS 메시지 내용"
+                        rows={3}
+                        className="w-full px-4 py-3 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition resize-none"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'location' && (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-loc-lat" className="text-sm font-semibold text-zinc-700">
+                        위도 (Latitude)
+                      </label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                        <input
+                          id="qr-loc-lat"
+                          type="text"
+                          inputMode="decimal"
+                          value={fields.lat ?? ''}
+                          onChange={(e) => updateField('lat', e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          placeholder="37.5665"
+                          className={inputWithIconClass}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-loc-lng" className="text-sm font-semibold text-zinc-700">
+                        경도 (Longitude)
+                      </label>
+                      <input
+                        id="qr-loc-lng"
+                        type="text"
+                        inputMode="decimal"
+                        value={fields.lng ?? ''}
+                        onChange={(e) => updateField('lng', e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="126.9780"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-loc-label" className="text-sm font-semibold text-zinc-700">
+                        장소명 (선택)
+                      </label>
+                      <input
+                        id="qr-loc-label"
+                        type="text"
+                        value={fields.label ?? ''}
+                        onChange={(e) => updateField('label', e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="서울시청"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'calendar' && (
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-cal-title" className="text-sm font-semibold text-zinc-700">
+                        일정 제목
+                      </label>
+                      <div className="relative">
+                        <CalendarDays className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                        <input
+                          id="qr-cal-title"
+                          type="text"
+                          value={fields.title ?? ''}
+                          onChange={(e) => updateField('title', e.target.value)}
+                          onKeyDown={handleKeyDown}
+                          placeholder="회의 제목"
+                          className={inputWithIconClass}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-cal-start" className="text-sm font-semibold text-zinc-700">
+                        시작 일시
+                      </label>
+                      <input
+                        id="qr-cal-start"
+                        type="datetime-local"
+                        value={fields.dtstart ?? ''}
+                        onChange={(e) => updateField('dtstart', e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-cal-end" className="text-sm font-semibold text-zinc-700">
+                        종료 일시 (선택)
+                      </label>
+                      <input
+                        id="qr-cal-end"
+                        type="datetime-local"
+                        value={fields.dtend ?? ''}
+                        onChange={(e) => updateField('dtend', e.target.value)}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="qr-cal-location" className="text-sm font-semibold text-zinc-700">
+                        장소 (선택)
+                      </label>
+                      <input
+                        id="qr-cal-location"
+                        type="text"
+                        value={fields.location ?? ''}
+                        onChange={(e) => updateField('location', e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="회의실 301호"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {activeTab === 'url' && (
                   <div className="flex gap-2 lg:hidden">
                     {quickChips.map((chip) => (
@@ -472,7 +684,13 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Generate Button */}
+                <QRCustomizer
+                  qrOptions={qrOptions}
+                  onOptionsChange={setQrOptions}
+                  logoFile={logoFile}
+                  onLogoChange={setLogoFile}
+                />
+
                 <button
                   onClick={() => handleGenerate()}
                   disabled={!canGenerate || isGenerating}
@@ -481,12 +699,16 @@ export default function Home() {
                   {isGenerating ? '생성 중...' : 'QR코드 생성'}
                 </button>
 
-                {/* Mobile QR Preview */}
                 <div className="lg:hidden">
-                  <QRPreview qrDataUrl={qrDataUrl} inputValue={getDisplayContent(activeTab, fields)} onToast={showToast} />
+                  <QRPreview
+                    qrDataUrl={qrDataUrl}
+                    inputValue={getDisplayContent(activeTab, fields)}
+                    qrContent={qrContent}
+                    qrOptions={qrOptions}
+                    onToast={showToast}
+                  />
                 </div>
 
-                {/* Recent History */}
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-zinc-700">
@@ -522,19 +744,22 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right Column - Desktop QR Preview */}
               <div className="hidden lg:block">
-                <QRPreview qrDataUrl={qrDataUrl} inputValue={getDisplayContent(activeTab, fields)} onToast={showToast} />
+                <QRPreview
+                  qrDataUrl={qrDataUrl}
+                  inputValue={getDisplayContent(activeTab, fields)}
+                  qrContent={qrContent}
+                  qrOptions={qrOptions}
+                  onToast={showToast}
+                />
               </div>
             </div>
           </div>
         )}
       </main>
 
-      {/* Mobile Bottom Bar */}
       <BottomBar activeItem={bottomTab} onItemChange={handleBottomTabChange} />
 
-      {/* Toast */}
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </div>
   );

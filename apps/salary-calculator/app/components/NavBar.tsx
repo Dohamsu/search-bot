@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Calculator, LogIn } from "lucide-react";
 
 export default function NavBar() {
@@ -28,15 +29,12 @@ export default function NavBar() {
             >
               급여계산
             </button>
-            <button
-              onClick={() => showToast("퇴직금 계산기는 준비 중입니다")}
-              className="group relative text-sm font-medium text-slate-400 cursor-not-allowed"
+            <Link
+              href="/salary-table"
+              className="text-sm font-medium text-[var(--salary-text)] transition-colors hover:text-[var(--salary-primary)]"
             >
-              퇴직금
-              <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-                준비 중
-              </span>
-            </button>
+              실수령표
+            </Link>
             <button
               onClick={() => showToast("세금 가이드는 준비 중입니다")}
               className="group relative text-sm font-medium text-slate-400 cursor-not-allowed"
@@ -57,7 +55,6 @@ export default function NavBar() {
         </button>
       </nav>
 
-      {/* Toast notification */}
       {toast && (
         <div className="fixed top-4 left-1/2 z-[100] -translate-x-1/2 rounded-lg bg-slate-800 px-4 py-2.5 text-sm text-white shadow-lg animate-[fadeInDown_0.2s_ease-out]">
           {toast}

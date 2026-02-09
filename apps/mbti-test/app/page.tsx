@@ -1,34 +1,29 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight, TrendingUp } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { questions, type OptionScore } from "./lib/questions";
-import { getResult } from "./lib/results";
 import { calculateMBTI } from "./lib/calculator";
 import ProgressHeader from "./components/ProgressHeader";
 import QuestionCard from "./components/QuestionCard";
 import AnswerCard from "./components/AnswerCard";
-import ResultHeader from "./components/ResultHeader";
-import TraitsCard from "./components/TraitsCard";
-import CompatCard from "./components/CompatCard";
-import ShareButton from "./components/ShareButton";
 
-type Screen = "start" | "quiz" | "result";
+type Screen = "start" | "quiz";
 
 export default function Home() {
+  const router = useRouter();
   const [screen, setScreen] = useState<Screen>("start");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<OptionScore[]>([]);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [mbtiType, setMbtiType] = useState<string>("");
 
   const handleStart = useCallback(() => {
     setScreen("quiz");
     setCurrentQuestion(0);
     setAnswers([]);
     setSelectedOption(null);
-    setMbtiType("");
   }, []);
 
   const handleAnswer = useCallback(
@@ -47,66 +42,13 @@ export default function Home() {
           setSelectedOption(null);
         } else {
           const type = calculateMBTI(newAnswers);
-          setMbtiType(type);
-          setAnswers(newAnswers);
-          setScreen("result");
+          router.push(`/result/${type}`);
         }
       }, 400);
     },
-    [currentQuestion, answers, selectedOption]
+    [currentQuestion, answers, selectedOption, router]
   );
 
-  const [shareLabel, setShareLabel] = useState("결과 공유하기");
-  const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleShare = useCallback(async () => {
-    const result = getResult(mbtiType);
-    const url = typeof window !== "undefined" ? window.location.href : "";
-    const text = `나의 MBTI는 ${result.type} - ${result.title}! ${url}`;
-
-    const showCopiedFeedback = () => {
-      setShareLabel("복사 완료!");
-      if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
-      shareTimerRef.current = setTimeout(() => setShareLabel("결과 공유하기"), 2000);
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "MBTI 테스트 결과", text, url });
-        return;
-      } catch (e) {
-        if (e instanceof Error && e.name === "AbortError") return;
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(text);
-      showCopiedFeedback();
-    } catch {
-      // 클립보드 API가 지원되지 않는 환경 (예: http)
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      showCopiedFeedback();
-    }
-  }, [mbtiType]);
-
-  const handleRetry = useCallback(() => {
-    setScreen("start");
-    setCurrentQuestion(0);
-    setAnswers([]);
-    setSelectedOption(null);
-    setMbtiType("");
-    setShareLabel("결과 공유하기");
-    if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
-  }, []);
-
-  // === Start Screen ===
   if (screen === "start") {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center px-6">
@@ -153,108 +95,55 @@ export default function Home() {
     );
   }
 
-  // === Quiz Screen ===
-  if (screen === "quiz") {
-    const question = questions[currentQuestion];
-    return (
-      <div className="flex min-h-dvh flex-col">
-        <ProgressHeader
-          current={currentQuestion}
-          total={questions.length}
-        />
-
-        <div className="flex flex-1 flex-col items-center gap-6 px-4 py-6 md:gap-8 md:px-8 md:py-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentQuestion}
-              className="w-full"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-            >
-              <QuestionCard
-                questionNumber={question.id}
-                questionText={question.question}
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentQuestion}
-              className="grid w-full max-w-[800px] grid-cols-1 gap-3 md:grid-cols-2 md:gap-4"
-              role="group"
-              aria-label={`질문 ${question.id}의 답변 선택지`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {question.options.map((option, i) => (
-                <AnswerCard
-                  key={i}
-                  emoji={option.emoji}
-                  text={option.text}
-                  isSelected={selectedOption === i}
-                  isLocked={selectedOption !== null}
-                  onClick={() => handleAnswer(i)}
-                  index={i}
-                />
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    );
-  }
-
-  // === Result Screen ===
-  const result = getResult(mbtiType);
-
+  const question = questions[currentQuestion];
   return (
     <div className="flex min-h-dvh flex-col">
-      <ResultHeader type={result.type} title={result.title} />
+      <ProgressHeader
+        current={currentQuestion}
+        total={questions.length}
+      />
 
-      <div className="mx-auto flex w-full max-w-lg flex-col gap-4 px-5 py-6">
-        {/* Description */}
-        <motion.div
-          className="rounded-3xl bg-white p-6 shadow-sm"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <p className="text-sm leading-relaxed text-gray-600">
-            {result.description}
-          </p>
-        </motion.div>
+      <div className="flex flex-1 flex-col items-center gap-6 px-4 py-6 md:gap-8 md:px-8 md:py-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion}
+            className="w-full"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            <QuestionCard
+              questionNumber={question.id}
+              questionText={question.question}
+            />
+          </motion.div>
+        </AnimatePresence>
 
-        <TraitsCard traits={result.traits} />
-        <CompatCard compatible={result.compatible} />
-
-        {/* Percentage Card */}
-        <motion.div
-          className="flex items-center gap-4 rounded-3xl bg-[#F3E8FF] p-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--mbti-primary)]">
-            <TrendingUp className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">전체 인구의 약</p>
-            <p className="font-heading text-xl font-bold text-[var(--mbti-primary)]">
-              {result.percentage}%
-            </p>
-          </div>
-        </motion.div>
-
-        <div className="mt-2">
-          <ShareButton onShare={handleShare} onRetry={handleRetry} shareLabel={shareLabel} />
-        </div>
-
-        <div className="h-8" />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion}
+            className="grid w-full max-w-[800px] grid-cols-1 gap-3 md:grid-cols-2 md:gap-4"
+            role="group"
+            aria-label={`질문 ${question.id}의 답변 선택지`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {question.options.map((option, i) => (
+              <AnswerCard
+                key={i}
+                emoji={option.emoji}
+                text={option.text}
+                isSelected={selectedOption === i}
+                isLocked={selectedOption !== null}
+                onClick={() => handleAnswer(i)}
+                index={i}
+              />
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator, Landmark, BookOpen, MoreHorizontal } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Calculator, TableProperties, BookOpen, MoreHorizontal } from "lucide-react";
 
 interface TabItem {
   label: string;
   icon: React.ReactNode;
   active?: boolean;
   disabled?: boolean;
+  href?: string;
 }
 
 export default function BottomTabBar() {
   const [toast, setToast] = useState<string | null>(null);
+  const router = useRouter();
 
   const showToast = (message: string) => {
     setToast(message);
@@ -25,9 +28,9 @@ export default function BottomTabBar() {
       active: true,
     },
     {
-      label: "퇴직금",
-      icon: <Landmark className="h-5 w-5" />,
-      disabled: true,
+      label: "실수령표",
+      icon: <TableProperties className="h-5 w-5" />,
+      href: "/salary-table",
     },
     {
       label: "세금",
@@ -44,6 +47,8 @@ export default function BottomTabBar() {
   const handleTabClick = (tab: TabItem) => {
     if (tab.active) {
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (tab.href) {
+      router.push(tab.href);
     } else {
       showToast(`${tab.label} 기능은 준비 중입니다`);
     }
@@ -59,7 +64,9 @@ export default function BottomTabBar() {
             className={`flex flex-col items-center gap-0.5 ${
               tab.active
                 ? "text-[var(--salary-primary)]"
-                : "text-slate-300"
+                : tab.href
+                  ? "text-slate-500"
+                  : "text-slate-300"
             }`}
           >
             {tab.icon}
@@ -71,7 +78,6 @@ export default function BottomTabBar() {
         ))}
       </div>
 
-      {/* Toast notification */}
       {toast && (
         <div className="fixed bottom-20 left-1/2 z-[100] -translate-x-1/2 rounded-lg bg-slate-800 px-4 py-2.5 text-sm text-white shadow-lg animate-[fadeInUp_0.2s_ease-out]">
           {toast}
