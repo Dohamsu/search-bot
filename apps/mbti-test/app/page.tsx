@@ -102,7 +102,7 @@ export default function Home() {
 
   const question = questions[currentQuestion];
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col overflow-hidden">
       <ProgressHeader
         current={currentQuestion}
         total={questions.length}
