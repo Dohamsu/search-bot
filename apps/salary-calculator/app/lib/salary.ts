@@ -47,7 +47,7 @@ function calculateIncomeTax(
 
   // 국민연금 공제 (연간, 상한 적용)
   const monthlyTaxable = annualTaxable / 12;
-  const monthlyNPS = Math.min(monthlyTaxable * 0.045, 265_500);
+  const monthlyNPS = Math.min(monthlyTaxable * 0.0475, 302_575);
   const annualNPSDeduction = monthlyNPS * 12;
 
   // 과세표준
@@ -136,11 +136,11 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
 
   // 4대 보험
   const nationalPension = Math.min(
-    Math.round(taxableBase * 0.045),
-    265_500
+    Math.round(taxableBase * 0.0475),
+    302_575
   );
-  const healthInsurance = Math.round(taxableBase * 0.03545);
-  const longTermCare = Math.round(healthInsurance * 0.1281);
+  const healthInsurance = Math.round(taxableBase * 0.03595);
+  const longTermCare = Math.round(healthInsurance * 0.1314);
   const employmentInsurance = Math.round(taxableBase * 0.009);
 
   // 소득세 (연간 과세소득 기준)

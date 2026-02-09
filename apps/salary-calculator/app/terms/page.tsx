@@ -11,7 +11,7 @@ export default function TermsPage() {
     <main className="min-h-screen bg-slate-50 px-4 py-12">
       <article className="mx-auto max-w-2xl rounded-xl border border-slate-200 bg-white p-6 md:p-10">
         <h1 className="text-xl font-bold text-slate-800">이용약관</h1>
-        <p className="mt-1 text-sm text-slate-500">최종 수정일: 2025년 1월 1일</p>
+        <p className="mt-1 text-sm text-slate-500">최종 수정일: 2026년 1월 1일</p>
 
         <section className="mt-8 space-y-6 text-sm leading-relaxed text-slate-700">
           <div>
@@ -26,7 +26,7 @@ export default function TermsPage() {
           <div>
             <h2 className="font-semibold text-slate-800">제2조 (서비스의 성격)</h2>
             <p className="mt-2">
-              서비스는 2025년 근로소득 간이세액표 및 4대보험 요율을 기반으로 연봉
+              서비스는 2026년 근로소득 간이세액표 및 4대보험 요율을 기반으로 연봉
               실수령액을 참고용으로 계산하는 도구입니다. 서비스가 제공하는 모든 계산
               결과는 참고 목적으로만 제공되며, 세무, 법률, 재정 관련 전문 상담을
               대체하지 않습니다.

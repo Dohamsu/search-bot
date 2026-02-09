@@ -23,7 +23,7 @@ function formatCurrency(amount: number): string {
 type CalcMode = "normal" | "reverse";
 
 const STANDARD_MONTHLY_HOURS = 209;
-const MINIMUM_HOURLY_WAGE_2025 = 10_030;
+const MINIMUM_HOURLY_WAGE_2026 = 10_320;
 
 function findAnnualSalaryForNetPay(
   targetMonthlyNet: number,
@@ -201,10 +201,10 @@ export default function Home() {
   const pageJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "연봉 실수령액 계산기 2025",
+    name: "연봉 실수령액 계산기 2026",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com",
     description:
-      "2025년 기준 4대보험, 소득세를 자동으로 공제하여 연봉 실수령액을 계산하는 무료 온라인 도구입니다. 역산 계산, 시급/일급 환산 기능도 제공합니다.",
+      "2026년 기준 4대보험, 소득세를 자동으로 공제하여 연봉 실수령액을 계산하는 무료 온라인 도구입니다. 역산 계산, 시급/일급 환산 기능도 제공합니다.",
     applicationCategory: "FinanceApplication",
     operatingSystem: "All",
     featureList: [
@@ -381,10 +381,10 @@ export default function Home() {
                   <div className="mt-1 border-t border-[var(--salary-border)] pt-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[13px] text-slate-500">
-                        2025 최저시급
+                        2026 최저시급
                       </span>
                       <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] text-slate-400">
-                        {formatCurrency(MINIMUM_HOURLY_WAGE_2025)}원
+                        {formatCurrency(MINIMUM_HOURLY_WAGE_2026)}원
                       </span>
                     </div>
                     <div className="mt-2 flex items-center justify-between">
@@ -393,13 +393,13 @@ export default function Home() {
                       </span>
                       <span
                         className={`font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-medium ${
-                          hourlyRate >= MINIMUM_HOURLY_WAGE_2025
+                          hourlyRate >= MINIMUM_HOURLY_WAGE_2026
                             ? "text-[var(--salary-success)]"
                             : "text-red-500"
                         }`}
                       >
-                        {(hourlyRate / MINIMUM_HOURLY_WAGE_2025 * 100).toFixed(0)}%
-                        {hourlyRate >= MINIMUM_HOURLY_WAGE_2025 ? " (충족)" : " (미달)"}
+                        {(hourlyRate / MINIMUM_HOURLY_WAGE_2026 * 100).toFixed(0)}%
+                        {hourlyRate >= MINIMUM_HOURLY_WAGE_2026 ? " (충족)" : " (미달)"}
                       </span>
                     </div>
                   </div>
@@ -407,7 +407,7 @@ export default function Home() {
               </div>
             )}
             <p className="mt-6 text-xs leading-relaxed text-slate-400">
-              본 계산 결과는 2025년 근로소득 간이세액표 기준 참고용이며, 법적 효력이 없습니다. 실제 수령액은 연말정산, 추가 공제 항목 등에 따라 달라질 수 있으므로, 정확한 세금 계산은 국세청 또는 세무 전문가에게 문의하시기 바랍니다.
+              본 계산 결과는 2026년 근로소득 간이세액표 기준 참고용이며, 법적 효력이 없습니다. 실제 수령액은 연말정산, 추가 공제 항목 등에 따라 달라질 수 있으므로, 정확한 세금 계산은 국세청 또는 세무 전문가에게 문의하시기 바랍니다.
             </p>
           </div>
         </section>

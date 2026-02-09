@@ -27,7 +27,7 @@ export default function Footer() {
             rlawlsdnjswk@gmail.com
           </a>
           <span className="hidden md:inline text-slate-300">|</span>
-          <span>© 2025 연봉계산기</span>
+          <span>© 2026 연봉계산기</span>
         </div>
       </div>
     </footer>
