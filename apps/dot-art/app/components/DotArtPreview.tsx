@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Download } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
-import { renderDotGrid, downloadCanvasAsPNG, getPreviewDotSize, RenderOptions } from "../lib/canvasRenderer";
+import { renderDotGrid, downloadCanvasAsPNG, fitDotSize, RenderOptions } from "../lib/canvasRenderer";
 
 interface DotArtPreviewProps {
   grid: DotGrid | null;
@@ -17,11 +17,27 @@ interface DotArtPreviewProps {
 
 export default function DotArtPreview({ grid, options, filename = "dot-art" }: DotArtPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
 
+  // 컨테이너 실제 너비 측정
   useEffect(() => {
-    if (!grid || !canvasRef.current) return;
+    if (!containerRef.current) return;
+    const measure = () => {
+      const w = containerRef.current!.clientWidth - 48; // p-6 패딩 제외
+      setContainerWidth(w);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // 컨테이너 크기에 딱 맞게 렌더링 (CSS 스케일링 없음)
+  useEffect(() => {
+    if (!grid || !canvasRef.current || containerWidth <= 0) return;
     const gridSize = grid.length;
-    const dotSize = getPreviewDotSize(gridSize, 512);
+    const dotSize = fitDotSize(gridSize, options.gap, containerWidth);
     const renderOpts: RenderOptions = {
       dotSize,
       gap: options.gap,
@@ -29,11 +45,10 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
       bgColor: options.bgColor,
     };
     renderDotGrid(canvasRef.current, grid, renderOpts);
-  }, [grid, options]);
+  }, [grid, options, containerWidth]);
 
   const handleDownload = () => {
-    if (!grid || !canvasRef.current) return;
-    // 고해상도 다운로드용 Canvas
+    if (!grid) return;
     const exportCanvas = document.createElement("canvas");
     const gridSize = grid.length;
     const exportDotSize = Math.max(16, Math.floor(1024 / gridSize));
@@ -59,13 +74,9 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={containerRef}>
       <div className="flex items-center justify-center rounded-2xl bg-gray-50 p-6 border border-gray-100">
-        <canvas
-          ref={canvasRef}
-          className="max-w-full"
-          style={{ imageRendering: "pixelated" }}
-        />
+        <canvas ref={canvasRef} />
       </div>
       <button
         onClick={handleDownload}

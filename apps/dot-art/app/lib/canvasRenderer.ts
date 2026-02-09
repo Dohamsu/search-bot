@@ -60,9 +60,11 @@ export function downloadCanvasAsPNG(canvas: HTMLCanvasElement, filename: string)
 }
 
 /**
- * 미리보기용 고해상도 렌더링
+ * 컨테이너 너비에 정확히 맞는 dotSize 계산
+ * totalSize = gridSize * (dotSize + gap) - gap = containerWidth
+ * → dotSize = (containerWidth + gap) / gridSize - gap
  */
-export function getPreviewDotSize(gridSize: number, maxCanvasWidth: number): number {
-  const targetDotSize = Math.floor(maxCanvasWidth / gridSize);
-  return Math.max(4, Math.min(targetDotSize, 32));
+export function fitDotSize(gridSize: number, gap: number, containerWidth: number): number {
+  const dotSize = Math.floor((containerWidth + gap) / gridSize) - gap;
+  return Math.max(2, dotSize);
 }
