@@ -18,16 +18,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "16가지 성격 유형 테스트 | MBTI 기반 무료 검사",
+  title: "16가지 성격 유형 테스트 | 무료 성격 검사",
   description:
-    "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 성격 유형까지! MBTI 기반 성격 검사.",
+    "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천, 유명인 성격 유형까지!",
   keywords: [
-    "MBTI 테스트",
     "성격유형 검사",
-    "MBTI 무료",
-    "MBTI 궁합",
     "성격 테스트",
     "16가지 성격 유형",
+    "성격유형 테스트",
+    "무료 성격 검사",
   ],
   openGraph: {
     title: "16가지 성격 유형 테스트 | 무료 성격 검사",
@@ -39,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "16가지 성격 유형 테스트 | MBTI 기반 무료 검사",
+    title: "16가지 성격 유형 테스트 | 무료 성격 검사",
     description: "16가지 질문으로 나의 성격 유형을 알아보세요. 무료 성격 유형 테스트, 결과 이미지 공유, 유형별 직업 추천까지!",
   },
   alternates: {

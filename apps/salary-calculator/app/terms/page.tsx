@@ -98,10 +98,10 @@ export default function TermsPage() {
             <p className="mt-2">
               이메일:{" "}
               <a
-                href="mailto:contact@example.com"
+                href="mailto:rlawlsdnjswk@gmail.com"
                 className="text-blue-600 underline hover:text-blue-800"
               >
-                contact@example.com
+                rlawlsdnjswk@gmail.com
               </a>
             </p>
           </div>

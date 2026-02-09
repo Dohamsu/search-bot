@@ -75,7 +75,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
       name: `${result.type} 성격 유형`,
       description: result.description,
     },
-    keywords: `MBTI, ${result.type}, ${result.title}, 성격유형, ${result.careers.join(", ")}`,
+    keywords: `${result.type}, ${result.title}, 성격유형, 성격 테스트, ${result.careers.join(", ")}`,
     inLanguage: "ko",
     isPartOf: {
       "@type": "WebSite",
