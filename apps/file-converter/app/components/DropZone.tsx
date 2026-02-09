@@ -82,7 +82,7 @@ export default function DropZone({ onFilesAdded }: DropZoneProps) {
     const input = document.createElement("input");
     input.type = "file";
     input.multiple = true;
-    input.accept = ".pdf,.docx,.png,.jpg,.jpeg,.heic,.webp,.gif";
+    input.accept = ".png,.jpg,.jpeg,.heic,.webp,.gif";
     input.onchange = (e) => {
       const target = e.target as HTMLInputElement;
       if (target.files) {
@@ -118,7 +118,7 @@ export default function DropZone({ onFilesAdded }: DropZoneProps) {
           파일 선택
         </button>
         <p className="text-[13px] text-[#A8A29E]">
-          최대 100MB &middot; PDF, DOCX, PNG, JPG, HEIC, WEBP, GIF
+          최대 100MB &middot; PNG, JPG, HEIC, WEBP, GIF
         </p>
       </div>
 
