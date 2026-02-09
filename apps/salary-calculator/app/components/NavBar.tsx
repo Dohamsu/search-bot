@@ -1,59 +1,32 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { Calculator } from "lucide-react";
 
 export default function NavBar() {
-  const [toast, setToast] = useState<string | null>(null);
-
-  const showToast = (message: string) => {
-    setToast(message);
-    setTimeout(() => setToast(null), 2000);
-  };
-
   return (
-    <>
-      <nav className="hidden md:flex h-16 items-center justify-between border-b border-[var(--salary-border)] bg-white px-8">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-[var(--salary-primary)]" />
-            <span className="font-[family-name:var(--font-space-grotesk-var)] text-xl font-bold text-[var(--salary-primary)]">
-              연봉계산기
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-sm font-medium text-[var(--salary-text)]"
-            >
-              급여계산
-            </button>
-            <Link
-              href="/salary-table"
-              className="text-sm font-medium text-[var(--salary-text)] transition-colors hover:text-[var(--salary-primary)]"
-            >
-              실수령표
-            </Link>
-            <button
-              onClick={() => showToast("세금 가이드는 준비 중입니다")}
-              className="group relative text-sm font-medium text-slate-400 cursor-not-allowed"
-            >
-              세금가이드
-              <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-                준비 중
-              </span>
-            </button>
-          </div>
+    <nav className="hidden md:flex h-16 items-center justify-between border-b border-[var(--salary-border)] bg-white px-8">
+      <div className="flex items-center gap-8">
+        <div className="flex items-center gap-2">
+          <Calculator className="h-5 w-5 text-[var(--salary-primary)]" />
+          <span className="font-[family-name:var(--font-space-grotesk-var)] text-xl font-bold text-[var(--salary-primary)]">
+            연봉계산기
+          </span>
         </div>
-        <div />
-      </nav>
-
-      {toast && (
-        <div className="fixed top-4 left-1/2 z-[100] -translate-x-1/2 rounded-lg bg-slate-800 px-4 py-2.5 text-sm text-white shadow-lg animate-[fadeInDown_0.2s_ease-out]">
-          {toast}
+        <div className="flex items-center gap-6">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="text-sm font-medium text-[var(--salary-text)]"
+          >
+            급여계산
+          </button>
+          <Link
+            href="/salary-table"
+            className="text-sm font-medium text-[var(--salary-text)] transition-colors hover:text-[var(--salary-primary)]"
+          >
+            실수령표
+          </Link>
         </div>
-      )}
-    </>
+      </div>
+      <div />
+    </nav>
   );
 }
