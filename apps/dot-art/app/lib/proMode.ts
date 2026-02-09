@@ -1,5 +1,22 @@
 import { DotGrid, imageToDotGrid, DotArtOptions } from "./dotArt";
 
+export interface ModelOption {
+  id: string;
+  label: string;
+  model: "dall-e-2" | "dall-e-3";
+  size: string;
+  price: string;
+  description: string;
+}
+
+export const MODEL_OPTIONS: ModelOption[] = [
+  { id: "d2-256", label: "빠른 생성", model: "dall-e-2", size: "256x256", price: "$0.016", description: "DALL-E 2 · 256px · 가장 저렴" },
+  { id: "d2-512", label: "균형 모드", model: "dall-e-2", size: "512x512", price: "$0.018", description: "DALL-E 2 · 512px · 적절한 균형" },
+  { id: "d3-1024", label: "고품질", model: "dall-e-3", size: "1024x1024", price: "$0.040", description: "DALL-E 3 · 1024px · 최고 품질" },
+];
+
+export const COOLDOWN_MS = 5 * 60 * 1000; // 5분
+
 interface DalleResponse {
   data: { b64_json: string }[];
 }
@@ -7,7 +24,8 @@ interface DalleResponse {
 export async function generateWithDalle(
   prompt: string,
   apiKey: string,
-  options: DotArtOptions
+  options: DotArtOptions,
+  modelOption: ModelOption
 ): Promise<DotGrid> {
   const enhancedPrompt = `Pixel art of ${prompt}, 16-bit retro style, clean pixels, solid colors, no gradients, centered on white background`;
 
@@ -18,10 +36,10 @@ export async function generateWithDalle(
       "Authorization": `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "dall-e-3",
+      model: modelOption.model,
       prompt: enhancedPrompt,
       n: 1,
-      size: "1024x1024",
+      size: modelOption.size,
       response_format: "b64_json",
     }),
   });
@@ -34,7 +52,6 @@ export async function generateWithDalle(
   const data: DalleResponse = await response.json();
   const b64 = data.data[0].b64_json;
 
-  // base64 → Image → DotGrid
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
