@@ -1,12 +1,10 @@
 'use client';
 
-import { QrCode, ScanLine, History, Settings } from 'lucide-react';
+import { QrCode, History } from 'lucide-react';
 
 const items = [
   { id: 'generate', label: '생성', icon: QrCode },
-  { id: 'scan', label: '스캔', icon: ScanLine },
   { id: 'history', label: '히스토리', icon: History },
-  { id: 'settings', label: '설정', icon: Settings },
 ];
 
 interface BottomBarProps {
