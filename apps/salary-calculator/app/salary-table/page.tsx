@@ -8,16 +8,16 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com";
 
 export const metadata: Metadata = {
-  title: "연봉 실수령액 표 2025 | 1000만원~1억원 실수령액 총정리",
+  title: "연봉 실수령액 표 2026 | 1000만원~1억원 실수령액 총정리",
   description:
-    "2025년 기준 연봉 1000만원부터 1억원까지 100만원 단위 실수령액 표입니다. 4대보험, 소득세 공제 후 실제 수령액을 한눈에 확인하세요.",
+    "2026년 기준 연봉 1000만원부터 1억원까지 100만원 단위 실수령액 표입니다. 4대보험, 소득세 공제 후 실제 수령액을 한눈에 확인하세요.",
   alternates: {
     canonical: `${SITE_URL}/salary-table`,
   },
   openGraph: {
-    title: "연봉 실수령액 표 2025 | 1000만원~1억원 실수령액 총정리",
+    title: "연봉 실수령액 표 2026 | 1000만원~1억원 실수령액 총정리",
     description:
-      "2025년 기준 연봉 1000만원부터 1억원까지 100만원 단위로 월 실수령액을 계산한 표입니다. 4대보험, 소득세 공제 후 실제 수령액을 한눈에 확인하세요.",
+      "2026년 기준 연봉 1000만원부터 1억원까지 100만원 단위로 월 실수령액을 계산한 표입니다. 4대보험, 소득세 공제 후 실제 수령액을 한눈에 확인하세요.",
     type: "website",
     url: `${SITE_URL}/salary-table`,
     locale: "ko_KR",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "연봉 실수령액 표 2025",
+    title: "연봉 실수령액 표 2026",
     description:
       "연봉 1000만원~1억원까지 월 실수령액을 한눈에 비교하세요.",
   },
@@ -48,7 +48,7 @@ const faqJsonLd = {
       name: "4대보험은 연봉에서 얼마나 공제되나요?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "4대보험 공제율은 국민연금 4.5%, 건강보험 3.545%, 장기요양보험 건강보험료의 12.81%, 고용보험 0.9%입니다. 총 약 9.4% 정도가 4대보험으로 공제됩니다.",
+        text: "4대보험 공제율은 국민연금 4.75%, 건강보험 3.595%, 장기요양보험 건강보험료의 13.14%, 고용보험 0.9%입니다. 총 약 9.7% 정도가 4대보험으로 공제됩니다.",
       },
     },
     {
@@ -158,7 +158,7 @@ export default function SalaryTablePage() {
       <section className="mx-auto max-w-5xl px-4 py-8 md:px-8" aria-label="연봉 실수령액 표">
         <header className="mb-8">
           <h1 className="text-2xl font-bold text-[var(--salary-text)] md:text-3xl">
-            2025 연봉 실수령액 표
+            2026 연봉 실수령액 표
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-slate-500 md:text-base">
             연봉 1,000만원부터 1억원까지 100만원 단위로 월 실수령액을 계산한
@@ -233,19 +233,19 @@ export default function SalaryTablePage() {
               <span className="font-medium text-[var(--salary-text)]">
                 국민연금:
               </span>{" "}
-              월 소득의 4.5% (상한 월 265,500원)
+              월 소득의 4.75% (상한 월 302,575원)
             </li>
             <li>
               <span className="font-medium text-[var(--salary-text)]">
                 건강보험:
               </span>{" "}
-              월 소득의 3.545%
+              월 소득의 3.595%
             </li>
             <li>
               <span className="font-medium text-[var(--salary-text)]">
                 장기요양보험:
               </span>{" "}
-              건강보험료의 12.81%
+              건강보험료의 13.14%
             </li>
             <li>
               <span className="font-medium text-[var(--salary-text)]">

@@ -11,7 +11,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-slate-50 px-4 py-12">
       <article className="mx-auto max-w-2xl rounded-xl border border-slate-200 bg-white p-6 md:p-10">
         <h1 className="text-xl font-bold text-slate-800">개인정보처리방침</h1>
-        <p className="mt-1 text-sm text-slate-500">최종 수정일: 2025년 1월 1일</p>
+        <p className="mt-1 text-sm text-slate-500">최종 수정일: 2026년 1월 1일</p>
 
         <section className="mt-8 space-y-6 text-sm leading-relaxed text-slate-700">
           <div>
