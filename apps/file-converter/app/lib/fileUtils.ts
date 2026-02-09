@@ -28,9 +28,9 @@ export interface FileItem {
   file: File;
 }
 
-export const SUPPORTED_FORMATS = ["PDF", "DOCX", "PNG", "JPG", "HEIC", "WEBP"];
+export const SUPPORTED_FORMATS = ["PDF", "DOCX", "PNG", "JPG", "HEIC", "WEBP", "GIF"];
 
 export const FORMAT_OPTIONS = {
-  from: ["PDF", "PNG", "JPG", "HEIC", "DOCX", "WEBP"],
-  to: ["DOCX", "JPG", "PNG", "PDF", "WEBP"],
+  from: ["PNG", "JPG", "HEIC", "WEBP", "GIF", "PDF", "DOCX"],
+  to: ["PNG", "JPG", "WEBP", "GIF", "PDF", "DOCX"],
 };

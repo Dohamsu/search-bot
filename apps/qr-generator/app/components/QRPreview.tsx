@@ -1,20 +1,42 @@
 'use client';
 
+import { useState } from 'react';
 import { Download, Share2 } from 'lucide-react';
+import { generateQRSvg, type QROptions } from '../lib/qr';
 
 interface QRPreviewProps {
   qrDataUrl: string | null;
   inputValue: string;
+  qrContent?: string;
+  qrOptions?: QROptions;
   onToast?: (msg: string) => void;
 }
 
-export default function QRPreview({ qrDataUrl, inputValue, onToast }: QRPreviewProps) {
-  const handleDownload = () => {
+export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions, onToast }: QRPreviewProps) {
+  const [downloadFormat, setDownloadFormat] = useState<'png' | 'svg'>('png');
+
+  const handleDownload = async () => {
     if (!qrDataUrl) return;
-    const link = document.createElement('a');
-    link.download = `qr-${Date.now()}.png`;
-    link.href = qrDataUrl;
-    link.click();
+
+    if (downloadFormat === 'svg' && qrContent) {
+      try {
+        const svgString = await generateQRSvg(qrContent, qrOptions);
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `qr-${Date.now()}.svg`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch {
+        onToast?.('SVG 다운로드에 실패했습니다');
+      }
+    } else {
+      const link = document.createElement('a');
+      link.download = `qr-${Date.now()}.png`;
+      link.href = qrDataUrl;
+      link.click();
+    }
   };
 
   const handleShare = async () => {
@@ -55,7 +77,6 @@ export default function QRPreview({ qrDataUrl, inputValue, onToast }: QRPreviewP
           QR 미리보기
         </h3>
 
-        {/* QR Image Area */}
         <div className="w-[200px] h-[200px] rounded-lg border border-zinc-100 flex items-center justify-center bg-zinc-50">
           {qrDataUrl ? (
             <img
@@ -72,7 +93,30 @@ export default function QRPreview({ qrDataUrl, inputValue, onToast }: QRPreviewP
           )}
         </div>
 
-        {/* Action Buttons */}
+        <div className="flex items-center gap-2 self-start">
+          <span className="text-xs text-zinc-500">다운로드 형식:</span>
+          <button
+            onClick={() => setDownloadFormat('png')}
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+              downloadFormat === 'png'
+                ? 'bg-[var(--qr-primary)] text-white'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+            }`}
+          >
+            PNG
+          </button>
+          <button
+            onClick={() => setDownloadFormat('svg')}
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+              downloadFormat === 'svg'
+                ? 'bg-[var(--qr-primary)] text-white'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+            }`}
+          >
+            SVG
+          </button>
+        </div>
+
         <div className="flex gap-3 w-full">
           <button
             onClick={handleDownload}
