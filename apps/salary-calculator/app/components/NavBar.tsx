@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Calculator, LogIn } from "lucide-react";
+import { Calculator } from "lucide-react";
 
 export default function NavBar() {
   const [toast, setToast] = useState<string | null>(null);
@@ -46,13 +46,7 @@ export default function NavBar() {
             </button>
           </div>
         </div>
-        <button
-          onClick={() => showToast("로그인 기능은 준비 중입니다")}
-          className="flex items-center gap-1.5 rounded-lg border border-[var(--salary-border)] px-4 py-2 text-sm font-medium text-[var(--salary-text)] transition-colors hover:bg-slate-50"
-        >
-          <LogIn className="h-4 w-4" />
-          로그인
-        </button>
+        <div />
       </nav>
 
       {toast && (
