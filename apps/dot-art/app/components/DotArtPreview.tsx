@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download, Minimize2, Copy, Film, Check, Grid3x3 } from "lucide-react";
+import { Download, Minimize2, Copy, Film, Check } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
 import { renderDotGrid, downloadCanvasAsPNG, copyCanvasToClipboard, fitDotSize, RenderOptions } from "../lib/canvasRenderer";
 import { exportDotArtGif, GIF_EFFECTS, GifEffect } from "../lib/gifExporter";
@@ -238,14 +238,6 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
             </button>
           </div>
 
-          {/* 비즈공예 도안 링크 */}
-          <a
-            href="/bead-guide"
-            className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            <Grid3x3 size={16} />
-            비즈공예 도안 보기
-          </a>
         </div>
       )}
     </div>
