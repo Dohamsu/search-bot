@@ -17,17 +17,9 @@ export interface CustomizeOptions {
 interface DotArtCustomizerProps {
   options: CustomizeOptions;
   onChange: (options: CustomizeOptions) => void;
-  hasImage?: boolean; // 이미지가 업로드된 상태인지 (자동 팔레트 활성화용)
 }
 
 const GRID_SIZES = [8, 16, 32, 64];
-
-const AUTO_PALETTE_OPTIONS = [
-  { id: "auto-8", name: "자동 8색", colors: 8 },
-  { id: "auto-12", name: "자동 12색", colors: 12 },
-  { id: "auto-16", name: "자동 16색", colors: 16 },
-  { id: "auto-24", name: "자동 24색", colors: 24 },
-];
 
 const DITHER_OPTIONS: { value: DitherMode; label: string }[] = [
   { value: "none", label: "없음" },
@@ -35,9 +27,7 @@ const DITHER_OPTIONS: { value: DitherMode; label: string }[] = [
   { value: "ordered", label: "패턴" },
 ];
 
-export default function DotArtCustomizer({ options, onChange, hasImage }: DotArtCustomizerProps) {
-  const isAutoPalette = options.paletteId.startsWith("auto-");
-
+export default function DotArtCustomizer({ options, onChange }: DotArtCustomizerProps) {
   return (
     <div className="space-y-4">
       {/* 그리드 크기 */}
@@ -60,67 +50,35 @@ export default function DotArtCustomizer({ options, onChange, hasImage }: DotArt
         </div>
       </div>
 
-      {/* 색상 팔레트 */}
+      {/* 색상 팔레트 — 흑백 / 컬러 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">색상 팔레트</label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex gap-2">
           {PALETTES.map((p) => {
             const active = options.paletteId === p.id;
             return (
               <button
                 key={p.id}
                 onClick={() => onChange({ ...options, paletteId: p.id })}
-                className={`flex flex-col gap-1.5 rounded-xl p-2.5 text-left transition-all border-2 ${
+                className={`flex-1 flex items-center justify-center gap-2 rounded-xl p-3 text-sm font-medium transition-all border-2 ${
                   active
-                    ? "border-indigo-500 bg-indigo-50"
-                    : "border-gray-100 bg-gray-50 hover:border-gray-200"
+                    ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                    : "border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200"
                 }`}
               >
-                <span className={`text-xs font-medium ${active ? "text-indigo-700" : "text-gray-600"}`}>
-                  {p.name}
-                </span>
-                <div className="flex flex-wrap gap-0.5">
-                  {p.colors.slice(0, 8).map((color, i) => (
+                <div className="flex gap-0.5">
+                  {p.colors.slice(0, 4).map((color, i) => (
                     <div
                       key={i}
-                      className="w-3.5 h-3.5 rounded-sm border border-gray-200/50"
+                      className="w-4 h-4 rounded-sm border border-gray-200/50"
                       style={{ backgroundColor: color }}
                     />
                   ))}
-                  {p.colors.length > 8 && (
-                    <span className="text-[9px] text-gray-400 self-end ml-0.5">+{p.colors.length - 8}</span>
-                  )}
                 </div>
+                {p.name}
               </button>
             );
           })}
-        </div>
-
-        {/* 자동 추출 팔레트 */}
-        <div className="mt-2">
-          <p className="text-xs text-gray-500 mb-1.5">자동 추출 (이미지 전용)</p>
-          <div className="flex gap-2">
-            {AUTO_PALETTE_OPTIONS.map((ap) => {
-              const active = options.paletteId === ap.id;
-              const disabled = !hasImage;
-              return (
-                <button
-                  key={ap.id}
-                  disabled={disabled}
-                  onClick={() => onChange({ ...options, paletteId: ap.id })}
-                  className={`flex-1 rounded-lg px-2 py-1.5 text-xs font-medium transition-all ${
-                    disabled
-                      ? "bg-gray-50 text-gray-300 cursor-not-allowed"
-                      : active
-                        ? "bg-emerald-500 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {ap.name}
-                </button>
-              );
-            })}
-          </div>
         </div>
       </div>
 
@@ -143,7 +101,7 @@ export default function DotArtCustomizer({ options, onChange, hasImage }: DotArt
         </div>
       </div>
 
-      {/* 도트 간격 & 모양 & 디더링 */}
+      {/* 도트 간격 & 모양 */}
       <div className="flex gap-4">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">도트 간격</label>
@@ -210,17 +168,15 @@ export default function DotArtCustomizer({ options, onChange, hasImage }: DotArt
           ))}
         </div>
         <p className="mt-1 text-xs text-gray-400">
-          {isAutoPalette || options.dither !== "none"
-            ? options.dither === "floyd-steinberg"
-              ? "사진의 그라데이션을 자연스럽게 표현합니다"
-              : options.dither === "ordered"
-                ? "레트로 크로스해치 패턴 효과를 적용합니다"
-                : "디더링 없이 가장 가까운 색상으로 매핑합니다"
-            : "사진 변환 시 확산 디더링을 추천합니다"}
+          {options.dither === "floyd-steinberg"
+            ? "사진의 그라데이션을 자연스럽게 표현합니다"
+            : options.dither === "ordered"
+              ? "레트로 크로스해치 패턴 효과를 적용합니다"
+              : "사진 변환 시 확산 디더링을 추천합니다"}
         </p>
       </div>
 
-      {/* 엣지 강조 (이미지 전용) */}
+      {/* 엣지 강조 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">엣지 강조</label>
         <div className="flex gap-2">
