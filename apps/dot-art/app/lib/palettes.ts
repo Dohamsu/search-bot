@@ -95,3 +95,18 @@ export function findClosestColor(r: number, g: number, b: number, palette: strin
   }
   return closest;
 }
+
+/**
+ * 기존 그리드의 모든 색상을 새 팔레트로 리매핑
+ */
+export function remapGridToPalette(grid: (string | null)[][], palette: string[]): (string | null)[][] {
+  return grid.map((row) =>
+    row.map((cell) => {
+      if (!cell) return null;
+      const r = parseInt(cell.slice(1, 3), 16);
+      const g = parseInt(cell.slice(3, 5), 16);
+      const b = parseInt(cell.slice(5, 7), 16);
+      return findClosestColor(r, g, b, palette);
+    })
+  );
+}

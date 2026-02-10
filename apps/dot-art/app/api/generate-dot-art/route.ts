@@ -149,7 +149,10 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await response.json();
-    const b64 = data.data[0].b64_json;
+    const b64 = data?.data?.[0]?.b64_json;
+    if (!b64) {
+      return NextResponse.json({ error: "OpenAI API 응답 형식 오류" }, { status: 502 });
+    }
 
     return NextResponse.json({ imageDataUrl: `data:image/png;base64,${b64}` });
   } catch (err) {

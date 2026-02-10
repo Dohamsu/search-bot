@@ -242,7 +242,8 @@ function posterize(
  */
 export function imageToDotGridPro(
   img: HTMLImageElement,
-  gridSize: number
+  gridSize: number,
+  palette?: string[]
 ): DotGrid {
   // 그리드 크기에 따라 중간 캔버스 크기 결정
   // 저해상도(8~16): 작은 중간 캔버스로 디테일 강제 제거
@@ -313,6 +314,11 @@ export function imageToDotGridPro(
         if (entry.count > best.count) best = entry;
       }
 
+      if (best.count === 0) {
+        gridRow.push(null);
+        continue;
+      }
+
       const avgR = Math.round(best.tR / best.count);
       const avgG = Math.round(best.tG / best.count);
       const avgB = Math.round(best.tB / best.count);
@@ -323,7 +329,11 @@ export function imageToDotGridPro(
       if (bgDist < BG_THRESHOLD) {
         gridRow.push(null);
       } else {
-        gridRow.push(rgbToHex(avgR, avgG, avgB));
+        gridRow.push(
+          palette
+            ? findClosestColor(avgR, avgG, avgB, palette)
+            : rgbToHex(avgR, avgG, avgB)
+        );
       }
     }
     grid.push(gridRow);
