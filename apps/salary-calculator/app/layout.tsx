@@ -16,6 +16,7 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "연봉 실수령액 계산기 2026 | 4대보험 세금 공제 자동 계산",
   description:
     "2026년 최신 4대보험, 소득세 기준으로 연봉 실수령액을 간편하게 계산해 보세요. 연봉 3000만원~1억원 실수령액 표, 월급 역산 계산기 제공.",
