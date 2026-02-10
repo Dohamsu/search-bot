@@ -160,9 +160,9 @@ export default function Home() {
           <ModeSelector mode={mode} onModeChange={handleModeChange} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="flex gap-6">
           {/* 왼쪽: 입력 & 옵션 */}
-          <div className="space-y-6">
+          <div className="flex-1 min-w-0 space-y-6">
             {/* 자동 생성 모드 */}
             {mode === "auto" && (
               <>
@@ -263,8 +263,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* 오른쪽: 미리보기 + 히스토리 */}
-          <div className="lg:sticky lg:top-8 lg:self-start space-y-4">
+          {/* 가운데: 미리보기 */}
+          <div className="hidden lg:block lg:sticky lg:top-8 lg:self-start w-[340px] shrink-0">
             <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
               <h2 className="text-base font-semibold text-gray-900 mb-4">미리보기</h2>
               <DotArtPreview
@@ -276,12 +276,36 @@ export default function Home() {
                 }}
               />
             </div>
+          </div>
+
+          {/* 오른쪽: 히스토리 사이드바 */}
+          <div className="hidden lg:block lg:sticky lg:top-8 lg:self-start w-[88px] shrink-0" style={{ maxHeight: "calc(100vh - 120px)" }}>
             <HistoryPanel
               history={history}
               onLoad={handleHistoryLoad}
               onHistoryChange={setHistory}
             />
           </div>
+        </div>
+
+        {/* 모바일: 미리보기 + 히스토리 (하단) */}
+        <div className="lg:hidden mt-6 space-y-4">
+          <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+            <h2 className="text-base font-semibold text-gray-900 mb-4">미리보기</h2>
+            <DotArtPreview
+              grid={grid}
+              options={{
+                gap: customizeOpts.gap,
+                dotShape: customizeOpts.dotShape,
+                bgColor: customizeOpts.bgColor,
+              }}
+            />
+          </div>
+          <HistoryPanel
+            history={history}
+            onLoad={handleHistoryLoad}
+            onHistoryChange={setHistory}
+          />
         </div>
 
         {/* Footer */}
