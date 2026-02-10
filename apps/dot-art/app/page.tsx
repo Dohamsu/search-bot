@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Wand2 } from "lucide-react";
 import ModeSelector, { Mode } from "./components/ModeSelector";
 import DotArtCustomizer, { CustomizeOptions } from "./components/DotArtCustomizer";
@@ -8,10 +8,12 @@ import DotArtPreview from "./components/DotArtPreview";
 import PresetGallery from "./components/PresetGallery";
 import GridEditor from "./components/GridEditor";
 import ProModePanel from "./components/ProModePanel";
+import HistoryPanel from "./components/HistoryPanel";
 import Toast from "./components/Toast";
 import { DotGrid, generateDotArt, createEmptyGrid, imageToDotGridPro } from "./lib/dotArt";
 import { PALETTES } from "./lib/palettes";
 import { PRESETS } from "./lib/presets";
+import { HistoryItem, loadHistory, addHistoryItem } from "./lib/history";
 
 export default function Home() {
   const [mode, setMode] = useState<Mode>("auto");
@@ -20,6 +22,14 @@ export default function Home() {
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const [rawProImageUrl, setRawProImageUrl] = useState<string | null>(null);
+
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const historyRef = useRef<HistoryItem[]>([]);
+  historyRef.current = history;
+
+  useEffect(() => {
+    setHistory(loadHistory());
+  }, []);
 
   const [customizeOpts, setCustomizeOpts] = useState<CustomizeOptions>({
     gridSize: 16,
@@ -44,6 +54,7 @@ export default function Home() {
     );
     if (preset) {
       setGrid(preset.grid);
+      setHistory(addHistoryItem(historyRef.current, preset.grid, "auto", preset.name));
       setToast({ message: `프리셋 "${preset.name}" 적용됨`, type: "success" });
       return;
     }
@@ -53,11 +64,13 @@ export default function Home() {
       palette: currentPalette,
     });
     setGrid(result);
+    setHistory(addHistoryItem(historyRef.current, result, "auto", inputText.slice(0, 20)));
     setToast({ message: "도트 아트가 생성되었습니다!", type: "success" });
   }, [inputText, customizeOpts.gridSize, currentPalette]);
 
-  const handlePresetSelect = useCallback((presetGrid: DotGrid) => {
+  const handlePresetSelect = useCallback((presetGrid: DotGrid, name: string) => {
     setGrid(presetGrid);
+    setHistory(addHistoryItem(historyRef.current, presetGrid, "auto", name));
     setToast({ message: "프리셋이 적용되었습니다!", type: "success" });
   }, []);
 
@@ -76,10 +89,17 @@ export default function Home() {
     (result: { grid: DotGrid; imageDataUrl: string }) => {
       setGrid(result.grid);
       setRawProImageUrl(result.imageDataUrl);
+      setHistory(addHistoryItem(historyRef.current, result.grid, "pro", "AI 생성"));
       setToast({ message: "AI 도트 아트가 생성되었습니다!", type: "success" });
     },
     []
   );
+
+  const handleHistoryLoad = useCallback((item: HistoryItem) => {
+    setGrid(item.grid);
+    setRawProImageUrl(null);
+    setToast({ message: "히스토리에서 불러왔습니다", type: "success" });
+  }, []);
 
   // Pro 모드: gridSize 변경 시 캐싱된 이미지로 자동 재변환
   useEffect(() => {
@@ -207,8 +227,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* 오른쪽: 미리보기 */}
-          <div className="lg:sticky lg:top-8 lg:self-start">
+          {/* 오른쪽: 미리보기 + 히스토리 */}
+          <div className="lg:sticky lg:top-8 lg:self-start space-y-4">
             <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
               <h2 className="text-base font-semibold text-gray-900 mb-4">미리보기</h2>
               <DotArtPreview
@@ -220,6 +240,11 @@ export default function Home() {
                 }}
               />
             </div>
+            <HistoryPanel
+              history={history}
+              onLoad={handleHistoryLoad}
+              onHistoryChange={setHistory}
+            />
           </div>
         </div>
 

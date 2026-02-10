@@ -6,7 +6,7 @@ import { PRESETS } from "../lib/presets";
 import { renderDotGrid } from "../lib/canvasRenderer";
 
 interface PresetGalleryProps {
-  onSelect: (grid: DotGrid) => void;
+  onSelect: (grid: DotGrid, name: string) => void;
 }
 
 const CATEGORIES = ["전체", "동물", "자연", "사물", "표정", "기호", "음식"];
@@ -69,7 +69,7 @@ export default function PresetGallery({ onSelect }: PresetGalleryProps) {
             key={preset.id}
             grid={preset.grid}
             name={preset.name}
-            onClick={() => onSelect(preset.grid)}
+            onClick={() => onSelect(preset.grid, preset.name)}
           />
         ))}
       </div>
