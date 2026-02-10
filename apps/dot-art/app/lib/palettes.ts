@@ -80,6 +80,21 @@ export const PALETTES: Palette[] = [
   },
 ];
 
+/**
+ * Compuphase weighted RGB 거리 — 인간 지각 반영
+ * https://www.compuphase.com/cmetric.htm
+ */
+function weightedColorDist(
+  r1: number, g1: number, b1: number,
+  r2: number, g2: number, b2: number
+): number {
+  const rMean = (r1 + r2) >> 1;
+  const dR = r1 - r2;
+  const dG = g1 - g2;
+  const dB = b1 - b2;
+  return ((512 + rMean) * dR * dR >> 8) + 4 * dG * dG + ((767 - rMean) * dB * dB >> 8);
+}
+
 export function findClosestColor(r: number, g: number, b: number, palette: string[]): string {
   let minDist = Infinity;
   let closest = palette[0];
@@ -87,7 +102,7 @@ export function findClosestColor(r: number, g: number, b: number, palette: strin
     const pr = parseInt(hex.slice(1, 3), 16);
     const pg = parseInt(hex.slice(3, 5), 16);
     const pb = parseInt(hex.slice(5, 7), 16);
-    const dist = (r - pr) ** 2 + (g - pg) ** 2 + (b - pb) ** 2;
+    const dist = weightedColorDist(r, g, b, pr, pg, pb);
     if (dist < minDist) {
       minDist = dist;
       closest = hex;

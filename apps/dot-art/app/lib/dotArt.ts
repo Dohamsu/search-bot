@@ -1,12 +1,18 @@
 import { findClosestColor } from "./palettes";
 import { textToEmoji, isEmoji } from "./emojiMap";
+import { applyDither, type DitherMode } from "./dither";
+import { sobelEdgeMap, edgeWeightedBlockSample, addOutlineToGrid } from "./edge";
 
+export type { DitherMode };
 export type DotGrid = (string | null)[][];
 
 export interface DotArtOptions {
   gridSize: number;
   palette: string[];
   alphaThreshold?: number;
+  dither?: DitherMode;
+  edgeEnhance?: boolean;
+  outline?: boolean;
 }
 
 /**
@@ -98,12 +104,22 @@ export function createEmptyGrid(gridSize: number): DotGrid {
 
 /**
  * 이미지를 도트 그리드로 변환 (자동 모드 — 팔레트 양자화)
+ *
+ * 파이프라인:
+ * 1. 이미지 → 캔버스 리사이즈
+ * 2. [Sobel 엣지맵] 엣지 감지 (옵션)
+ * 3. [디더링] 전체 이미지 레벨에서 적용 (옵션)
+ * 4. 블록 샘플링 — 엣지 강조 시 가중 샘플링, 아니면 평균
+ * 5. [아웃라인] 변환 후 인접 색차 기반 아웃라인 오버레이 (옵션)
  */
 export function imageToDotGrid(
   img: HTMLImageElement,
   options: DotArtOptions
 ): DotGrid {
-  const { gridSize, palette, alphaThreshold = 30 } = options;
+  const {
+    gridSize, palette, alphaThreshold = 30,
+    dither = "none", edgeEnhance = false, outline = false,
+  } = options;
   const canvasSize = 256;
   const canvas = document.createElement("canvas");
   canvas.width = canvasSize;
@@ -118,37 +134,61 @@ export function imageToDotGrid(
 
   const imageData = ctx.getImageData(0, 0, canvasSize, canvasSize);
   const { data } = imageData;
-  const blockSize = Math.floor(canvasSize / gridSize);
 
-  const grid: DotGrid = [];
-  for (let row = 0; row < gridSize; row++) {
-    const gridRow: (string | null)[] = [];
-    for (let col = 0; col < gridSize; col++) {
-      let totalR = 0, totalG = 0, totalB = 0, totalA = 0;
-      let count = 0;
+  // Sobel 엣지맵: 디더링/샘플링 전에 원본 데이터로 계산
+  let edgeMap: Float32Array | null = null;
+  if (edgeEnhance) {
+    edgeMap = sobelEdgeMap(data, canvasSize, canvasSize);
+  }
 
-      for (let y = row * blockSize; y < (row + 1) * blockSize && y < canvasSize; y++) {
-        for (let x = col * blockSize; x < (col + 1) * blockSize && x < canvasSize; x++) {
-          const i = (y * canvasSize + x) * 4;
-          totalR += data[i];
-          totalG += data[i + 1];
-          totalB += data[i + 2];
-          totalA += data[i + 3];
-          count++;
+  // 디더링: 블록 샘플링 전에 전체 이미지 레벨에서 적용
+  if (dither !== "none") {
+    applyDither(data, canvasSize, canvasSize, palette, dither);
+  }
+
+  // 블록 샘플링
+  let grid: DotGrid;
+  if (edgeEnhance && edgeMap) {
+    // (A) 엣지 가중 블록 샘플링
+    grid = edgeWeightedBlockSample(data, edgeMap, canvasSize, gridSize, palette, alphaThreshold);
+  } else {
+    // 기존 블록 평균 샘플링
+    const blockSize = Math.floor(canvasSize / gridSize);
+    grid = [];
+    for (let row = 0; row < gridSize; row++) {
+      const gridRow: (string | null)[] = [];
+      for (let col = 0; col < gridSize; col++) {
+        let totalR = 0, totalG = 0, totalB = 0, totalA = 0;
+        let count = 0;
+
+        for (let y = row * blockSize; y < (row + 1) * blockSize && y < canvasSize; y++) {
+          for (let x = col * blockSize; x < (col + 1) * blockSize && x < canvasSize; x++) {
+            const i = (y * canvasSize + x) * 4;
+            totalR += data[i];
+            totalG += data[i + 1];
+            totalB += data[i + 2];
+            totalA += data[i + 3];
+            count++;
+          }
+        }
+
+        const avgA = totalA / count;
+        if (avgA < alphaThreshold) {
+          gridRow.push(null);
+        } else {
+          const avgR = Math.round(totalR / count);
+          const avgG = Math.round(totalG / count);
+          const avgB = Math.round(totalB / count);
+          gridRow.push(findClosestColor(avgR, avgG, avgB, palette));
         }
       }
-
-      const avgA = totalA / count;
-      if (avgA < alphaThreshold) {
-        gridRow.push(null);
-      } else {
-        const avgR = Math.round(totalR / count);
-        const avgG = Math.round(totalG / count);
-        const avgB = Math.round(totalB / count);
-        gridRow.push(findClosestColor(avgR, avgG, avgB, palette));
-      }
+      grid.push(gridRow);
     }
-    grid.push(gridRow);
+  }
+
+  // (B) 아웃라인 오버레이
+  if (outline) {
+    grid = addOutlineToGrid(grid);
   }
 
   return grid;

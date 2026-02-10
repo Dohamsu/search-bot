@@ -15,6 +15,7 @@ import { DotGrid, generateDotArt, createEmptyGrid, imageToDotGridPro } from "./l
 import { PALETTES, remapGridToPalette } from "./lib/palettes";
 import { PRESETS } from "./lib/presets";
 import { HistoryItem, loadHistory, addHistoryItem } from "./lib/history";
+import { medianCut } from "./lib/quantize";
 
 export default function Home() {
   const [mode, setMode] = useState<Mode>("auto");
@@ -23,6 +24,10 @@ export default function Home() {
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const [rawProImageUrl, setRawProImageUrl] = useState<string | null>(null);
+  // 이미지 업로드 상태 추적 (자동 팔레트 활성화용)
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  // 자동 추출 팔레트 캐시
+  const [autoPalette, setAutoPalette] = useState<string[] | null>(null);
 
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const historyRef = useRef<HistoryItem[]>([]);
@@ -38,18 +43,62 @@ export default function Home() {
     bgColor: "#FFFFFF",
     gap: 1,
     dotShape: "square",
+    dither: "none",
+    edgeEnhance: false,
+    outline: false,
   });
 
-  const currentPalette = PALETTES.find((p) => p.id === customizeOpts.paletteId)?.colors ?? PALETTES[0].colors;
+  // 현재 팔레트 결정 (자동 추출 vs 고정)
+  const isAutoPalette = customizeOpts.paletteId.startsWith("auto-");
+  const currentPalette = isAutoPalette && autoPalette
+    ? autoPalette
+    : PALETTES.find((p) => p.id === customizeOpts.paletteId)?.colors ?? PALETTES[0].colors;
+
+  // 자동 팔레트 선택 시 Median Cut 실행
+  useEffect(() => {
+    if (!isAutoPalette || !uploadedImageUrl) {
+      setAutoPalette(null);
+      return;
+    }
+    const colorCount = parseInt(customizeOpts.paletteId.split("-")[1]) || 16;
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const size = 128; // 양자화용 작은 캔버스
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d")!;
+      const scale = Math.min(size / img.width, size / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      const imageData = ctx.getImageData(0, 0, size, size);
+      const palette = medianCut(imageData.data, colorCount);
+      setAutoPalette(palette);
+    };
+    img.src = uploadedImageUrl;
+  }, [isAutoPalette, customizeOpts.paletteId, uploadedImageUrl]);
 
   // 팔레트 변경 시 기존 그리드 색상 리매핑
   const prevPaletteRef = useRef(customizeOpts.paletteId);
   useEffect(() => {
     if (prevPaletteRef.current !== customizeOpts.paletteId && grid) {
+      // 자동 팔레트인데 아직 추출 안 됐으면 리매핑 건너뜀
+      if (isAutoPalette && !autoPalette) {
+        prevPaletteRef.current = customizeOpts.paletteId;
+        return;
+      }
       setGrid(remapGridToPalette(grid, currentPalette));
     }
     prevPaletteRef.current = customizeOpts.paletteId;
   }, [customizeOpts.paletteId, currentPalette]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 자동 팔레트 추출 완료 시 리매핑
+  useEffect(() => {
+    if (isAutoPalette && autoPalette && grid) {
+      setGrid(remapGridToPalette(grid, autoPalette));
+    }
+  }, [autoPalette]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGenerate = useCallback(() => {
     if (!inputText.trim()) {
@@ -94,8 +143,9 @@ export default function Home() {
     setToast({ message: `"${preset.name}" 랜덤 생성!`, type: "success" });
   }, [currentPalette]);
 
-  const handleImageConvert = useCallback((convertedGrid: DotGrid) => {
+  const handleImageConvert = useCallback((convertedGrid: DotGrid, imageDataUrl?: string) => {
     setGrid(convertedGrid);
+    if (imageDataUrl) setUploadedImageUrl(imageDataUrl);
     setHistory(addHistoryItem(historyRef.current, convertedGrid, "auto", "사진 변환"));
     setToast({ message: "사진이 도트 아트로 변환되었습니다!", type: "success" });
   }, []);
@@ -219,6 +269,9 @@ export default function Home() {
                   <ImageUploader
                     gridSize={customizeOpts.gridSize}
                     palette={currentPalette}
+                    dither={customizeOpts.dither}
+                    edgeEnhance={customizeOpts.edgeEnhance}
+                    outline={customizeOpts.outline}
                     onConvert={handleImageConvert}
                     onError={(msg) => setToast({ message: msg, type: "error" })}
                   />
@@ -226,7 +279,11 @@ export default function Home() {
 
                 <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
                   <h2 className="text-base font-semibold text-gray-900 mb-4">커스터마이징</h2>
-                  <DotArtCustomizer options={customizeOpts} onChange={setCustomizeOpts} />
+                  <DotArtCustomizer
+                    options={customizeOpts}
+                    onChange={setCustomizeOpts}
+                    hasImage={!!uploadedImageUrl}
+                  />
                 </div>
 
                 <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
