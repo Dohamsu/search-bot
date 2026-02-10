@@ -17,6 +17,7 @@ const inter = Inter({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://dotart.example.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Dot Art Studio - 무료 도트 아트 생성기 | 픽셀 아트 메이커",
   description: "텍스트를 입력하면 도트 아트가 자동으로 생성됩니다. 그리드 에디터로 직접 픽셀을 찍거나 AI로 고품질 픽셀 아트를 만들어보세요. 무료 다운로드.",
   keywords: ["도트 아트", "픽셀 아트", "도트 아트 생성기", "픽셀 아트 메이커", "도트 그림"],
