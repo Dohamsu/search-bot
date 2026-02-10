@@ -2,18 +2,22 @@
 
 import { useCallback, useRef, useState } from "react";
 import { Upload, X } from "lucide-react";
+import type { DitherMode } from "../lib/dotArt";
 
 interface ImageUploaderProps {
   gridSize: number;
   palette: string[];
-  onConvert: (grid: import("../lib/dotArt").DotGrid) => void;
+  dither?: DitherMode;
+  edgeEnhance?: boolean;
+  outline?: boolean;
+  onConvert: (grid: import("../lib/dotArt").DotGrid, imageDataUrl?: string) => void;
   onError: (msg: string) => void;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 
-export default function ImageUploader({ gridSize, palette, onConvert, onError }: ImageUploaderProps) {
+export default function ImageUploader({ gridSize, palette, dither = "none", edgeEnhance = false, outline = false, onConvert, onError }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,8 +47,8 @@ export default function ImageUploader({ gridSize, palette, onConvert, onError }:
         };
         img.onload = () => {
           import("../lib/dotArt").then(({ imageToDotGrid }) => {
-            const grid = imageToDotGrid(img, { gridSize, palette });
-            onConvert(grid);
+            const grid = imageToDotGrid(img, { gridSize, palette, dither, edgeEnhance, outline });
+            onConvert(grid, dataUrl);
           }).catch(() => {
             onError("도트 아트 변환 중 오류가 발생했습니다.");
           });
@@ -53,7 +57,7 @@ export default function ImageUploader({ gridSize, palette, onConvert, onError }:
       };
       reader.readAsDataURL(file);
     },
-    [gridSize, palette, onConvert, onError]
+    [gridSize, palette, dither, edgeEnhance, outline, onConvert, onError]
   );
 
   const handleDrop = useCallback(
