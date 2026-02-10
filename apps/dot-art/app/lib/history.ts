@@ -1,4 +1,5 @@
 import { DotGrid } from "./dotArt";
+import { DEFAULT_EXAMPLES } from "./defaultExamples";
 
 export interface HistoryItem {
   id: string;
@@ -16,14 +17,27 @@ function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
+function getDefaultHistory(): HistoryItem[] {
+  return DEFAULT_EXAMPLES.map((ex, i) => ({
+    id: `default-${i}`,
+    grid: ex.grid,
+    gridSize: ex.grid.length,
+    mode: "pro" as const,
+    label: ex.label,
+    timestamp: Date.now() - (DEFAULT_EXAMPLES.length - i) * 1000,
+  }));
+}
+
 export function loadHistory(): HistoryItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as HistoryItem[];
+    if (!raw) return getDefaultHistory();
+    const items = JSON.parse(raw) as HistoryItem[];
+    if (items.length === 0) return getDefaultHistory();
+    return items;
   } catch {
-    return [];
+    return getDefaultHistory();
   }
 }
 
