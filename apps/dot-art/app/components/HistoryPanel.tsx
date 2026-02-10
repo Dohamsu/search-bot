@@ -15,10 +15,12 @@ function HistoryThumbnail({
   item,
   onLoad,
   onDelete,
+  isDefault,
 }: {
   item: HistoryItem;
   onLoad: () => void;
   onDelete: () => void;
+  isDefault: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -33,10 +35,6 @@ function HistoryThumbnail({
   }, [item.grid]);
 
   const modeLabel = item.mode === "pro" ? "Pro" : item.mode === "editor" ? "Edit" : "Auto";
-  const timeStr = new Date(item.timestamp).toLocaleTimeString("ko-KR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
   return (
     <div className="group relative">
@@ -53,18 +51,20 @@ function HistoryThumbnail({
           {item.label}
         </span>
         <span className="text-[9px] text-gray-400">
-          {modeLabel} · {item.gridSize}px · {timeStr}
+          {isDefault ? `${modeLabel} · 예시` : `${modeLabel} · ${item.gridSize}px`}
         </span>
       </button>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-        className="absolute -top-1.5 -right-1.5 hidden group-hover:flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs shadow-md hover:bg-red-600 transition-colors"
-      >
-        ×
-      </button>
+      {!isDefault && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="absolute -top-1.5 -right-1.5 hidden group-hover:flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs shadow-md hover:bg-red-600 transition-colors"
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }
@@ -77,6 +77,9 @@ export default function HistoryPanel({
   const [clearClickCount, setClearClickCount] = useState(0);
 
   if (history.length === 0) return null;
+
+  const isAllDefault = history.every((item) => item.id.startsWith("default-"));
+  const hasUserItems = history.some((item) => !item.id.startsWith("default-"));
 
   const handleDelete = (id: string) => {
     onHistoryChange(deleteHistoryItem(history, id));
@@ -96,20 +99,23 @@ export default function HistoryPanel({
     <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-gray-900">
-          히스토리 ({history.length})
+          {isAllDefault ? "AI 예시 갤러리" : `히스토리 (${history.length})`}
         </h3>
-        <button
-          onClick={handleClear}
-          className="text-[11px] text-gray-400 hover:text-red-500 transition-colors"
-        >
-          {clearClickCount === 1 ? "한번 더 클릭하여 확인" : "전체 삭제"}
-        </button>
+        {hasUserItems && (
+          <button
+            onClick={handleClear}
+            className="text-[11px] text-gray-400 hover:text-red-500 transition-colors"
+          >
+            {clearClickCount === 1 ? "한번 더 클릭하여 확인" : "전체 삭제"}
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-4 gap-2 max-h-60 overflow-y-auto">
         {history.map((item) => (
           <HistoryThumbnail
             key={item.id}
             item={item}
+            isDefault={item.id.startsWith("default-")}
             onLoad={() => onLoad(item)}
             onDelete={() => handleDelete(item.id)}
           />
