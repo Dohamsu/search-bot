@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Download, Share2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Download, MessageCircle, Link2 } from 'lucide-react';
 import { generateQRSvg, type QROptions } from '../lib/qr';
+import { initKakao, shareViaKakao } from '../lib/kakaoShare';
 
 interface QRPreviewProps {
   qrDataUrl: string | null;
@@ -14,6 +15,10 @@ interface QRPreviewProps {
 
 export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions, onToast }: QRPreviewProps) {
   const [downloadFormat, setDownloadFormat] = useState<'png' | 'svg'>('png');
+
+  useEffect(() => {
+    initKakao();
+  }, []);
 
   const handleDownload = async () => {
     if (!qrDataUrl) return;
@@ -39,35 +44,48 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
     }
   };
 
-  const handleShare = async () => {
+  const handleKakaoShare = async () => {
     if (!qrDataUrl) return;
 
-    if (navigator.share) {
-      try {
-        const blob = await (await fetch(qrDataUrl)).blob();
-        const file = new File([blob], `qr-${Date.now()}.png`, {
-          type: 'image/png',
-        });
-        await navigator.share({
-          title: 'QR Code',
-          text: inputValue,
-          files: [file],
-        });
-      } catch {
-        await copyToClipboard();
+    const result = await shareViaKakao({
+      qrTypeName: getQrTypeName(),
+      inputSummary: inputValue ? truncate(inputValue, 40) : undefined,
+    });
+
+    if (result.success) {
+      if (result.method === 'clipboard') {
+        onToast?.('카카오톡 공유를 사용할 수 없어 링크가 클립보드에 복사되었습니다');
+      } else if (result.method === 'kakao') {
+        // 카카오톡 공유 성공 - 별도 토스트 불필요
+      } else if (result.method === 'webshare') {
+        // Web Share API 성공 - 별도 토스트 불필요
       }
     } else {
-      await copyToClipboard();
+      onToast?.('공유에 실패했습니다');
     }
   };
 
-  const copyToClipboard = async () => {
+  const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(inputValue);
-      onToast?.('URL이 클립보드에 복사되었습니다');
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://qr.example.com';
+      await navigator.clipboard.writeText(siteUrl);
+      onToast?.('링크가 클립보드에 복사되었습니다');
     } catch {
       onToast?.('복사에 실패했습니다');
     }
+  };
+
+  /** QR 콘텐츠에서 QR 유형 이름 추론 */
+  const getQrTypeName = (): string => {
+    if (!qrContent) return 'QR코드';
+    if (qrContent.startsWith('WIFI:')) return 'Wi-Fi';
+    if (qrContent.startsWith('BEGIN:VCARD')) return '연락처';
+    if (qrContent.startsWith('mailto:')) return '이메일';
+    if (qrContent.startsWith('smsto:') || qrContent.startsWith('sms:')) return 'SMS';
+    if (qrContent.startsWith('geo:')) return '위치';
+    if (qrContent.startsWith('BEGIN:VEVENT')) return '캘린더';
+    if (qrContent.startsWith('http://') || qrContent.startsWith('https://')) return 'URL';
+    return 'QR코드';
   };
 
   return (
@@ -117,25 +135,41 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
           </button>
         </div>
 
-        <div className="flex gap-3 w-full">
+        <div className="flex flex-col gap-2 w-full">
           <button
             onClick={handleDownload}
             disabled={!qrDataUrl}
-            className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg bg-[var(--qr-primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 h-10 rounded-lg bg-[var(--qr-primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Download className="w-4 h-4" />
             다운로드
           </button>
-          <button
-            onClick={handleShare}
-            disabled={!qrDataUrl}
-            className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg border border-zinc-200 text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-          >
-            <Share2 className="w-4 h-4" />
-            공유
-          </button>
+          <div className="flex gap-2 w-full">
+            <button
+              onClick={handleKakaoShare}
+              disabled={!qrDataUrl}
+              className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg bg-[#FEE500] text-[#3C1E1E] text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <MessageCircle className="w-4 h-4" />
+              카카오톡 공유
+            </button>
+            <button
+              onClick={handleCopyLink}
+              disabled={!qrDataUrl}
+              className="flex items-center justify-center gap-2 h-10 px-4 rounded-lg border border-zinc-200 text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <Link2 className="w-4 h-4" />
+              링크 복사
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
+/** 문자열을 maxLen 이하로 잘라서 반환 */
+function truncate(str: string, maxLen: number): string {
+  if (str.length <= maxLen) return str;
+  return str.slice(0, maxLen - 3) + '...';
 }

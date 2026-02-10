@@ -9,7 +9,9 @@ import {
   MessageSquare,
   MapPin,
   CalendarDays,
+  Layers,
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface SidebarProps {
   activeTab: string;
@@ -58,7 +60,15 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         })}
       </nav>
 
-      <div className="px-4 py-5 border-t border-white/10" />
+      <div className="px-3 py-4 border-t border-white/10">
+        <Link
+          href="/batch"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <Layers className="w-5 h-5" />
+          <span>대량 생성</span>
+        </Link>
+      </div>
     </aside>
   );
 }
