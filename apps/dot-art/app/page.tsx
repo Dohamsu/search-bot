@@ -1,33 +1,22 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Wand2, Shuffle, Image as ImageIcon } from "lucide-react";
-import ModeSelector, { Mode } from "./components/ModeSelector";
+import { Image as ImageIcon } from "lucide-react";
 import DotArtCustomizer, { CustomizeOptions } from "./components/DotArtCustomizer";
 import DotArtPreview from "./components/DotArtPreview";
-import PresetGallery from "./components/PresetGallery";
-import GridEditor from "./components/GridEditor";
 import ProModePanel from "./components/ProModePanel";
 import HistoryPanel from "./components/HistoryPanel";
 import Toast from "./components/Toast";
 import ImageUploader from "./components/ImageUploader";
-import { DotGrid, generateDotArt, createEmptyGrid, imageToDotGridPro } from "./lib/dotArt";
+import { DotGrid, imageToDotGridPro } from "./lib/dotArt";
 import { PALETTES, remapGridToPalette } from "./lib/palettes";
-import { PRESETS } from "./lib/presets";
 import { HistoryItem, loadHistory, addHistoryItem } from "./lib/history";
-import { medianCut } from "./lib/quantize";
 
 export default function Home() {
-  const [mode, setMode] = useState<Mode>("auto");
-  const [inputText, setInputText] = useState("");
   const [grid, setGrid] = useState<DotGrid | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const [rawProImageUrl, setRawProImageUrl] = useState<string | null>(null);
-  // 이미지 업로드 상태 추적 (자동 팔레트 활성화용)
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-  // 자동 추출 팔레트 캐시
-  const [autoPalette, setAutoPalette] = useState<string[] | null>(null);
 
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const historyRef = useRef<HistoryItem[]>([]);
@@ -39,7 +28,7 @@ export default function Home() {
 
   const [customizeOpts, setCustomizeOpts] = useState<CustomizeOptions>({
     gridSize: 16,
-    paletteId: "default",
+    paletteId: "color",
     bgColor: "#FFFFFF",
     gap: 1,
     dotShape: "square",
@@ -48,117 +37,23 @@ export default function Home() {
     outline: false,
   });
 
-  // 현재 팔레트 결정 (자동 추출 vs 고정)
-  const isAutoPalette = customizeOpts.paletteId.startsWith("auto-");
-  const currentPalette = isAutoPalette && autoPalette
-    ? autoPalette
-    : PALETTES.find((p) => p.id === customizeOpts.paletteId)?.colors ?? PALETTES[0].colors;
-
-  // 자동 팔레트 선택 시 Median Cut 실행
-  useEffect(() => {
-    if (!isAutoPalette || !uploadedImageUrl) {
-      setAutoPalette(null);
-      return;
-    }
-    const colorCount = parseInt(customizeOpts.paletteId.split("-")[1]) || 16;
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const size = 128; // 양자화용 작은 캔버스
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext("2d")!;
-      const scale = Math.min(size / img.width, size / img.height);
-      const w = img.width * scale;
-      const h = img.height * scale;
-      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-      const imageData = ctx.getImageData(0, 0, size, size);
-      const palette = medianCut(imageData.data, colorCount);
-      setAutoPalette(palette);
-    };
-    img.src = uploadedImageUrl;
-  }, [isAutoPalette, customizeOpts.paletteId, uploadedImageUrl]);
+  // 현재 팔레트 결정
+  const currentPalette = PALETTES.find((p) => p.id === customizeOpts.paletteId)?.colors ?? PALETTES[0].colors;
 
   // 팔레트 변경 시 기존 그리드 색상 리매핑
   const prevPaletteRef = useRef(customizeOpts.paletteId);
   useEffect(() => {
     if (prevPaletteRef.current !== customizeOpts.paletteId && grid) {
-      // 자동 팔레트인데 아직 추출 안 됐으면 리매핑 건너뜀
-      if (isAutoPalette && !autoPalette) {
-        prevPaletteRef.current = customizeOpts.paletteId;
-        return;
-      }
       setGrid(remapGridToPalette(grid, currentPalette));
     }
     prevPaletteRef.current = customizeOpts.paletteId;
   }, [customizeOpts.paletteId, currentPalette]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 자동 팔레트 추출 완료 시 리매핑
-  useEffect(() => {
-    if (isAutoPalette && autoPalette && grid) {
-      setGrid(remapGridToPalette(grid, autoPalette));
-    }
-  }, [autoPalette]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleGenerate = useCallback(() => {
-    if (!inputText.trim()) {
-      setToast({ message: "텍스트를 입력해주세요", type: "error" });
-      return;
-    }
-
-    // 프리셋 매칭 체크
-    const lower = inputText.toLowerCase().trim();
-    const preset = PRESETS.find((p) =>
-      p.keywords.some((kw) => kw === lower)
-    );
-    if (preset) {
-      const remapped = remapGridToPalette(preset.grid, currentPalette);
-      setGrid(remapped);
-      setHistory(addHistoryItem(historyRef.current, remapped, "auto", preset.name));
-      setToast({ message: `프리셋 "${preset.name}" 적용됨`, type: "success" });
-      return;
-    }
-
-    const result = generateDotArt(inputText, {
-      gridSize: customizeOpts.gridSize,
-      palette: currentPalette,
-    });
-    setGrid(result);
-    setHistory(addHistoryItem(historyRef.current, result, "auto", inputText.slice(0, 20)));
-    setToast({ message: "도트 아트가 생성되었습니다!", type: "success" });
-  }, [inputText, customizeOpts.gridSize, currentPalette]);
-
-  const handlePresetSelect = useCallback((presetGrid: DotGrid, name: string) => {
-    const remapped = remapGridToPalette(presetGrid, currentPalette);
-    setGrid(remapped);
-    setHistory(addHistoryItem(historyRef.current, remapped, "auto", name));
-    setToast({ message: "프리셋이 적용되었습니다!", type: "success" });
-  }, [currentPalette]);
-
-  const handleRandomGenerate = useCallback(() => {
-    const preset = PRESETS[Math.floor(Math.random() * PRESETS.length)];
-    const remapped = remapGridToPalette(preset.grid, currentPalette);
-    setGrid(remapped);
-    setHistory(addHistoryItem(historyRef.current, remapped, "auto", preset.name));
-    setToast({ message: `"${preset.name}" 랜덤 생성!`, type: "success" });
-  }, [currentPalette]);
-
-  const handleImageConvert = useCallback((convertedGrid: DotGrid, imageDataUrl?: string) => {
+  const handleImageConvert = useCallback((convertedGrid: DotGrid) => {
     setGrid(convertedGrid);
-    if (imageDataUrl) setUploadedImageUrl(imageDataUrl);
+    setRawProImageUrl(null);
     setHistory(addHistoryItem(historyRef.current, convertedGrid, "auto", "사진 변환"));
     setToast({ message: "사진이 도트 아트로 변환되었습니다!", type: "success" });
-  }, []);
-
-  const handleModeChange = useCallback((newMode: Mode) => {
-    setMode(newMode);
-    if (newMode === "editor" && !grid) {
-      setGrid(createEmptyGrid(customizeOpts.gridSize));
-    }
-  }, [grid, customizeOpts.gridSize]);
-
-  const handleGridUpdate = useCallback((newGrid: DotGrid) => {
-    setGrid(newGrid);
   }, []);
 
   const handleProGenerate = useCallback(
@@ -177,16 +72,16 @@ export default function Home() {
     setToast({ message: "히스토리에서 불러왔습니다", type: "success" });
   }, []);
 
-  // Pro 모드: gridSize/palette 변경 시 캐싱된 이미지로 자동 재변환
+  // gridSize/palette 변경 시 캐싱된 AI 이미지로 자동 재변환
   useEffect(() => {
-    if (!rawProImageUrl || mode !== "pro") return;
+    if (!rawProImageUrl) return;
     const img = new Image();
     img.onload = () => {
       const newGrid = imageToDotGridPro(img, customizeOpts.gridSize, currentPalette);
       setGrid(newGrid);
     };
     img.src = rawProImageUrl;
-  }, [customizeOpts.gridSize, rawProImageUrl, mode, currentPalette]);
+  }, [customizeOpts.gridSize, rawProImageUrl, currentPalette]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -217,119 +112,43 @@ export default function Home() {
       </header>
 
       <div className="mx-auto max-w-6xl px-4 py-8">
-        {/* 모드 선택 */}
-        <div className="mb-6">
-          <ModeSelector mode={mode} onModeChange={handleModeChange} />
-        </div>
-
         <div className="flex gap-6">
           {/* 왼쪽: 입력 & 옵션 */}
           <div className="flex-1 min-w-0 space-y-6">
-            {/* 자동 생성 모드 */}
-            {mode === "auto" && (
-              <>
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">텍스트 입력</h2>
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-                      placeholder="예: 고양이, 하트, 별, 🐱"
-                      className="flex-1 rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                    />
-                    <button
-                      onClick={handleGenerate}
-                      className="flex items-center gap-2 rounded-xl bg-indigo-500 px-6 py-3 text-sm font-medium text-white shadow-md hover:bg-indigo-600 transition-colors"
-                    >
-                      <Wand2 size={18} />
-                      생성
-                    </button>
-                    <button
-                      onClick={handleRandomGenerate}
-                      className="flex items-center justify-center rounded-xl bg-amber-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:bg-amber-600 transition-colors"
-                      title="랜덤 생성"
-                    >
-                      <Shuffle size={18} />
-                    </button>
-                  </div>
-                  <p className="mt-2 text-xs text-gray-400">
-                    동물, 음식, 자연, 이모지 등 키워드를 입력하세요
-                  </p>
-                </div>
+            {/* AI 생성 */}
+            <ProModePanel
+              gridSize={customizeOpts.gridSize}
+              onGenerate={handleProGenerate}
+              onError={(msg) => setToast({ message: msg, type: "error" })}
+            />
 
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">
-                    <span className="flex items-center gap-2">
-                      <ImageIcon size={18} className="text-indigo-500" />
-                      사진 → 도트 아트
-                    </span>
-                  </h2>
-                  <ImageUploader
-                    gridSize={customizeOpts.gridSize}
-                    palette={currentPalette}
-                    dither={customizeOpts.dither}
-                    edgeEnhance={customizeOpts.edgeEnhance}
-                    outline={customizeOpts.outline}
-                    onConvert={handleImageConvert}
-                    onError={(msg) => setToast({ message: msg, type: "error" })}
-                  />
-                </div>
+            {/* 사진 → 도트 아트 */}
+            <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <h2 className="text-base font-semibold text-gray-900 mb-4">
+                <span className="flex items-center gap-2">
+                  <ImageIcon size={18} className="text-indigo-500" />
+                  사진 → 도트 아트
+                </span>
+              </h2>
+              <ImageUploader
+                gridSize={customizeOpts.gridSize}
+                palette={currentPalette}
+                dither={customizeOpts.dither}
+                edgeEnhance={customizeOpts.edgeEnhance}
+                outline={customizeOpts.outline}
+                onConvert={handleImageConvert}
+                onError={(msg) => setToast({ message: msg, type: "error" })}
+              />
+            </div>
 
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">커스터마이징</h2>
-                  <DotArtCustomizer
-                    options={customizeOpts}
-                    onChange={setCustomizeOpts}
-                    hasImage={!!uploadedImageUrl}
-                  />
-                </div>
-
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">프리셋 갤러리</h2>
-                  <PresetGallery onSelect={handlePresetSelect} />
-                </div>
-              </>
-            )}
-
-            {/* 에디터 모드 */}
-            {mode === "editor" && (
-              <>
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">커스터마이징</h2>
-                  <DotArtCustomizer options={customizeOpts} onChange={(opts) => {
-                    if (opts.gridSize !== customizeOpts.gridSize) {
-                      setGrid(createEmptyGrid(opts.gridSize));
-                    }
-                    setCustomizeOpts(opts);
-                  }} />
-                </div>
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">그리드 에디터</h2>
-                  <GridEditor
-                    grid={grid ?? createEmptyGrid(customizeOpts.gridSize)}
-                    palette={currentPalette}
-                    onGridUpdate={handleGridUpdate}
-                  />
-                </div>
-              </>
-            )}
-
-            {/* Pro 모드 */}
-            {mode === "pro" && (
-              <>
-                <ProModePanel
-                  gridSize={customizeOpts.gridSize}
-                  onGenerate={handleProGenerate}
-                  onError={(msg) => setToast({ message: msg, type: "error" })}
-                />
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">커스터마이징</h2>
-                  <DotArtCustomizer options={customizeOpts} onChange={setCustomizeOpts} />
-                </div>
-              </>
-            )}
+            {/* 커스터마이징 */}
+            <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <h2 className="text-base font-semibold text-gray-900 mb-4">커스터마이징</h2>
+              <DotArtCustomizer
+                options={customizeOpts}
+                onChange={setCustomizeOpts}
+              />
+            </div>
           </div>
 
           {/* 가운데: 미리보기 */}

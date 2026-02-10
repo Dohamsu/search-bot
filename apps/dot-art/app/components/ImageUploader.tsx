@@ -10,7 +10,7 @@ interface ImageUploaderProps {
   dither?: DitherMode;
   edgeEnhance?: boolean;
   outline?: boolean;
-  onConvert: (grid: import("../lib/dotArt").DotGrid, imageDataUrl?: string) => void;
+  onConvert: (grid: import("../lib/dotArt").DotGrid) => void;
   onError: (msg: string) => void;
 }
 
@@ -48,7 +48,7 @@ export default function ImageUploader({ gridSize, palette, dither = "none", edge
         img.onload = () => {
           import("../lib/dotArt").then(({ imageToDotGrid }) => {
             const grid = imageToDotGrid(img, { gridSize, palette, dither, edgeEnhance, outline });
-            onConvert(grid, dataUrl);
+            onConvert(grid);
           }).catch(() => {
             onError("도트 아트 변환 중 오류가 발생했습니다.");
           });
