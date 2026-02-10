@@ -1,4 +1,4 @@
-import { DotGrid, imageToDotGrid, DotArtOptions } from "./dotArt";
+import { DotGrid, imageToDotGridPro } from "./dotArt";
 
 export interface ModelOption {
   id: string;
@@ -55,9 +55,9 @@ async function translatePrompt(prompt: string, apiKey: string): Promise<string> 
 export async function generateWithDalle(
   prompt: string,
   apiKey: string,
-  options: DotArtOptions,
+  options: { gridSize: number },
   modelOption: ModelOption
-): Promise<DotGrid> {
+): Promise<{ grid: DotGrid; imageDataUrl: string }> {
   const translated = await translatePrompt(prompt, apiKey);
   const enhancedPrompt = `Pixel art of ${translated}, 16-bit retro style, clean pixels, solid colors, no gradients, centered on white background`;
 
@@ -83,14 +83,15 @@ export async function generateWithDalle(
 
   const data: DalleResponse = await response.json();
   const b64 = data.data[0].b64_json;
+  const imageDataUrl = `data:image/png;base64,${b64}`;
 
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const grid = imageToDotGrid(img, options);
-      resolve(grid);
+      const grid = imageToDotGridPro(img, options.gridSize);
+      resolve({ grid, imageDataUrl });
     };
     img.onerror = () => reject(new Error("이미지 로드 실패"));
-    img.src = `data:image/png;base64,${b64}`;
+    img.src = imageDataUrl;
   });
 }
