@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Wand2 } from "lucide-react";
+import { Wand2, Shuffle, Image as ImageIcon } from "lucide-react";
 import ModeSelector, { Mode } from "./components/ModeSelector";
 import DotArtCustomizer, { CustomizeOptions } from "./components/DotArtCustomizer";
 import DotArtPreview from "./components/DotArtPreview";
@@ -10,6 +10,7 @@ import GridEditor from "./components/GridEditor";
 import ProModePanel from "./components/ProModePanel";
 import HistoryPanel from "./components/HistoryPanel";
 import Toast from "./components/Toast";
+import ImageUploader from "./components/ImageUploader";
 import { DotGrid, generateDotArt, createEmptyGrid, imageToDotGridPro } from "./lib/dotArt";
 import { PALETTES } from "./lib/palettes";
 import { PRESETS } from "./lib/presets";
@@ -72,6 +73,19 @@ export default function Home() {
     setGrid(presetGrid);
     setHistory(addHistoryItem(historyRef.current, presetGrid, "auto", name));
     setToast({ message: "프리셋이 적용되었습니다!", type: "success" });
+  }, []);
+
+  const handleRandomGenerate = useCallback(() => {
+    const preset = PRESETS[Math.floor(Math.random() * PRESETS.length)];
+    setGrid(preset.grid);
+    setHistory(addHistoryItem(historyRef.current, preset.grid, "auto", preset.name));
+    setToast({ message: `"${preset.name}" 랜덤 생성!`, type: "success" });
+  }, []);
+
+  const handleImageConvert = useCallback((convertedGrid: DotGrid) => {
+    setGrid(convertedGrid);
+    setHistory(addHistoryItem(historyRef.current, convertedGrid, "auto", "사진 변환"));
+    setToast({ message: "사진이 도트 아트로 변환되었습니다!", type: "success" });
   }, []);
 
   const handleModeChange = useCallback((newMode: Mode) => {
@@ -170,10 +184,32 @@ export default function Home() {
                       <Wand2 size={18} />
                       생성
                     </button>
+                    <button
+                      onClick={handleRandomGenerate}
+                      className="flex items-center justify-center rounded-xl bg-amber-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:bg-amber-600 transition-colors"
+                      title="랜덤 생성"
+                    >
+                      <Shuffle size={18} />
+                    </button>
                   </div>
                   <p className="mt-2 text-xs text-gray-400">
                     동물, 음식, 자연, 이모지 등 키워드를 입력하세요
                   </p>
+                </div>
+
+                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                  <h2 className="text-base font-semibold text-gray-900 mb-4">
+                    <span className="flex items-center gap-2">
+                      <ImageIcon size={18} className="text-indigo-500" />
+                      사진 → 도트 아트
+                    </span>
+                  </h2>
+                  <ImageUploader
+                    gridSize={customizeOpts.gridSize}
+                    palette={currentPalette}
+                    onConvert={handleImageConvert}
+                    onError={(msg) => setToast({ message: msg, type: "error" })}
+                  />
                 </div>
 
                 <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
