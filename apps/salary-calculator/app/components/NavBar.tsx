@@ -24,6 +24,12 @@ export default function NavBar() {
           >
             실수령표
           </Link>
+          <Link
+            href="/severance"
+            className="text-sm font-medium text-[var(--salary-text)] transition-colors hover:text-[var(--salary-primary)]"
+          >
+            퇴직금
+          </Link>
         </div>
       </div>
       <div />

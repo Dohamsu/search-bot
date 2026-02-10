@@ -1,6 +1,7 @@
 'use client';
 
-import { QrCode, History } from 'lucide-react';
+import { QrCode, History, Layers } from 'lucide-react';
+import Link from 'next/link';
 
 const items = [
   { id: 'generate', label: '생성', icon: QrCode },
@@ -31,6 +32,13 @@ export default function BottomBar({ activeItem, onItemChange }: BottomBarProps) 
           </button>
         );
       })}
+      <Link
+        href="/batch"
+        className="flex flex-col items-center gap-1 py-1 px-3 text-zinc-400"
+      >
+        <Layers className="w-5 h-5" />
+        <span className="text-[10px] font-medium">대량 생성</span>
+      </Link>
     </div>
   );
 }

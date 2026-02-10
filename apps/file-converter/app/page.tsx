@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { ShieldCheck, Lock } from "lucide-react";
+import { ShieldCheck, Lock, Archive, Loader2 } from "lucide-react";
 import NavBar from "./components/NavBar";
 import DropZone from "./components/DropZone";
 import FormatSelector from "./components/FormatSelector";
@@ -13,6 +13,7 @@ import { generateId, getFileExtension } from "./lib/fileUtils";
 import { convertImage, isImageConversion } from "./lib/converter";
 import type { FileItem } from "./lib/fileUtils";
 import type { ConvertOptions as ConvertOptionsType } from "./lib/converter";
+import { downloadAsZip } from "./lib/zipDownload";
 
 const popularConversions = [
   { from: "PNG", to: "JPG", variant: "blue" as const },
@@ -31,6 +32,9 @@ export default function Home() {
   const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined);
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
+
+  const [isZipping, setIsZipping] = useState(false);
+  const [zipProgress, setZipProgress] = useState(0);
 
   useEffect(() => {
     return () => {
@@ -168,6 +172,39 @@ export default function Home() {
     setIsConverting(false);
   }, [files, fromFormat, toFormat, quality, maxWidth, maxHeight, maintainAspectRatio, convertSingleFile]);
 
+  const doneFiles = files.filter((f) => f.status === "done" && f.outputUrl);
+
+  const handleZipDownload = useCallback(async () => {
+    const completedFiles = files.filter((f) => f.status === "done" && f.outputUrl);
+    if (completedFiles.length < 2) return;
+
+    setIsZipping(true);
+    setZipProgress(0);
+
+    try {
+      const zipItems = await Promise.all(
+        completedFiles.map(async (f) => {
+          const response = await fetch(f.outputUrl!);
+          const blob = await response.blob();
+          return {
+            name: f.name,
+            blob,
+            extension: f.convertedExt || "png",
+          };
+        })
+      );
+
+      await downloadAsZip(zipItems, (progress) => {
+        setZipProgress(progress);
+      });
+    } catch {
+      alert("ZIP 파일 생성 중 오류가 발생했습니다.");
+    } finally {
+      setIsZipping(false);
+      setZipProgress(0);
+    }
+  }, [files]);
+
   return (
     <main className="flex min-h-screen flex-col bg-[var(--file-bg)]">
       <NavBar />
@@ -214,6 +251,26 @@ export default function Home() {
             onDelete={handleDeleteFile}
             onRetry={handleRetryFile}
           />
+
+          {doneFiles.length >= 2 && (
+            <button
+              onClick={handleZipDownload}
+              disabled={isZipping}
+              className="flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--file-primary)] bg-[#F0FDFA] px-4 py-3.5 text-sm font-semibold text-[var(--file-primary)] transition-all hover:bg-[#CCFBF1] disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isZipping ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+                  <span>ZIP 생성 중... {zipProgress}%</span>
+                </>
+              ) : (
+                <>
+                  <Archive size={18} aria-hidden="true" />
+                  <span>전체 다운로드 (ZIP) - {doneFiles.length}개 파일</span>
+                </>
+              )}
+            </button>
+          )}
 
           <div className="flex items-center justify-center gap-2.5 rounded-xl border border-[#D1FAE5] bg-[#ECFDF5] px-4 py-3.5" role="status">
             <div className="relative">

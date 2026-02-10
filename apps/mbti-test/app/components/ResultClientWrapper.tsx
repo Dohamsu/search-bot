@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, Share2, RotateCcw, Check, Briefcase, Star } from "lucide-react";
 import { Heart } from "lucide-react";
 import type { MBTIResult } from "../lib/results";
+import { shareMBTIResult } from "../lib/webShare";
 import ResultImageGenerator from "./ResultImageGenerator";
 
 interface ResultClientWrapperProps {
@@ -16,37 +17,12 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
   const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleShare = useCallback(async () => {
-    const url = typeof window !== "undefined" ? `${window.location.origin}/result/${result.type}` : "";
-    const text = `나의 성격 유형은 ${result.type} - ${result.title}! ${url}`;
+    const { success, method } = await shareMBTIResult(result.type, result.title);
 
-    const showCopiedFeedback = () => {
-      setShareLabel("복사 완료!");
+    if (method === "clipboard" && success) {
+      setShareLabel("링크가 복사되었습니다!");
       if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
       shareTimerRef.current = setTimeout(() => setShareLabel("결과 공유하기"), 2000);
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "성격 유형 테스트 결과", text, url });
-        return;
-      } catch (e) {
-        if (e instanceof Error && e.name === "AbortError") return;
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(text);
-      showCopiedFeedback();
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      showCopiedFeedback();
     }
   }, [result]);
 
@@ -157,14 +133,18 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
         </div>
         <div className="flex gap-3">
           {result.compatible.map((type) => (
-            <span
+            <a
               key={type}
-              className="rounded-full bg-[#F3E8FF] px-5 py-2 text-sm font-semibold text-[var(--mbti-primary)]"
+              href={`/compatibility/${[result.type, type].sort().join('-')}`}
+              className="rounded-full bg-[#F3E8FF] px-5 py-2 text-sm font-semibold text-[var(--mbti-primary)] hover:bg-[#EDE9FE] transition-colors"
             >
               {type}
-            </span>
+            </a>
           ))}
         </div>
+        <a href="/compatibility" className="mt-2 text-sm text-[var(--mbti-primary)] hover:underline">
+          모든 궁합 보기 →
+        </a>
       </motion.div>
 
       <motion.div

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllTypes } from "./lib/results";
+import { getAllCompatibilityPairs } from "./lib/compatibility";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
@@ -11,12 +12,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const compatPages = getAllCompatibilityPairs().map(([t1, t2]) => ({
+    url: `${baseUrl}/compatibility/${t1}-${t2}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   return [
     {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
+    },
+    {
+      url: `${baseUrl}/compatibility`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/privacy`,
@@ -31,5 +45,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     ...typePages,
+    ...compatPages,
   ];
 }

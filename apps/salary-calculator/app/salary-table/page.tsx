@@ -191,6 +191,11 @@ export default function SalaryTablePage() {
               {rows.map((row, idx) => {
                 const isHighlight =
                   row.annualSalary % 10_000_000 === 0;
+                const amountInMan = row.annualSalary / 10000;
+                const hasDetailPage =
+                  amountInMan >= 2000 &&
+                  amountInMan <= 15000 &&
+                  amountInMan % 500 === 0;
                 return (
                   <tr
                     key={row.annualSalary}
@@ -203,7 +208,16 @@ export default function SalaryTablePage() {
                     }`}
                   >
                     <td className="whitespace-nowrap px-4 py-2.5 text-left text-[var(--salary-text)] md:px-6">
-                      {formatManWon(row.annualSalary)}원
+                      {hasDetailPage ? (
+                        <Link
+                          href={`/salary/${amountInMan}`}
+                          className="text-[var(--salary-primary)] underline decoration-blue-200 underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-blue-400"
+                        >
+                          {formatManWon(row.annualSalary)}원
+                        </Link>
+                      ) : (
+                        <>{formatManWon(row.annualSalary)}원</>
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-right font-[family-name:var(--font-space-grotesk-var)] text-[var(--salary-text)] md:px-6">
                       {formatCurrency(row.monthlySalary)}원
