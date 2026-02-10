@@ -16,9 +16,10 @@ interface DotArtPreviewProps {
     bgColor: string;
   };
   filename?: string;
+  onError?: (message: string) => void;
 }
 
-export default function DotArtPreview({ grid, options, filename = "dot-art" }: DotArtPreviewProps) {
+export default function DotArtPreview({ grid, options, filename = "dot-art", onError }: DotArtPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const thumbCanvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,7 +103,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     } catch {
-      alert("클립보드 복사에 실패했습니다. 브라우저 권한을 확인해주세요.");
+      onError?.("클립보드 복사에 실패했습니다. 브라우저 권한을 확인해주세요.");
     }
   };
 
@@ -126,7 +127,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
       link.click();
       URL.revokeObjectURL(url);
     } catch {
-      alert("GIF 생성에 실패했습니다. 다시 시도해주세요.");
+      onError?.("GIF 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setGifExporting(false);
     }

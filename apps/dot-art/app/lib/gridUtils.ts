@@ -7,7 +7,7 @@ export type Tool = "pencil" | "eraser" | "bucket" | "eyedropper";
  */
 export function setCell(grid: DotGrid, row: number, col: number, color: string | null): DotGrid {
   const newGrid = grid.map((r) => [...r]);
-  if (row >= 0 && row < newGrid.length && col >= 0 && col < newGrid[0].length) {
+  if (newGrid.length > 0 && row >= 0 && row < newGrid.length && col >= 0 && col < newGrid[0].length) {
     newGrid[row][col] = color;
   }
   return newGrid;
@@ -17,6 +17,7 @@ export function setCell(grid: DotGrid, row: number, col: number, color: string |
  * 플러드 필(Flood Fill) - 페인트통 도구
  */
 export function floodFill(grid: DotGrid, row: number, col: number, fillColor: string): DotGrid {
+  if (grid.length === 0 || grid[0].length === 0) return grid;
   const rows = grid.length;
   const cols = grid[0].length;
   const targetColor = grid[row][col];

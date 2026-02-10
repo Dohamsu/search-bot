@@ -12,7 +12,7 @@ import HistoryPanel from "./components/HistoryPanel";
 import Toast from "./components/Toast";
 import ImageUploader from "./components/ImageUploader";
 import { DotGrid, generateDotArt, createEmptyGrid, imageToDotGridPro } from "./lib/dotArt";
-import { PALETTES } from "./lib/palettes";
+import { PALETTES, remapGridToPalette } from "./lib/palettes";
 import { PRESETS } from "./lib/presets";
 import { HistoryItem, loadHistory, addHistoryItem } from "./lib/history";
 
@@ -42,6 +42,15 @@ export default function Home() {
 
   const currentPalette = PALETTES.find((p) => p.id === customizeOpts.paletteId)?.colors ?? PALETTES[0].colors;
 
+  // 팔레트 변경 시 기존 그리드 색상 리매핑
+  const prevPaletteRef = useRef(customizeOpts.paletteId);
+  useEffect(() => {
+    if (prevPaletteRef.current !== customizeOpts.paletteId && grid) {
+      setGrid(remapGridToPalette(grid, currentPalette));
+    }
+    prevPaletteRef.current = customizeOpts.paletteId;
+  }, [customizeOpts.paletteId, currentPalette]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleGenerate = useCallback(() => {
     if (!inputText.trim()) {
       setToast({ message: "텍스트를 입력해주세요", type: "error" });
@@ -54,8 +63,9 @@ export default function Home() {
       p.keywords.some((kw) => kw === lower)
     );
     if (preset) {
-      setGrid(preset.grid);
-      setHistory(addHistoryItem(historyRef.current, preset.grid, "auto", preset.name));
+      const remapped = remapGridToPalette(preset.grid, currentPalette);
+      setGrid(remapped);
+      setHistory(addHistoryItem(historyRef.current, remapped, "auto", preset.name));
       setToast({ message: `프리셋 "${preset.name}" 적용됨`, type: "success" });
       return;
     }
@@ -70,17 +80,19 @@ export default function Home() {
   }, [inputText, customizeOpts.gridSize, currentPalette]);
 
   const handlePresetSelect = useCallback((presetGrid: DotGrid, name: string) => {
-    setGrid(presetGrid);
-    setHistory(addHistoryItem(historyRef.current, presetGrid, "auto", name));
+    const remapped = remapGridToPalette(presetGrid, currentPalette);
+    setGrid(remapped);
+    setHistory(addHistoryItem(historyRef.current, remapped, "auto", name));
     setToast({ message: "프리셋이 적용되었습니다!", type: "success" });
-  }, []);
+  }, [currentPalette]);
 
   const handleRandomGenerate = useCallback(() => {
     const preset = PRESETS[Math.floor(Math.random() * PRESETS.length)];
-    setGrid(preset.grid);
-    setHistory(addHistoryItem(historyRef.current, preset.grid, "auto", preset.name));
+    const remapped = remapGridToPalette(preset.grid, currentPalette);
+    setGrid(remapped);
+    setHistory(addHistoryItem(historyRef.current, remapped, "auto", preset.name));
     setToast({ message: `"${preset.name}" 랜덤 생성!`, type: "success" });
-  }, []);
+  }, [currentPalette]);
 
   const handleImageConvert = useCallback((convertedGrid: DotGrid) => {
     setGrid(convertedGrid);
@@ -115,16 +127,16 @@ export default function Home() {
     setToast({ message: "히스토리에서 불러왔습니다", type: "success" });
   }, []);
 
-  // Pro 모드: gridSize 변경 시 캐싱된 이미지로 자동 재변환
+  // Pro 모드: gridSize/palette 변경 시 캐싱된 이미지로 자동 재변환
   useEffect(() => {
     if (!rawProImageUrl || mode !== "pro") return;
     const img = new Image();
     img.onload = () => {
-      const newGrid = imageToDotGridPro(img, customizeOpts.gridSize);
+      const newGrid = imageToDotGridPro(img, customizeOpts.gridSize, currentPalette);
       setGrid(newGrid);
     };
     img.src = rawProImageUrl;
-  }, [customizeOpts.gridSize, rawProImageUrl, mode]);
+  }, [customizeOpts.gridSize, rawProImageUrl, mode, currentPalette]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -274,6 +286,7 @@ export default function Home() {
                   dotShape: customizeOpts.dotShape,
                   bgColor: customizeOpts.bgColor,
                 }}
+                onError={(msg) => setToast({ message: msg, type: "error" })}
               />
             </div>
           </div>
