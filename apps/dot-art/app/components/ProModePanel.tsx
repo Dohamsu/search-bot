@@ -5,7 +5,6 @@ import { Sparkles, Loader2, Info, Timer, Zap, Crown, Rocket } from "lucide-react
 import { DotGrid } from "../lib/dotArt";
 import { generateWithDalle, MODEL_OPTIONS, ModelOption, COOLDOWN_MS } from "../lib/proMode";
 
-const API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
 const COOLDOWN_STORAGE_KEY = "dot-art-pro-last-gen";
 
 const MODEL_ICONS: Record<string, typeof Zap> = {
@@ -65,10 +64,6 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
   const isCoolingDown = cooldown > 0;
 
   const handleGenerate = async () => {
-    if (!API_KEY) {
-      onError("OpenAI API 키가 설정되지 않았습니다");
-      return;
-    }
     if (!prompt.trim()) {
       onError("프롬프트를 입력해주세요");
       return;
@@ -78,12 +73,9 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
       return;
     }
 
-    // TODO: 광고 시청 체크 로직 (현재는 무료)
-    // if (!hasWatchedAd) { showAdModal(); return; }
-
     setLoading(true);
     try {
-      const result = await generateWithDalle(prompt, API_KEY, { gridSize }, selectedModel);
+      const result = await generateWithDalle(prompt, { gridSize }, selectedModel);
       onGenerate(result);
       startCooldown();
     } catch (err) {
@@ -161,7 +153,7 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
       {/* 생성 버튼 */}
       <button
         onClick={handleGenerate}
-        disabled={loading || !API_KEY || isCoolingDown}
+        disabled={loading || isCoolingDown}
         className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:from-indigo-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
@@ -182,11 +174,6 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
         )}
       </button>
 
-      {!API_KEY && (
-        <p className="text-xs text-red-400 text-center">
-          .env 파일에 NEXT_PUBLIC_OPENAI_API_KEY를 설정해주세요
-        </p>
-      )}
     </div>
   );
 }
