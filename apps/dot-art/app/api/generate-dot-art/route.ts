@@ -61,7 +61,7 @@ async function translatePrompt(prompt: string): Promise<string> {
         {
           role: "system",
           content:
-            "You are a translator. Convert the user's Korean text into a concise English description suitable for an image generation prompt. Output ONLY the English translation, nothing else.",
+            "You are a pixel art prompt specialist. Convert the user's Korean text into a concise English description optimized for pixel art image generation. Focus on the core subject with a clear, simple visual description. Use concrete nouns and simple adjectives. Avoid abstract concepts. Output ONLY the English description, nothing else. Example: '행복한 고양이' → 'a happy cat sitting, facing forward'",
         },
         { role: "user", content: prompt },
       ],
@@ -117,14 +117,22 @@ export async function POST(req: NextRequest) {
   try {
     const translated = await translatePrompt(prompt.trim());
 
-    // 그리드 크기에 맞는 프롬프트 생성
+    // 그리드 크기별 최적 프롬프트 생성
+    // 핵심: "cel-shaded"가 gradients 억제에 가장 효과적
+    // 긍정 표현 우선 (flat solid colors, hard edges) > 부정 표현 (no gradients)
     let enhancedPrompt: string;
-    if (gridSize <= 16) {
-      enhancedPrompt = `Simple ${gridSize}x${gridSize} pixel art sprite of ${translated}, extremely low resolution, blocky shapes, maximum 8 colors, no gradients, no anti-aliasing, no shading, flat solid colors only, centered on plain white background`;
+    if (gridSize <= 12) {
+      // 극저해상도: Game Boy 스타일, 극도로 단순한 형태
+      enhancedPrompt = `Single pixel art sprite of ${translated}, Game Boy style, 4 colors only, cel-shaded flat solid color fill, hard pixel edges, extremely simple blocky shapes, 2D side view, uniform lighting, no shadows, no gradients, centered on pure white background, single subject, nothing else visible`;
+    } else if (gridSize <= 16) {
+      // 저해상도: NES 8-bit 스타일
+      enhancedPrompt = `Single pixel art sprite of ${translated}, NES 8-bit style, maximum 8 colors, cel-shaded flat coloring, hard pixel edges, simple bold shapes, 2D, uniform lighting, no shadows, no gradients, solid color regions only, icon-like simplicity, centered on pure white background, single subject only`;
     } else if (gridSize <= 32) {
-      enhancedPrompt = `${gridSize}x${gridSize} pixel art of ${translated}, low resolution retro style, blocky, limited color palette, no gradients, no anti-aliasing, solid colors, centered on white background`;
+      // 중해상도: 16-bit SNES 스타일
+      enhancedPrompt = `Pixel art of ${translated}, 16-bit SNES retro style, limited palette of 16 colors, cel-shaded flat shading, crisp pixel edges, bold outlines, clean distinct color regions, 2D sprite, uniform lighting, no smooth gradients, centered on solid white background, single subject only`;
     } else {
-      enhancedPrompt = `Pixel art of ${translated}, 16-bit retro style, clean pixels, solid colors, no gradients, centered on white background`;
+      // 고해상도: 클래식 아케이드 스타일
+      enhancedPrompt = `Detailed pixel art of ${translated}, classic arcade game style, clean sharp pixels, cel-shaded with flat color fills, limited color palette, bold outlines, each area filled with a single uniform color, retro gaming aesthetic, no smooth gradients, centered on solid white background, single subject`;
     }
 
     const response = await fetch("https://api.openai.com/v1/images/generations", {
