@@ -16,8 +16,7 @@ const MODEL_ICONS: Record<string, typeof Zap> = {
 
 interface ProModePanelProps {
   gridSize: number;
-  palette: string[];
-  onGenerate: (grid: DotGrid) => void;
+  onGenerate: (result: { grid: DotGrid; imageDataUrl: string }) => void;
   onError: (message: string) => void;
 }
 
@@ -36,7 +35,7 @@ function formatTime(ms: number): string {
   return `${min}:${sec.toString().padStart(2, "0")}`;
 }
 
-export default function ProModePanel({ gridSize, palette, onGenerate, onError }: ProModePanelProps) {
+export default function ProModePanel({ gridSize, onGenerate, onError }: ProModePanelProps) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<ModelOption>(MODEL_OPTIONS[0]);
@@ -84,8 +83,8 @@ export default function ProModePanel({ gridSize, palette, onGenerate, onError }:
 
     setLoading(true);
     try {
-      const grid = await generateWithDalle(prompt, API_KEY, { gridSize, palette }, selectedModel);
-      onGenerate(grid);
+      const result = await generateWithDalle(prompt, API_KEY, { gridSize }, selectedModel);
+      onGenerate(result);
       startCooldown();
     } catch (err) {
       onError(err instanceof Error ? err.message : "생성 실패");

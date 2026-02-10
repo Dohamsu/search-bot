@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Wand2 } from "lucide-react";
 import ModeSelector, { Mode } from "./components/ModeSelector";
 import DotArtCustomizer, { CustomizeOptions } from "./components/DotArtCustomizer";
@@ -9,7 +9,7 @@ import PresetGallery from "./components/PresetGallery";
 import GridEditor from "./components/GridEditor";
 import ProModePanel from "./components/ProModePanel";
 import Toast from "./components/Toast";
-import { DotGrid, generateDotArt, createEmptyGrid } from "./lib/dotArt";
+import { DotGrid, generateDotArt, createEmptyGrid, imageToDotGridPro } from "./lib/dotArt";
 import { PALETTES } from "./lib/palettes";
 import { PRESETS } from "./lib/presets";
 
@@ -18,6 +18,8 @@ export default function Home() {
   const [inputText, setInputText] = useState("");
   const [grid, setGrid] = useState<DotGrid | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const [rawProImageUrl, setRawProImageUrl] = useState<string | null>(null);
 
   const [customizeOpts, setCustomizeOpts] = useState<CustomizeOptions>({
     gridSize: 16,
@@ -70,10 +72,25 @@ export default function Home() {
     setGrid(newGrid);
   }, []);
 
-  const handleProGenerate = useCallback((newGrid: DotGrid) => {
-    setGrid(newGrid);
-    setToast({ message: "AI 도트 아트가 생성되었습니다!", type: "success" });
-  }, []);
+  const handleProGenerate = useCallback(
+    (result: { grid: DotGrid; imageDataUrl: string }) => {
+      setGrid(result.grid);
+      setRawProImageUrl(result.imageDataUrl);
+      setToast({ message: "AI 도트 아트가 생성되었습니다!", type: "success" });
+    },
+    []
+  );
+
+  // Pro 모드: gridSize 변경 시 캐싱된 이미지로 자동 재변환
+  useEffect(() => {
+    if (!rawProImageUrl || mode !== "pro") return;
+    const img = new Image();
+    img.onload = () => {
+      const newGrid = imageToDotGridPro(img, customizeOpts.gridSize);
+      setGrid(newGrid);
+    };
+    img.src = rawProImageUrl;
+  }, [customizeOpts.gridSize, rawProImageUrl, mode]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -179,7 +196,6 @@ export default function Home() {
               <>
                 <ProModePanel
                   gridSize={customizeOpts.gridSize}
-                  palette={currentPalette}
                   onGenerate={handleProGenerate}
                   onError={(msg) => setToast({ message: msg, type: "error" })}
                 />
