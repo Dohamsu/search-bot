@@ -11,6 +11,7 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://file.example.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "FileFlow - 무료 온라인 파일 변환기 | 이미지 압축, HEIC 변환",
   description:
     "100% 브라우저에서 처리되는 안전한 파일 변환기. PNG, JPG, WebP, HEIC 변환, 이미지 압축 및 리사이즈. 서버 업로드 없이 프라이버시 보호.",

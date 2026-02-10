@@ -17,6 +17,7 @@ const inter = Inter({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://qr.example.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "QR Studio - 무료 QR코드 생성기 | 색상 커스텀, 로고 삽입",
   description: "무료로 QR코드를 생성하세요. URL, Wi-Fi, 연락처, 이메일, SMS, 위치 QR코드 지원. 색상 커스텀, 로고 삽입, SVG 다운로드.",
   keywords: ["QR코드 생성기", "QR코드 만들기", "무료 QR코드", "QR코드 커스텀", "Wi-Fi QR코드"],
