@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Sparkles, Loader2, Info, Timer, Zap, Crown, Rocket } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
-import { generateWithDalle, MODEL_OPTIONS, ModelOption, COOLDOWN_MS } from "../lib/proMode";
+import { generateWithDalle, MODEL_OPTIONS, ModelOption, COOLDOWN_MS, getRecommendedModel, getMaxModelIndex } from "../lib/proMode";
 
 const COOLDOWN_STORAGE_KEY = "dot-art-pro-last-gen";
 
@@ -37,8 +37,19 @@ function formatTime(ms: number): string {
 export default function ProModePanel({ gridSize, onGenerate, onError }: ProModePanelProps) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<ModelOption>(MODEL_OPTIONS[0]);
+  const [selectedModel, setSelectedModel] = useState<ModelOption>(() => getRecommendedModel(gridSize));
   const [cooldown, setCooldown] = useState(0);
+  const maxModelIdx = getMaxModelIndex(gridSize);
+
+  // 그리드 크기 변경 시 추천 모델로 자동 전환
+  useEffect(() => {
+    const recommended = getRecommendedModel(gridSize);
+    const currentIdx = MODEL_OPTIONS.findIndex(m => m.id === selectedModel.id);
+    const maxIdx = getMaxModelIndex(gridSize);
+    if (currentIdx > maxIdx) {
+      setSelectedModel(recommended);
+    }
+  }, [gridSize, selectedModel.id]);
 
   // 쿨다운 타이머
   useEffect(() => {
@@ -106,22 +117,26 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">AI 모델 선택</label>
         <div className="grid grid-cols-3 gap-2">
-          {MODEL_OPTIONS.map((opt) => {
+          {MODEL_OPTIONS.map((opt, idx) => {
             const Icon = MODEL_ICONS[opt.id] || Zap;
             const active = selectedModel.id === opt.id;
+            const disabled = idx > maxModelIdx;
             return (
               <button
                 key={opt.id}
-                onClick={() => setSelectedModel(opt)}
+                onClick={() => !disabled && setSelectedModel(opt)}
+                disabled={disabled}
                 className={`relative flex flex-col items-center gap-1.5 rounded-xl p-3 text-xs transition-all border-2 ${
-                  active
+                  disabled
+                    ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed opacity-50"
+                    : active
                     ? "border-indigo-500 bg-indigo-50 text-indigo-700"
                     : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
                 }`}
               >
                 <Icon size={18} />
                 <span className="font-semibold">{opt.label}</span>
-                <span className={`text-[10px] ${active ? "text-indigo-500" : "text-gray-400"}`}>
+                <span className={`text-[10px] ${disabled ? "text-gray-300" : active ? "text-indigo-500" : "text-gray-400"}`}>
                   {opt.price}/회
                 </span>
               </button>
@@ -129,6 +144,11 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
           })}
         </div>
         <p className="mt-1.5 text-xs text-gray-400">{selectedModel.description}</p>
+        {maxModelIdx < 2 && (
+          <p className="text-xs text-amber-600">
+            {gridSize}x{gridSize} 그리드에서는 저해상도 모델이 더 깨끗한 결과를 제공합니다
+          </p>
+        )}
       </div>
 
       {/* 프롬프트 */}

@@ -17,6 +17,20 @@ export const MODEL_OPTIONS: ModelOption[] = [
 
 export const COOLDOWN_MS = 5 * 60 * 1000; // 5분
 
+/** 그리드 크기에 따른 추천 모델 반환 */
+export function getRecommendedModel(gridSize: number): ModelOption {
+  if (gridSize <= 16) return MODEL_OPTIONS[0]; // d2-256
+  if (gridSize <= 32) return MODEL_OPTIONS[1]; // d2-512
+  return MODEL_OPTIONS[2]; // d3-1024
+}
+
+/** 그리드 크기에서 사용 가능한 최대 모델 인덱스 */
+export function getMaxModelIndex(gridSize: number): number {
+  if (gridSize <= 16) return 0; // d2-256만 허용
+  if (gridSize <= 32) return 1; // d2-512까지
+  return 2; // 전체
+}
+
 export async function generateWithDalle(
   prompt: string,
   options: { gridSize: number },
@@ -25,7 +39,7 @@ export async function generateWithDalle(
   const response = await fetch("/api/generate-dot-art", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, modelId: modelOption.id }),
+    body: JSON.stringify({ prompt, modelId: modelOption.id, gridSize: options.gridSize }),
   });
 
   const data = await response.json();

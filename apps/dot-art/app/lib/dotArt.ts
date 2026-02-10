@@ -188,36 +188,86 @@ function detectBgColor(
 }
 
 /**
+ * 이미지를 중간 크기로 축소하여 디테일을 사전 제거하는 전처리 단계.
+ * 고해상도 이미지의 그라데이션, 안티앨리어싱, 미세 디테일을 제거한다.
+ */
+function simplifyImage(
+  img: HTMLImageElement,
+  targetSize: number
+): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } {
+  const canvas = document.createElement("canvas");
+  canvas.width = targetSize;
+  canvas.height = targetSize;
+  const ctx = canvas.getContext("2d")!;
+
+  // imageSmoothingEnabled를 끄면 nearest-neighbor 보간 → 더 블록감 있는 결과
+  ctx.imageSmoothingEnabled = targetSize <= 64;
+  ctx.imageSmoothingQuality = "low";
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, targetSize, targetSize);
+
+  const scale = Math.min(targetSize / img.width, targetSize / img.height);
+  const w = img.width * scale;
+  const h = img.height * scale;
+  ctx.drawImage(img, (targetSize - w) / 2, (targetSize - h) / 2, w, h);
+
+  return { canvas, ctx };
+}
+
+/**
+ * 캔버스 픽셀 데이터에 포스터라이즈(색상 단순화) 적용.
+ * levels가 낮을수록 더 적은 색상으로 단순화됨.
+ */
+function posterize(
+  data: Uint8ClampedArray,
+  levels: number
+): void {
+  const step = 255 / (levels - 1);
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = Math.round(Math.round(data[i] / step) * step);
+    data[i + 1] = Math.round(Math.round(data[i + 1] / step) * step);
+    data[i + 2] = Math.round(Math.round(data[i + 2] / step) * step);
+  }
+}
+
+/**
  * 이미지를 도트 그리드로 변환 (Pro 모드 — 원본 색상 유지)
  *
- * 개선점:
- * 1. 팔레트 양자화 없이 DALL-E 원본 색상 사용
- * 2. 블록 내 최빈색(dominant color) 기반 — 안티앨리어싱/그라데이션 노이즈 제거
- * 3. 코너 샘플링으로 배경색 자동 감지 → 투명(null) 처리
- * 4. 512×512 캔버스로 해상도 향상
+ * 파이프라인:
+ * 1. 이미지를 중간 크기(gridSize × 6~8)로 축소 → 디테일 사전 제거
+ * 2. 포스터라이즈로 색상 수 축소 → 그라데이션/안티앨리어싱 제거
+ * 3. 블록 내 최빈색(dominant color) 기반 샘플링
+ * 4. 코너 샘플링으로 배경색 자동 감지 → 투명(null) 처리
  */
 export function imageToDotGridPro(
   img: HTMLImageElement,
   gridSize: number
 ): DotGrid {
-  const canvasSize = 512;
-  const canvas = document.createElement("canvas");
-  canvas.width = canvasSize;
-  canvas.height = canvasSize;
-  const ctx = canvas.getContext("2d")!;
+  // 그리드 크기에 따라 중간 캔버스 크기 결정
+  // 저해상도(8~16): 작은 중간 캔버스로 디테일 강제 제거
+  // 고해상도(64): 더 큰 캔버스로 디테일 보존
+  const intermediateSize = Math.max(gridSize * 6, 96);
+  const canvasSize = Math.min(intermediateSize, 512);
 
-  ctx.clearRect(0, 0, canvasSize, canvasSize);
-  const scale = Math.min(canvasSize / img.width, canvasSize / img.height);
-  const w = img.width * scale;
-  const h = img.height * scale;
-  ctx.drawImage(img, (canvasSize - w) / 2, (canvasSize - h) / 2, w, h);
+  const { canvas, ctx } = simplifyImage(img, canvasSize);
 
+  // 포스터라이즈: 저해상도 그리드일수록 더 공격적으로 색상 축소
   const imageData = ctx.getImageData(0, 0, canvasSize, canvasSize);
   const { data } = imageData;
+  const posterizeLevels = gridSize <= 16 ? 6 : gridSize <= 32 ? 8 : 12;
+  posterize(data, posterizeLevels);
+  ctx.putImageData(imageData, 0, 0);
+
+  // 포스터라이즈된 데이터로 다시 읽기
+  const finalData = ctx.getImageData(0, 0, canvasSize, canvasSize).data;
   const blockSize = Math.floor(canvasSize / gridSize);
 
-  const bg = detectBgColor(data, canvasSize);
+  const bg = detectBgColor(finalData, canvasSize);
   const BG_THRESHOLD = 2500; // ~50 per channel
+
+  // 저해상도 그리드에서는 더 공격적인 양자화 (64단위)
+  const quantShift = gridSize <= 16 ? 6 : 5;
 
   const grid: DotGrid = [];
   for (let row = 0; row < gridSize; row++) {
@@ -240,12 +290,11 @@ export function imageToDotGridPro(
           x++
         ) {
           const i = (y * canvasSize + x) * 4;
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
+          const r = finalData[i];
+          const g = finalData[i + 1];
+          const b = finalData[i + 2];
 
-          // 32단위로 양자화 → 유사색 그룹핑
-          const key = `${(r >> 5) << 5},${(g >> 5) << 5},${(b >> 5) << 5}`;
+          const key = `${(r >> quantShift) << quantShift},${(g >> quantShift) << quantShift},${(b >> quantShift) << quantShift}`;
           const entry = groups.get(key);
           if (entry) {
             entry.count++;
@@ -279,6 +328,10 @@ export function imageToDotGridPro(
     }
     grid.push(gridRow);
   }
+
+  // 캔버스 정리
+  canvas.width = 0;
+  canvas.height = 0;
 
   return grid;
 }

@@ -84,14 +84,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: rateCheck.reason }, { status: 429 });
   }
 
-  let body: { prompt?: string; modelId?: string };
+  let body: { prompt?: string; modelId?: string; gridSize?: number };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "잘못된 요청입니다" }, { status: 400 });
   }
 
-  const { prompt, modelId } = body;
+  const { prompt, modelId, gridSize = 16 } = body;
 
   if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
     return NextResponse.json({ error: "프롬프트를 입력해주세요" }, { status: 400 });
@@ -101,14 +101,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "프롬프트는 500자 이하로 입력해주세요" }, { status: 400 });
   }
 
-  const modelConfig = MODEL_MAP[modelId || "d2-256"];
+  // 그리드 크기에 따라 모델 자동 제한 (저해상도에 고화질 모델 사용 방지)
+  let effectiveModelId = modelId || "d2-256";
+  if (gridSize <= 16) {
+    effectiveModelId = "d2-256";
+  } else if (gridSize <= 32 && effectiveModelId === "d3-1024") {
+    effectiveModelId = "d2-512";
+  }
+
+  const modelConfig = MODEL_MAP[effectiveModelId];
   if (!modelConfig) {
     return NextResponse.json({ error: "지원하지 않는 모델입니다" }, { status: 400 });
   }
 
   try {
     const translated = await translatePrompt(prompt.trim());
-    const enhancedPrompt = `Pixel art of ${translated}, 16-bit retro style, clean pixels, solid colors, no gradients, centered on white background`;
+
+    // 그리드 크기에 맞는 프롬프트 생성
+    let enhancedPrompt: string;
+    if (gridSize <= 16) {
+      enhancedPrompt = `Simple ${gridSize}x${gridSize} pixel art sprite of ${translated}, extremely low resolution, blocky shapes, maximum 8 colors, no gradients, no anti-aliasing, no shading, flat solid colors only, centered on plain white background`;
+    } else if (gridSize <= 32) {
+      enhancedPrompt = `${gridSize}x${gridSize} pixel art of ${translated}, low resolution retro style, blocky, limited color palette, no gradients, no anti-aliasing, solid colors, centered on white background`;
+    } else {
+      enhancedPrompt = `Pixel art of ${translated}, 16-bit retro style, clean pixels, solid colors, no gradients, centered on white background`;
+    }
 
     const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
