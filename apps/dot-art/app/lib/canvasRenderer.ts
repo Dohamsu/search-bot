@@ -5,6 +5,7 @@ export interface RenderOptions {
   gap: number;
   dotShape: "square" | "circle";
   bgColor: string;
+  transparentBg?: boolean;
 }
 
 /**
@@ -15,17 +16,23 @@ export function renderDotGrid(
   grid: DotGrid,
   options: RenderOptions
 ): void {
-  const { dotSize, gap, dotShape, bgColor } = options;
+  const { dotSize, gap, dotShape, bgColor, transparentBg } = options;
   const gridSize = grid.length;
+  if (gridSize === 0) return;
   const totalSize = gridSize * (dotSize + gap) - gap;
 
   canvas.width = totalSize;
   canvas.height = totalSize;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
   // 배경
-  ctx.fillStyle = bgColor;
-  ctx.fillRect(0, 0, totalSize, totalSize);
+  if (transparentBg) {
+    ctx.clearRect(0, 0, totalSize, totalSize);
+  } else {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, totalSize, totalSize);
+  }
 
   // 도트 렌더링
   for (let row = 0; row < gridSize; row++) {
@@ -57,6 +64,21 @@ export function downloadCanvasAsPNG(canvas: HTMLCanvasElement, filename: string)
   link.download = `${filename}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
+}
+
+/**
+ * Canvas를 클립보드에 복사
+ */
+export async function copyCanvasToClipboard(canvas: HTMLCanvasElement): Promise<void> {
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((b) => {
+      if (b) resolve(b);
+      else reject(new Error("Canvas to Blob 변환 실패"));
+    }, "image/png");
+  });
+  await navigator.clipboard.write([
+    new ClipboardItem({ "image/png": blob }),
+  ]);
 }
 
 /**

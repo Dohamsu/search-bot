@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download, Minimize2 } from "lucide-react";
+import { Download, Minimize2, Copy, Film, Check, Grid3x3 } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
-import { renderDotGrid, downloadCanvasAsPNG, fitDotSize, RenderOptions } from "../lib/canvasRenderer";
+import { renderDotGrid, downloadCanvasAsPNG, copyCanvasToClipboard, fitDotSize, RenderOptions } from "../lib/canvasRenderer";
+import { exportDotArtGif, GIF_EFFECTS, GifEffect } from "../lib/gifExporter";
 
 const THUMB_SCALES = [1, 2, 3] as const;
 
@@ -23,6 +24,10 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [thumbScale, setThumbScale] = useState<number>(2);
+  const [transparentBg, setTransparentBg] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [gifExporting, setGifExporting] = useState(false);
+  const [selectedEffect, setSelectedEffect] = useState<GifEffect>("blink");
 
   // 컨테이너 실제 너비 측정 (항상 같은 div에 ref가 붙으므로 안정적)
   useEffect(() => {
@@ -73,9 +78,58 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
       gap: options.gap,
       dotShape: options.dotShape,
       bgColor: options.bgColor,
+      transparentBg,
     };
     renderDotGrid(exportCanvas, grid, renderOpts);
     downloadCanvasAsPNG(exportCanvas, filename);
+  };
+
+  const handleCopy = async () => {
+    if (!grid) return;
+    try {
+      const exportCanvas = document.createElement("canvas");
+      const gridSize = grid.length;
+      const exportDotSize = Math.max(16, Math.floor(1024 / gridSize));
+      const renderOpts: RenderOptions = {
+        dotSize: exportDotSize,
+        gap: options.gap,
+        dotShape: options.dotShape,
+        bgColor: options.bgColor,
+        transparentBg,
+      };
+      renderDotGrid(exportCanvas, grid, renderOpts);
+      await copyCanvasToClipboard(exportCanvas);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch {
+      alert("클립보드 복사에 실패했습니다. 브라우저 권한을 확인해주세요.");
+    }
+  };
+
+  const handleGifExport = async () => {
+    if (!grid || gifExporting) return;
+    setGifExporting(true);
+    try {
+      const gridSize = grid.length;
+      const exportDotSize = Math.max(8, Math.floor(512 / gridSize));
+      const renderOpts: RenderOptions = {
+        dotSize: exportDotSize,
+        gap: options.gap,
+        dotShape: options.dotShape,
+        bgColor: options.bgColor,
+      };
+      const blob = await exportDotArtGif(grid, selectedEffect, renderOpts);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `${filename}.gif`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      alert("GIF 생성에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setGifExporting(false);
+    }
   };
 
   return (
@@ -130,13 +184,68 @@ export default function DotArtPreview({ grid, options, filename = "dot-art" }: D
       )}
 
       {grid && (
-        <button
-          onClick={handleDownload}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:bg-indigo-600 transition-colors"
-        >
-          <Download size={18} />
-          PNG 다운로드
-        </button>
+        <div className="space-y-3">
+          {/* 투명 배경 토글 */}
+          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={transparentBg}
+              onChange={(e) => setTransparentBg(e.target.checked)}
+              className="rounded border-gray-300 text-indigo-500 focus:ring-indigo-500"
+            />
+            투명 배경으로 내보내기
+          </label>
+
+          {/* 메인 버튼 그룹 */}
+          <div className="flex gap-2">
+            <button
+              onClick={handleDownload}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-indigo-500 px-4 py-3 text-sm font-medium text-white shadow-md hover:bg-indigo-600 transition-colors"
+            >
+              <Download size={18} />
+              PNG
+            </button>
+            <button
+              onClick={handleCopy}
+              className="flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
+            >
+              {copySuccess ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+              {copySuccess ? "복사됨" : "복사"}
+            </button>
+          </div>
+
+          {/* GIF 내보내기 */}
+          <div className="flex gap-2">
+            <select
+              value={selectedEffect}
+              onChange={(e) => setSelectedEffect(e.target.value as GifEffect)}
+              className="flex-1 rounded-xl border border-gray-200 px-3 py-3 text-sm bg-white focus:border-indigo-500 focus:outline-none"
+            >
+              {GIF_EFFECTS.map((effect) => (
+                <option key={effect.id} value={effect.id}>
+                  {effect.emoji} {effect.name}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleGifExport}
+              disabled={gifExporting}
+              className="flex items-center justify-center gap-2 rounded-xl bg-purple-500 px-6 py-3 text-sm font-medium text-white shadow-md hover:bg-purple-600 transition-colors disabled:opacity-50"
+            >
+              <Film size={18} />
+              {gifExporting ? "생성 중..." : "GIF"}
+            </button>
+          </div>
+
+          {/* 비즈공예 도안 링크 */}
+          <a
+            href="/bead-guide"
+            className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            <Grid3x3 size={16} />
+            비즈공예 도안 보기
+          </a>
+        </div>
       )}
     </div>
   );
