@@ -32,7 +32,7 @@ interface KakaoShareOptions {
   buttons: KakaoShareButton[];
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://qr.example.com';
+const SITE_URL = "https://qr.onekit.co.kr";
 
 /**
  * 카카오 SDK 초기화 (중복 초기화 방지)

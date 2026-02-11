@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qr.example.com";
+  const baseUrl = "https://qr.onekit.co.kr";
 
   return [
     {

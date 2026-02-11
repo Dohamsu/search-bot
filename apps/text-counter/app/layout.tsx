@@ -12,8 +12,7 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://textcount.example.com";
+const SITE_URL = "https://text.onekit.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

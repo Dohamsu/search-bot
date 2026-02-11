@@ -14,7 +14,7 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+const BASE_URL = "https://mbti.onekit.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

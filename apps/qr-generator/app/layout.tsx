@@ -14,7 +14,7 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://qr.example.com";
+const SITE_URL = "https://qr.onekit.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

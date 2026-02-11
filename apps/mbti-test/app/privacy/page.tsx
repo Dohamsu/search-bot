@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+const BASE_URL = "https://mbti.onekit.co.kr";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침 | 16가지 성격 유형 테스트",

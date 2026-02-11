@@ -123,7 +123,7 @@ export default function SeverancePage() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "퇴직금 계산기 2026",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com"}/severance`,
+    url: "https://salary.onekit.co.kr/severance",
     description:
       "2026년 기준 퇴직금과 퇴직소득세를 자동으로 계산하는 무료 온라인 도구입니다. 근속기간, 평균임금 기반으로 퇴직금 실수령액을 계산합니다.",
     applicationCategory: "FinanceApplication",

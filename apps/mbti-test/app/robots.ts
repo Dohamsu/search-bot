@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+  const baseUrl = "https://mbti.onekit.co.kr";
 
   return {
     rules: { userAgent: "*", allow: "/" },

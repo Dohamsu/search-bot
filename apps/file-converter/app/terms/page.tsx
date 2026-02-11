@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://file.example.com";
+const SITE_URL = "https://file.onekit.co.kr";
 
 export const metadata: Metadata = {
   title: "이용약관 - FileFlow",

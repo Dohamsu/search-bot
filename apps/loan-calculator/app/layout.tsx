@@ -15,7 +15,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://loan.example.com";
+const SITE_URL = "https://loan.onekit.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
