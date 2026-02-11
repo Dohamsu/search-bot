@@ -16,7 +16,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://health.example.com";
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const GA_ID = "G-YRKEEK84RK";
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
 export const metadata: Metadata = {

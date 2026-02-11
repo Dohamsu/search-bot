@@ -129,7 +129,7 @@ function drawResultCard(
   ctx.fillStyle = "rgba(255,255,255,0.8)";
   ctx.font = "24px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("16가지 성격 유형 테스트 | mbti-test.vercel.app", w / 2, h - 80);
+  ctx.fillText("16가지 성격 유형 테스트 | mbti.onekit.co.kr", w / 2, h - 80);
 }
 
 function wrapText(

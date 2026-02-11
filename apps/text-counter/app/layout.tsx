@@ -76,7 +76,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = "G-YRKEEK84RK";
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
   return (
