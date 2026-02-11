@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --bill-primary: #CA8A04;
+  --bill-accent: #16A34A;
+  --bill-success: #22C55E;
+  --bill-warning: #F59E0B;
+  --bill-danger: #DC2626;
+  --bill-text: #0F172A;
+  --bill-bg: #FEFCE8;
+  --bill-border: #FEF08A;
+}
+
+@theme inline {
+  --font-inter: var(--font-inter-var);
+  --font-space: var(--font-space-grotesk-var);
+}
+
+body {
+  background: var(--bill-bg);
+  color: var(--bill-text);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

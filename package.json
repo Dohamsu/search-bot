@@ -15,6 +15,22 @@
     "build:mbti": "npm run build --workspace=apps/mbti-test",
     "build:qr": "npm run build --workspace=apps/qr-generator",
     "build:file": "npm run build --workspace=apps/file-converter",
-    "build:dot": "npm run build --workspace=apps/dot-art"
+    "build:dot": "npm run build --workspace=apps/dot-art",
+    "dev:loan": "npm run dev --workspace=apps/loan-calculator",
+    "dev:text": "npm run dev --workspace=apps/text-counter",
+    "dev:date": "npm run dev --workspace=apps/date-calculator",
+    "dev:unit": "npm run dev --workspace=apps/unit-converter",
+    "build:loan": "npm run build --workspace=apps/loan-calculator",
+    "build:text": "npm run build --workspace=apps/text-counter",
+    "build:date": "npm run build --workspace=apps/date-calculator",
+    "build:unit": "npm run build --workspace=apps/unit-converter",
+    "dev:health": "npm run dev --workspace=apps/health-calculator",
+    "dev:color": "npm run dev --workspace=apps/color-tools",
+    "dev:dev": "npm run dev --workspace=apps/dev-tools",
+    "dev:bill": "npm run dev --workspace=apps/utility-bill",
+    "build:health": "npm run build --workspace=apps/health-calculator",
+    "build:color": "npm run build --workspace=apps/color-tools",
+    "build:dev": "npm run build --workspace=apps/dev-tools",
+    "build:bill": "npm run build --workspace=apps/utility-bill"
   }
 }

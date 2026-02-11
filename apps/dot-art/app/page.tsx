@@ -204,20 +204,6 @@ export default function Home() {
             <a href="/privacy" className="hover:text-gray-600 transition-colors">개인정보처리방침</a>
             <a href="/terms" className="hover:text-gray-600 transition-colors">이용약관</a>
           </div>
-          <div className="mt-4 flex justify-center flex-wrap gap-3 text-gray-300">
-            {process.env.NEXT_PUBLIC_SALARY_URL && (
-              <a href={process.env.NEXT_PUBLIC_SALARY_URL} className="hover:text-gray-500">연봉 계산기</a>
-            )}
-            {process.env.NEXT_PUBLIC_MBTI_URL && (
-              <a href={process.env.NEXT_PUBLIC_MBTI_URL} className="hover:text-gray-500">MBTI 테스트</a>
-            )}
-            {process.env.NEXT_PUBLIC_QR_URL && (
-              <a href={process.env.NEXT_PUBLIC_QR_URL} className="hover:text-gray-500">QR 생성기</a>
-            )}
-            {process.env.NEXT_PUBLIC_FILE_URL && (
-              <a href={process.env.NEXT_PUBLIC_FILE_URL} className="hover:text-gray-500">파일 변환기</a>
-            )}
-          </div>
         </footer>
       </div>
 

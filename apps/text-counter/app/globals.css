@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --text-primary: #059669;
+  --text-accent: #0891B2;
+  --text-text: #0F172A;
+  --text-bg: #F0FDF4;
+  --text-border: #D1FAE5;
+}
+
+@theme inline {
+  --font-inter: var(--font-inter-var);
+  --font-space: var(--font-space-grotesk-var);
+}
+
+body {
+  background: var(--text-bg);
+  color: var(--text-text);
+}
+
+/* textarea 리사이즈 핸들 스타일링 */
+textarea {
+  resize: vertical;
+}
+
+/* 프로그레스바 애니메이션 */
+.progress-bar {
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* 복사 완료 토스트 */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s ease-out;
+}

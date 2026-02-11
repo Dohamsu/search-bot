@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --health-primary: #0D9488;
+  --health-accent: #F97316;
+  --health-success: #22C55E;
+  --health-warning: #EAB308;
+  --health-danger: #EF4444;
+  --health-text: #0F172A;
+  --health-bg: #F0FDFA;
+  --health-border: #CCFBF1;
+}
+
+@theme inline {
+  --font-inter: var(--font-inter-var);
+  --font-space: var(--font-space-grotesk-var);
+}
+
+body {
+  background: var(--health-bg);
+  color: var(--health-text);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
