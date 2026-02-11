@@ -17,7 +17,7 @@ const spaceGrotesk = Space_Grotesk({
 
 const SITE_URL = "https://health.onekit.co.kr";
 const GA_ID = "G-YRKEEK84RK";
-const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
+const ADSENSE_ID = "ca-pub-3400073425613266";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

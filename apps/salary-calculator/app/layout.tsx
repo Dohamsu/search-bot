@@ -77,7 +77,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = "G-YRKEEK84RK";
-  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
+  const adsenseId = "ca-pub-3400073425613266";
 
   return (
     <html lang="ko">
