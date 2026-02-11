@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --loan-primary: #1D4ED8;
+  --loan-accent: #F59E0B;
+  --loan-success: #059669;
+  --loan-danger: #DC2626;
+  --loan-text: #0F172A;
+  --loan-bg: #F8FAFC;
+  --loan-border: #E2E8F0;
+}
+
+@theme inline {
+  --font-inter: var(--font-inter-var);
+  --font-space: var(--font-space-grotesk-var);
+}
+
+body {
+  background: var(--loan-bg);
+  color: var(--loan-text);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

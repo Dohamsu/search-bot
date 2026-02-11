@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+:root {
+  --dev-primary: #3B82F6;
+  --dev-accent: #8B5CF6;
+  --dev-success: #22C55E;
+  --dev-warning: #F59E0B;
+  --dev-danger: #EF4444;
+  --dev-text: #0F172A;
+  --dev-bg: #F8FAFC;
+  --dev-border: #CBD5E1;
+  --dev-code-bg: #1E293B;
+  --dev-code-text: #E2E8F0;
+}
+
+@theme inline {
+  --font-inter: var(--font-inter-var);
+  --font-space: var(--font-space-grotesk-var);
+}
+
+body {
+  background: var(--dev-bg);
+  color: var(--dev-text);
+}
+
+/* 코드 영역 스타일 */
+.code-area {
+  font-family: 'Courier New', Courier, monospace;
+  tab-size: 2;
+}
+
+/* 스크롤바 커스텀 */
+.code-area::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.code-area::-webkit-scrollbar-track {
+  background: var(--dev-code-bg);
+}
+
+.code-area::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+.code-area::-webkit-scrollbar-thumb:hover {
+  background: #64748B;
+}
+
+/* 매치 하이라이트 */
+.match-highlight {
+  background-color: rgba(59, 130, 246, 0.3);
+  border-bottom: 2px solid var(--dev-primary);
+  border-radius: 2px;
+}
+
+/* 탭 버튼 트랜지션 */
+.tool-tab {
+  transition: all 0.15s ease;
+}
+
+.tool-tab:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
+.tool-tab.active {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: var(--dev-primary);
+  font-weight: 600;
+}
