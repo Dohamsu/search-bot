@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com";
+  const baseUrl = "https://salary.onekit.co.kr";
 
   // 연봉별 상세 페이지: 2000만원 ~ 15000만원, 500만원 단위 (27개)
   const salaryAmounts: number[] = [];

@@ -13,7 +13,7 @@
 # export VERCEL_TOKEN="${VERCEL_TOKEN:?VERCEL_TOKEN 환경변수를 설정하세요}"
 set -euo pipefail
 
-DOMAIN="onekit.kr"
+DOMAIN="onekit.co.kr"
 API_BASE="https://api.vercel.com"
 
 # ── 색상 ──

@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://dateCalc.example.com";
+const SITE_URL = "https://date.onekit.co.kr";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

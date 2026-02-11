@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://colortools.example.com";
+  const baseUrl = "https://color.onekit.co.kr";
 
   return [
     {

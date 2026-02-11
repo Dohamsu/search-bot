@@ -5,7 +5,7 @@ import { getResult, getAllTypes } from "../../lib/results";
 import CompatibilityResultClient from "./CompatibilityResultClient";
 import Footer from "../../components/Footer";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+const BASE_URL = "https://mbti.onekit.co.kr";
 
 interface CompatibilityPageProps {
   params: Promise<{ types: string }>;

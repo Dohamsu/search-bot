@@ -14,8 +14,7 @@ import {
 import { calculateSalary } from "../../lib/salary";
 import Footer from "../../components/Footer";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com";
+const SITE_URL = "https://salary.onekit.co.kr";
 
 const SALARY_AMOUNTS: number[] = [];
 for (let i = 2000; i <= 15000; i += 500) {

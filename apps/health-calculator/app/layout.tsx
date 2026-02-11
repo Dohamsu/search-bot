@@ -15,7 +15,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://health.example.com";
+const SITE_URL = "https://health.onekit.co.kr";
 const GA_ID = "G-YRKEEK84RK";
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
 

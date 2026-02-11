@@ -4,8 +4,7 @@ import { Calculator, ArrowLeft, TableProperties } from "lucide-react";
 import { calculateSalary } from "../lib/salary";
 import Footer from "../components/Footer";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com";
+const SITE_URL = "https://salary.onekit.co.kr";
 
 export const metadata: Metadata = {
   title: "연봉 실수령액 표 2026 | 1000만원~1억원 실수령액 총정리",

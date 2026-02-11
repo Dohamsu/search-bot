@@ -14,7 +14,7 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://colortools.example.com";
+const SITE_URL = "https://color.onekit.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

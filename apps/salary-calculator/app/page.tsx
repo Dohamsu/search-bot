@@ -202,7 +202,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "연봉 실수령액 계산기 2026",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://salary.example.com",
+    url: "https://salary.onekit.co.kr",
     description:
       "2026년 기준 4대보험, 소득세를 자동으로 공제하여 연봉 실수령액을 계산하는 무료 온라인 도구입니다. 역산 계산, 시급/일급 환산 기능도 제공합니다.",
     applicationCategory: "FinanceApplication",

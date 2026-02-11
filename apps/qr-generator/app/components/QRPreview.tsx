@@ -67,7 +67,7 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
 
   const handleCopyLink = async () => {
     try {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://qr.example.com';
+      const siteUrl = "https://qr.onekit.co.kr";
       await navigator.clipboard.writeText(siteUrl);
       onToast?.('링크가 클립보드에 복사되었습니다');
     } catch {

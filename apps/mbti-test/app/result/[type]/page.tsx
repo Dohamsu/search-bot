@@ -5,7 +5,7 @@ import ResultHeader from "../../components/ResultHeader";
 import ResultClientWrapper from "../../components/ResultClientWrapper";
 import Footer from "../../components/Footer";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+const BASE_URL = "https://mbti.onekit.co.kr";
 
 interface ResultPageProps {
   params: Promise<{ type: string }>;

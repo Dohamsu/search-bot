@@ -3,7 +3,7 @@ import { getAllTypes } from "./lib/results";
 import { getAllCompatibilityPairs } from "./lib/compatibility";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mbti.example.com";
+  const baseUrl = "https://mbti.onekit.co.kr";
 
   const typePages = getAllTypes().map((type) => ({
     url: `${baseUrl}/result/${type}`,
