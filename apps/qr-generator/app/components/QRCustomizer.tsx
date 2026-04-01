@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { Upload, X, Palette } from 'lucide-react';
 import type { QROptions } from '../lib/qr';
+import { useTranslation } from '../i18n';
 
 interface QRCustomizerProps {
   qrOptions: QROptions;
@@ -11,35 +12,36 @@ interface QRCustomizerProps {
   onLogoChange: (file: File | null) => void;
 }
 
-const colorPresets = [
-  { label: '기본', dark: '#111827', light: '#FFFFFF' },
-  { label: '네이비', dark: '#1E3A5F', light: '#F0F4FF' },
-  { label: '포레스트', dark: '#14532D', light: '#F0FDF4' },
-  { label: '와인', dark: '#7F1D1D', light: '#FFF1F2' },
-  { label: '퍼플', dark: '#581C87', light: '#FAF5FF' },
-];
-
-const sizeOptions = [
-  { value: 200, label: '200px (기본)' },
-  { value: 400, label: '400px' },
-  { value: 600, label: '600px' },
-  { value: 1000, label: '1000px (고해상도)' },
-];
-
-const errorLevels: { value: 'L' | 'M' | 'Q' | 'H'; label: string; desc: string }[] = [
-  { value: 'L', label: 'L', desc: '7% 복원' },
-  { value: 'M', label: 'M', desc: '15% 복원' },
-  { value: 'Q', label: 'Q', desc: '25% 복원' },
-  { value: 'H', label: 'H', desc: '30% 복원' },
-];
-
 export default function QRCustomizer({
   qrOptions,
   onOptionsChange,
   logoFile,
   onLogoChange,
 }: QRCustomizerProps) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const colorPresets = [
+    { labelKey: 'customizer.presetDefault', dark: '#111827', light: '#FFFFFF' },
+    { labelKey: 'customizer.presetNavy', dark: '#1E3A5F', light: '#F0F4FF' },
+    { labelKey: 'customizer.presetForest', dark: '#14532D', light: '#F0FDF4' },
+    { labelKey: 'customizer.presetWine', dark: '#7F1D1D', light: '#FFF1F2' },
+    { labelKey: 'customizer.presetPurple', dark: '#581C87', light: '#FAF5FF' },
+  ];
+
+  const sizeOptions = [
+    { value: 200, labelKey: 'customizer.sizeDefault' },
+    { value: 400, label: '400px' },
+    { value: 600, label: '600px' },
+    { value: 1000, labelKey: 'customizer.sizeHd' },
+  ];
+
+  const errorLevels: { value: 'L' | 'M' | 'Q' | 'H'; label: string; pct: number }[] = [
+    { value: 'L', label: 'L', pct: 7 },
+    { value: 'M', label: 'M', pct: 15 },
+    { value: 'Q', label: 'Q', pct: 25 },
+    { value: 'H', label: 'H', pct: 30 },
+  ];
 
   const update = (partial: Partial<QROptions>) => {
     onOptionsChange({ ...qrOptions, ...partial });
@@ -66,16 +68,16 @@ export default function QRCustomizer({
     <div className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col gap-5">
       <h3 className="text-sm font-semibold text-zinc-700 flex items-center gap-2">
         <Palette className="w-4 h-4" />
-        QR 커스터마이징
+        {t('customizer.title')}
       </h3>
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium text-zinc-500">색상</span>
+          <span className="text-xs font-medium text-zinc-500">{t('customizer.colorLabel')}</span>
           <div className="flex gap-2 flex-wrap">
             {colorPresets.map((preset) => (
               <button
-                key={preset.label}
+                key={preset.labelKey}
                 onClick={() => update({ darkColor: preset.dark, lightColor: preset.light })}
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                   qrOptions.darkColor === preset.dark && qrOptions.lightColor === preset.light
@@ -87,13 +89,13 @@ export default function QRCustomizer({
                   className="w-3 h-3 rounded-full border border-zinc-300"
                   style={{ backgroundColor: preset.dark }}
                 />
-                {preset.label}
+                {t(preset.labelKey)}
               </button>
             ))}
           </div>
           <div className="flex gap-4 mt-1">
             <label className="flex items-center gap-2 text-xs text-zinc-600">
-              전경색
+              {t('customizer.fgColor')}
               <input
                 type="color"
                 value={qrOptions.darkColor ?? '#111827'}
@@ -102,7 +104,7 @@ export default function QRCustomizer({
               />
             </label>
             <label className="flex items-center gap-2 text-xs text-zinc-600">
-              배경색
+              {t('customizer.bgColor')}
               <input
                 type="color"
                 value={qrOptions.lightColor ?? '#FFFFFF'}
@@ -114,7 +116,7 @@ export default function QRCustomizer({
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium text-zinc-500">크기</span>
+          <span className="text-xs font-medium text-zinc-500">{t('customizer.sizeLabel')}</span>
           <select
             value={qrOptions.width ?? 200}
             onChange={(e) => update({ width: Number(e.target.value) })}
@@ -122,14 +124,14 @@ export default function QRCustomizer({
           >
             {sizeOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {opt.labelKey ? t(opt.labelKey) : opt.label}
               </option>
             ))}
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium text-zinc-500">오류 복원 수준</span>
+          <span className="text-xs font-medium text-zinc-500">{t('customizer.errorLevelLabel')}</span>
           <div className="flex gap-2">
             {errorLevels.map((level) => (
               <button
@@ -142,14 +144,14 @@ export default function QRCustomizer({
                 }`}
               >
                 <span className="font-semibold">{level.label}</span>
-                <span className="text-[10px] text-zinc-400">{level.desc}</span>
+                <span className="text-[10px] text-zinc-400">{t('customizer.errorRestore', { pct: level.pct })}</span>
               </button>
             ))}
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium text-zinc-500">로고 삽입</span>
+          <span className="text-xs font-medium text-zinc-500">{t('customizer.logoLabel')}</span>
           {logoPreviewUrl ? (
             <div className="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 bg-zinc-50">
               <img
@@ -173,7 +175,7 @@ export default function QRCustomizer({
               className="flex items-center justify-center gap-2 h-10 rounded-lg border border-dashed border-zinc-300 text-xs text-zinc-500 hover:border-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
             >
               <Upload className="w-4 h-4" />
-              이미지 업로드 (PNG, JPG, SVG)
+              {t('customizer.logoUpload')}
             </button>
           )}
           <input
@@ -185,7 +187,7 @@ export default function QRCustomizer({
           />
           {logoFile && (
             <p className="text-[10px] text-zinc-400">
-              로고 사용 시 오류 복원 수준이 H로 설정됩니다.
+              {t('customizer.logoNote')}
             </p>
           )}
         </div>

@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Unit Converter | Length, Weight, Area, Temperature, Speed, Data",
+    "description": "Easily convert various units including length, weight, area, volume, temperature, speed, and data. Supports Korean traditional units like Pyeong, Geun, and more.",
+    "ogDescription": "Easily convert Pyeong↔㎡, Geun↔kg, °C↔°F and many more units instantly.",
+    "siteName": "Unit Converter"
+  },
+  "header": {
+    "title": "Unit Converter",
+    "subtitle": "Quickly convert length, weight, area, volume, temperature, speed, data, and time units"
+  },
+  "converter": {
+    "fromLabel": "Value",
+    "toLabel": "Result",
+    "swapAriaLabel": "Swap units",
+    "placeholder": "0"
+  },
+  "allResults": {
+    "title": "All Conversion Results"
+  },
+  "quickConvert": {
+    "title": "Quick Convert"
+  },
+  "faq": {
+    "title": "Frequently Asked Unit Conversions",
+    "pyeong": {
+      "question": "How many square meters (㎡) is 1 Pyeong?",
+      "answer": "1 Pyeong is approximately 3.3058 ㎡. It is a traditional Korean area unit commonly used in real estate, precisely equal to 400/121 ㎡."
+    },
+    "geun": {
+      "question": "How many kg is 1 Geun?",
+      "answer": "In Korea, 1 Geun equals 600g (0.6kg). It is primarily used to measure the weight of food ingredients such as meat and vegetables."
+    },
+    "temperature": {
+      "question": "Celsius (°C) to Fahrenheit (°F) Conversion",
+      "answer": "°F = °C x 9/5 + 32. Examples: 0°C = 32°F, 100°C = 212°F. Fahrenheit is mainly used in the United States."
+    },
+    "mile": {
+      "question": "How many km is 1 mile?",
+      "answer": "1 mile is approximately 1.6093 km. It is a unit of distance used primarily in the United States and the United Kingdom."
+    }
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "Unit Converter. All rights reserved."
+  },
+  "categories": {
+    "length": "Length",
+    "weight": "Weight",
+    "area": "Area",
+    "volume": "Volume",
+    "temperature": "Temperature",
+    "speed": "Speed",
+    "data": "Data",
+    "time": "Time"
+  },
+  "units": {
+    "mm": { "label": "Millimeter", "symbol": "mm" },
+    "cm": { "label": "Centimeter", "symbol": "cm" },
+    "m": { "label": "Meter", "symbol": "m" },
+    "km": { "label": "Kilometer", "symbol": "km" },
+    "in": { "label": "Inch", "symbol": "in" },
+    "ft": { "label": "Foot", "symbol": "ft" },
+    "yd": { "label": "Yard", "symbol": "yd" },
+    "mi": { "label": "Mile", "symbol": "mi" },
+    "ri": { "label": "Ri (里)", "symbol": "ri" },
+    "ja": { "label": "Ja (尺)", "symbol": "ja" },
+    "chi": { "label": "Chi (寸)", "symbol": "chi" },
+    "mg": { "label": "Milligram", "symbol": "mg" },
+    "g": { "label": "Gram", "symbol": "g" },
+    "kg": { "label": "Kilogram", "symbol": "kg" },
+    "t": { "label": "Ton", "symbol": "t" },
+    "oz": { "label": "Ounce", "symbol": "oz" },
+    "lb": { "label": "Pound", "symbol": "lb" },
+    "geun": { "label": "Geun (斤)", "symbol": "geun" },
+    "nyang": { "label": "Nyang (兩)", "symbol": "nyang" },
+    "don": { "label": "Don (錢)", "symbol": "don" },
+    "mm2": { "label": "Square Millimeter", "symbol": "㎟" },
+    "cm2": { "label": "Square Centimeter", "symbol": "㎠" },
+    "m2": { "label": "Square Meter", "symbol": "㎡" },
+    "km2": { "label": "Square Kilometer", "symbol": "㎢" },
+    "ha": { "label": "Hectare", "symbol": "ha" },
+    "ac": { "label": "Acre", "symbol": "ac" },
+    "pyeong": { "label": "Pyeong (坪)", "symbol": "pyeong" },
+    "jeong": { "label": "Jeong (町)", "symbol": "jeong" },
+    "mL": { "label": "Milliliter", "symbol": "mL" },
+    "L": { "label": "Liter", "symbol": "L" },
+    "m3": { "label": "Cubic Meter", "symbol": "㎥" },
+    "gal": { "label": "Gallon (US)", "symbol": "gal" },
+    "qt": { "label": "Quart", "symbol": "qt" },
+    "pt": { "label": "Pint", "symbol": "pt" },
+    "floz": { "label": "Fluid Ounce", "symbol": "fl oz" },
+    "cup": { "label": "Cup", "symbol": "cup" },
+    "hop": { "label": "Hop (合)", "symbol": "hop" },
+    "doe": { "label": "Doe (升)", "symbol": "doe" },
+    "mal": { "label": "Mal (斗)", "symbol": "mal" },
+    "C": { "label": "Celsius", "symbol": "°C" },
+    "F": { "label": "Fahrenheit", "symbol": "°F" },
+    "K": { "label": "Kelvin", "symbol": "K" },
+    "ms": { "label": "Meters/sec", "symbol": "m/s" },
+    "kmh": { "label": "Kilometers/hr", "symbol": "km/h" },
+    "mph": { "label": "Miles/hr", "symbol": "mph" },
+    "kn": { "label": "Knot", "symbol": "kn" },
+    "mach": { "label": "Mach", "symbol": "Mach" },
+    "bit": { "label": "Bit", "symbol": "bit" },
+    "B": { "label": "Byte", "symbol": "B" },
+    "KB": { "label": "Kilobyte", "symbol": "KB" },
+    "MB": { "label": "Megabyte", "symbol": "MB" },
+    "GB": { "label": "Gigabyte", "symbol": "GB" },
+    "TB": { "label": "Terabyte", "symbol": "TB" },
+    "PB": { "label": "Petabyte", "symbol": "PB" },
+    "s": { "label": "Second", "symbol": "sec" },
+    "min": { "label": "Minute", "symbol": "min" },
+    "h": { "label": "Hour", "symbol": "hr" },
+    "d": { "label": "Day", "symbol": "day" },
+    "w": { "label": "Week", "symbol": "wk" },
+    "mo": { "label": "Month (30d)", "symbol": "mo" },
+    "y": { "label": "Year (365d)", "symbol": "yr" }
+  },
+  "quickConverts": {
+    "pyeongToM2": { "label": "Pyeong → ㎡", "description": "Real estate area conversion" },
+    "geunToKg": { "label": "Geun → kg", "description": "Food weight conversion" },
+    "cToF": { "label": "°C → °F", "description": "Temperature conversion" },
+    "mileToKm": { "label": "mile → km", "description": "Distance conversion" },
+    "ozToG": { "label": "oz → g", "description": "Weight conversion" },
+    "gbToMb": { "label": "GB → MB", "description": "Data capacity conversion" }
+  }
+}

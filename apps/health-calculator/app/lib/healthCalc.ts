@@ -2,7 +2,7 @@ export type Gender = "male" | "female";
 
 export interface BMIResult {
   bmi: number;
-  category: string;
+  categoryKey: string;
   color: string;
   normalWeightMin: number;
   normalWeightMax: number;
@@ -23,7 +23,7 @@ export interface TDEEResult {
 
 export interface BodyFatResult {
   bodyFatPercent: number;
-  category: string;
+  categoryKey: string;
   color: string;
 }
 
@@ -39,21 +39,21 @@ export function calculateBMI(weightKg: number, heightCm: number): number {
   return weightKg / (heightM * heightM);
 }
 
-export function getBMICategory(bmi: number): { category: string; color: string } {
-  if (bmi < 18.5) return { category: "저체중", color: "#3B82F6" };
-  if (bmi < 23) return { category: "정상", color: "#22C55E" };
-  if (bmi < 25) return { category: "과체중", color: "#EAB308" };
-  if (bmi < 30) return { category: "비만 1단계", color: "#F97316" };
-  return { category: "비만 2단계", color: "#EF4444" };
+export function getBMICategory(bmi: number): { categoryKey: string; color: string } {
+  if (bmi < 18.5) return { categoryKey: "category.underweight", color: "#3B82F6" };
+  if (bmi < 23) return { categoryKey: "category.normal", color: "#22C55E" };
+  if (bmi < 25) return { categoryKey: "category.overweight", color: "#EAB308" };
+  if (bmi < 30) return { categoryKey: "category.obese1", color: "#F97316" };
+  return { categoryKey: "category.obese2", color: "#EF4444" };
 }
 
 export function getBMIResult(weightKg: number, heightCm: number): BMIResult {
   const bmi = calculateBMI(weightKg, heightCm);
-  const { category, color } = getBMICategory(bmi);
+  const { categoryKey, color } = getBMICategory(bmi);
   const heightM = heightCm / 100;
   const normalWeightMin = 18.5 * heightM * heightM;
   const normalWeightMax = 22.9 * heightM * heightM;
-  return { bmi, category, color, normalWeightMin, normalWeightMax };
+  return { bmi, categoryKey, color, normalWeightMin, normalWeightMax };
 }
 
 export function calculateBMR_HarrisBenedict(
@@ -90,13 +90,7 @@ export function getBMRResult(
   return { harrisBenedict, mifflinStJeor, average };
 }
 
-export const ACTIVITY_LEVELS = [
-  { label: "비활동적 (운동 거의 안 함)", value: 1.2 },
-  { label: "가벼운 활동 (주 1-3회 운동)", value: 1.375 },
-  { label: "보통 활동 (주 3-5회 운동)", value: 1.55 },
-  { label: "활발한 활동 (주 6-7회 운동)", value: 1.725 },
-  { label: "매우 활발 (고강도 매일 운동)", value: 1.9 },
-] as const;
+export const ACTIVITY_LEVEL_VALUES = [1.2, 1.375, 1.55, 1.725, 1.9] as const;
 
 export function calculateTDEE(bmr: number, activityMultiplier: number): TDEEResult {
   const tdee = bmr * activityMultiplier;
@@ -128,26 +122,26 @@ export function calculateBodyFat(
       78.387;
   }
 
-  const { category, color } = getBodyFatCategory(gender, bodyFatPercent);
-  return { bodyFatPercent, category, color };
+  const { categoryKey, color } = getBodyFatCategory(gender, bodyFatPercent);
+  return { bodyFatPercent, categoryKey, color };
 }
 
 function getBodyFatCategory(
   gender: Gender,
   percent: number
-): { category: string; color: string } {
+): { categoryKey: string; color: string } {
   if (gender === "male") {
-    if (percent < 6) return { category: "필수 지방", color: "#3B82F6" };
-    if (percent < 14) return { category: "운동선수", color: "#22C55E" };
-    if (percent < 18) return { category: "피트니스", color: "#22C55E" };
-    if (percent < 25) return { category: "보통", color: "#EAB308" };
-    return { category: "비만", color: "#EF4444" };
+    if (percent < 6) return { categoryKey: "category.essentialFat", color: "#3B82F6" };
+    if (percent < 14) return { categoryKey: "category.athlete", color: "#22C55E" };
+    if (percent < 18) return { categoryKey: "category.fitness", color: "#22C55E" };
+    if (percent < 25) return { categoryKey: "category.average", color: "#EAB308" };
+    return { categoryKey: "category.obese", color: "#EF4444" };
   }
-  if (percent < 14) return { category: "필수 지방", color: "#3B82F6" };
-  if (percent < 21) return { category: "운동선수", color: "#22C55E" };
-  if (percent < 25) return { category: "피트니스", color: "#22C55E" };
-  if (percent < 32) return { category: "보통", color: "#EAB308" };
-  return { category: "비만", color: "#EF4444" };
+  if (percent < 14) return { categoryKey: "category.essentialFat", color: "#3B82F6" };
+  if (percent < 21) return { categoryKey: "category.athlete", color: "#22C55E" };
+  if (percent < 25) return { categoryKey: "category.fitness", color: "#22C55E" };
+  if (percent < 32) return { categoryKey: "category.average", color: "#EAB308" };
+  return { categoryKey: "category.obese", color: "#EF4444" };
 }
 
 export function calculateStandardWeight(

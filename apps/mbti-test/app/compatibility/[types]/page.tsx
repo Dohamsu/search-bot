@@ -7,6 +7,26 @@ import Footer from "../../components/Footer";
 
 const BASE_URL = "https://mbti.onekit.co.kr";
 
+import ko from "../../i18n/ko.json";
+
+function getKoTitle(type: string): string {
+  const data = (ko.results as Record<string, { title?: string }>)[type];
+  return data?.title || `${type} 유형`;
+}
+
+function resolveKoKey(key: string): string {
+  const keys = key.split(".");
+  let value: unknown = ko;
+  for (const k of keys) {
+    if (value && typeof value === "object") {
+      value = (value as Record<string, unknown>)[k];
+    } else {
+      return key;
+    }
+  }
+  return typeof value === "string" ? value : key;
+}
+
 interface CompatibilityPageProps {
   params: Promise<{ types: string }>;
 }
@@ -38,9 +58,10 @@ export async function generateMetadata({
     return { title: "궁합 결과를 찾을 수 없습니다" };
   }
 
-  const result1 = getResult(type1);
-  const result2 = getResult(type2);
+  const title1 = getKoTitle(type1);
+  const title2 = getKoTitle(type2);
   const compatibility = getCompatibility(type1, type2);
+  const compatTitle = resolveKoKey(compatibility.titleKey);
   const pageUrl = `${BASE_URL}/compatibility/${compatibility.type1}-${compatibility.type2}`;
 
   const title =
@@ -50,8 +71,8 @@ export async function generateMetadata({
 
   const description =
     type1 === type2
-      ? `${type1}(${result1.title}) 같은 유형끼리의 궁합 분석. 호환성 점수 ${"★".repeat(compatibility.score)}${"☆".repeat(5 - compatibility.score)}. ${compatibility.title}.`
-      : `${type1}(${result1.title})와 ${type2}(${result2.title})의 궁합 분석. 호환성 점수 ${"★".repeat(compatibility.score)}${"☆".repeat(5 - compatibility.score)}. ${compatibility.title}.`;
+      ? `${type1}(${title1}) 같은 유형끼리의 궁합 분석. 호환성 점수 ${"\u2605".repeat(compatibility.score)}${"\u2606".repeat(5 - compatibility.score)}. ${compatTitle}.`
+      : `${type1}(${title1})와 ${type2}(${title2})의 궁합 분석. 호환성 점수 ${"\u2605".repeat(compatibility.score)}${"\u2606".repeat(5 - compatibility.score)}. ${compatTitle}.`;
 
   return {
     title,
@@ -99,11 +120,20 @@ export default async function CompatibilityResultPage({
   const result1 = getResult(compatibility.type1);
   const result2 = getResult(compatibility.type2);
 
+  const koTitle1 = getKoTitle(compatibility.type1);
+  const koTitle2 = getKoTitle(compatibility.type2);
+  const koCompatTitle = resolveKoKey(compatibility.titleKey);
+  const koDescription = resolveKoKey(compatibility.descriptionKey)
+    .replace(/\{type1\}/g, compatibility.type1)
+    .replace(/\{type2\}/g, compatibility.type2)
+    .replace(/\{title1\}/g, koTitle1)
+    .replace(/\{title2\}/g, koTitle2);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: `${compatibility.type1}와 ${compatibility.type2} MBTI 궁합 분석`,
-    description: compatibility.description,
+    description: koDescription,
     url: `${BASE_URL}/compatibility/${compatibility.type1}-${compatibility.type2}`,
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -112,9 +142,9 @@ export default async function CompatibilityResultPage({
     about: {
       "@type": "Thing",
       name: `${compatibility.type1} ${compatibility.type2} 성격 유형 궁합`,
-      description: compatibility.description,
+      description: koDescription,
     },
-    keywords: `${compatibility.type1}, ${compatibility.type2}, MBTI 궁합, 성격 유형 호환성, ${compatibility.title}`,
+    keywords: `${compatibility.type1}, ${compatibility.type2}, MBTI 궁합, 성격 유형 호환성, ${koCompatTitle}`,
     inLanguage: "ko",
     isPartOf: {
       "@type": "WebSite",
@@ -132,7 +162,7 @@ export default async function CompatibilityResultPage({
 
       {/* Header */}
       <div className="flex w-full flex-col items-center gap-4 bg-gradient-to-b from-[#8B5CF6] via-[#EC4899] to-[#F9A8D4] px-6 pb-10 pt-12 md:pb-12 md:pt-16">
-        <p className="text-sm font-medium text-white/80">MBTI 궁합 분석</p>
+        <p className="text-sm font-medium text-white/80">MBTI Compatibility</p>
         <div className="flex items-center gap-4">
           <div className="rounded-full bg-white px-6 py-2.5">
             <span
@@ -160,9 +190,6 @@ export default async function CompatibilityResultPage({
             </span>
           </div>
         </div>
-        <h1 className="font-heading text-center text-lg font-bold text-white">
-          {compatibility.title}
-        </h1>
       </div>
 
       {/* Content */}
@@ -171,13 +198,13 @@ export default async function CompatibilityResultPage({
           compatibility={compatibility}
           result1={{
             type: result1.type,
-            title: result1.title,
-            description: result1.description,
+            titleKey: result1.titleKey,
+            descriptionKey: result1.descriptionKey,
           }}
           result2={{
             type: result2.type,
-            title: result2.title,
-            description: result2.description,
+            titleKey: result2.titleKey,
+            descriptionKey: result2.descriptionKey,
           }}
         />
       </article>

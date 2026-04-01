@@ -28,6 +28,10 @@ import {
   generateRandomHex,
   extractColorsFromImageData,
 } from "./lib/colorUtils";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import ColorInfoSection from "./components/ColorInfoSection";
 
 // -------------------------------------------------------------------
 // Types
@@ -36,7 +40,7 @@ type TabId = "picker" | "palette" | "contrast" | "gradient" | "extract";
 
 interface TabDef {
   id: TabId;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
 }
 
@@ -85,6 +89,7 @@ function CopyBtn({
   onCopy: (t: string) => void;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const isCopied = copied === text;
   return (
     <button
@@ -95,10 +100,10 @@ function CopyBtn({
           ? "bg-emerald-100 text-emerald-700"
           : "bg-white/70 text-gray-600 hover:bg-white hover:text-gray-900"
       } ${className ?? ""}`}
-      title="복사"
+      title={t("common.copy")}
     >
       {isCopied ? <Check size={12} /> : <Copy size={12} />}
-      {isCopied ? "복사됨" : text}
+      {isCopied ? t("common.copied") : text}
     </button>
   );
 }
@@ -131,6 +136,7 @@ function ColorSwatch({
 // Tab 1: Color Picker & Conversion
 // -------------------------------------------------------------------
 function PickerTab() {
+  const { t } = useTranslation();
   const { copied, copy } = useCopy();
   const [hex, setHex] = useState("#A855F7");
   const [r, setR] = useState(168);
@@ -228,7 +234,7 @@ function PickerTab() {
         />
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-500">
-            네이티브 피커
+            {t("picker.nativePicker")}
           </label>
           <input
             type="color"
@@ -332,6 +338,7 @@ function PickerTab() {
 // Tab 2: Palette Generator
 // -------------------------------------------------------------------
 function PaletteTab() {
+  const { t } = useTranslation();
   const { copied, copy } = useCopy();
   const [baseColor, setBaseColor] = useState("#A855F7");
   const [rule, setRule] = useState<HarmonyRule>("analogous");
@@ -356,12 +363,12 @@ function PaletteTab() {
 
   const palette = generate(baseColor, rule);
 
-  const rules: { id: HarmonyRule; label: string }[] = [
-    { id: "analogous", label: "유사색" },
-    { id: "complementary", label: "보색" },
-    { id: "triadic", label: "삼색" },
-    { id: "split", label: "분할보색" },
-    { id: "monochromatic", label: "단색조" },
+  const rules: { id: HarmonyRule; labelKey: string }[] = [
+    { id: "analogous", labelKey: "palette.analogous" },
+    { id: "complementary", labelKey: "palette.complementary" },
+    { id: "triadic", labelKey: "palette.triadic" },
+    { id: "split", labelKey: "palette.split" },
+    { id: "monochromatic", labelKey: "palette.monochromatic" },
   ];
 
   const randomize = () => {
@@ -372,7 +379,7 @@ function PaletteTab() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
-          <label className="text-sm font-medium">기준 색상</label>
+          <label className="text-sm font-medium">{t("palette.baseColor")}</label>
           <input
             type="color"
             value={baseColor}
@@ -387,7 +394,7 @@ function PaletteTab() {
           className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white shadow hover:opacity-90 transition-opacity"
         >
           <RefreshCw size={14} />
-          랜덤
+          {t("common.random")}
         </button>
       </div>
 
@@ -403,7 +410,7 @@ function PaletteTab() {
                 : "bg-white border border-[var(--color-border)] text-gray-700 hover:bg-purple-50"
             }`}
           >
-            {r.label}
+            {t(r.labelKey)}
           </button>
         ))}
       </div>
@@ -437,6 +444,7 @@ function PaletteTab() {
 // Tab 3: Contrast Checker (WCAG)
 // -------------------------------------------------------------------
 function ContrastTab() {
+  const { t } = useTranslation();
   const { copied, copy } = useCopy();
   const [fg, setFg] = useState("#0F172A");
   const [bg, setBg] = useState("#FFFFFF");
@@ -463,7 +471,7 @@ function ContrastTab() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">전경색 (텍스트)</label>
+          <label className="text-sm font-medium">{t("contrast.foreground")}</label>
           <div className="flex items-center gap-2">
             <input
               type="color"
@@ -484,7 +492,7 @@ function ContrastTab() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">배경색</label>
+          <label className="text-sm font-medium">{t("contrast.background")}</label>
           <div className="flex items-center gap-2">
             <input
               type="color"
@@ -512,21 +520,21 @@ function ContrastTab() {
         style={{ backgroundColor: bg }}
       >
         <p style={{ color: fg }} className="text-2xl font-bold mb-1">
-          큰 텍스트 미리보기 (24px)
+          {t("contrast.previewLarge")}
         </p>
         <p style={{ color: fg }} className="text-base">
-          일반 텍스트 미리보기 (16px) - 가나다라마바사 ABCDEFG 0123456789
+          {t("contrast.previewNormal")}
         </p>
       </div>
 
       {/* Ratio */}
       <div className="rounded-xl bg-white/80 border border-[var(--color-border)] p-6 text-center space-y-4">
-        <p className="text-sm text-gray-500">대비율</p>
+        <p className="text-sm text-gray-500">{t("contrast.ratio")}</p>
         <p className="text-5xl font-bold font-[family-name:var(--font-space)]">
           {ratioStr}:1
         </p>
         <CopyBtn
-          text={`대비율 ${ratioStr}:1`}
+          text={t("contrast.ratioValue", { value: ratioStr })}
           copied={copied}
           onCopy={copy}
         />
@@ -534,19 +542,19 @@ function ContrastTab() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
           <div className="rounded-lg border border-gray-200 p-3">
             <p className="text-xs text-gray-500 mb-1">
-              AA 일반 텍스트 (4.5:1)
+              {t("contrast.aaNormal")}
             </p>
             {badge(passAA)}
           </div>
           <div className="rounded-lg border border-gray-200 p-3">
             <p className="text-xs text-gray-500 mb-1">
-              AAA 일반 텍스트 (7:1)
+              {t("contrast.aaaNormal")}
             </p>
             {badge(passAAA)}
           </div>
           <div className="rounded-lg border border-gray-200 p-3">
             <p className="text-xs text-gray-500 mb-1">
-              AA 큰 텍스트 (3:1)
+              {t("contrast.aaLarge")}
             </p>
             {badge(passLargeAA)}
           </div>
@@ -565,6 +573,7 @@ interface GradientStop {
 }
 
 function GradientTab() {
+  const { t } = useTranslation();
   const { copied, copy } = useCopy();
   const [stops, setStops] = useState<GradientStop[]>([
     { id: 1, color: "#A855F7" },
@@ -573,11 +582,11 @@ function GradientTab() {
   const [direction, setDirection] = useState<GradientDirection>("to right");
   const nextId = useRef(3);
 
-  const directions: { id: GradientDirection; label: string }[] = [
-    { id: "to right", label: "수평 →" },
-    { id: "to bottom", label: "수직 ↓" },
-    { id: "to bottom right", label: "대각선 ↘" },
-    { id: "circle", label: "원형" },
+  const directions: { id: GradientDirection; labelKey: string }[] = [
+    { id: "to right", labelKey: "gradient.horizontal" },
+    { id: "to bottom", labelKey: "gradient.vertical" },
+    { id: "to bottom right", labelKey: "gradient.diagonal" },
+    { id: "circle", labelKey: "gradient.radial" },
   ];
 
   const addStop = () => {
@@ -621,7 +630,7 @@ function GradientTab() {
                 : "bg-white border border-[var(--color-border)] text-gray-700 hover:bg-purple-50"
             }`}
           >
-            {d.label}
+            {t(d.labelKey)}
           </button>
         ))}
       </div>
@@ -649,7 +658,7 @@ function GradientTab() {
                 type="button"
                 onClick={() => removeStop(stop.id)}
                 className="text-gray-400 hover:text-red-500 transition-colors"
-                title="삭제"
+                title={t("common.delete")}
               >
                 <Trash2 size={16} />
               </button>
@@ -663,7 +672,7 @@ function GradientTab() {
             className="inline-flex items-center gap-1.5 rounded-lg border-2 border-dashed border-[var(--color-border)] px-4 py-2 text-sm text-gray-500 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
           >
             <Plus size={14} />
-            중간색 추가
+            {t("gradient.addStop")}
           </button>
         )}
       </div>
@@ -689,6 +698,7 @@ function GradientTab() {
 // Tab 5: Image Color Extraction
 // -------------------------------------------------------------------
 function ExtractTab() {
+  const { t } = useTranslation();
   const { copied, copy } = useCopy();
   const [palette, setPalette] = useState<string[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
@@ -761,16 +771,16 @@ function ExtractTab() {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={preview}
-            alt="업로드된 이미지"
+            alt={t("extract.uploadedImage")}
             className="max-h-60 rounded-lg object-contain"
           />
         ) : (
           <>
             <ImageIcon size={40} className="text-gray-300" />
             <p className="text-sm text-gray-500">
-              이미지를 드래그하거나 클릭하여 업로드
+              {t("extract.dropzone")}
             </p>
-            <p className="text-xs text-gray-400">PNG, JPG, WEBP</p>
+            <p className="text-xs text-gray-400">{t("extract.formats")}</p>
           </>
         )}
       </div>
@@ -786,7 +796,7 @@ function ExtractTab() {
       {palette.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-gray-600">
-            추출된 색상 ({palette.length}개)
+            {t("extract.extractedColors", { count: palette.length })}
           </h3>
           <div className="flex flex-wrap gap-4 justify-center">
             {palette.map((c, i) => (
@@ -817,17 +827,18 @@ function ExtractTab() {
 // Cross Links & Footer
 // -------------------------------------------------------------------
 function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="mt-12 border-t border-[var(--color-border)] pt-8 pb-10 text-center text-xs text-gray-400 space-y-4">
       <div className="flex justify-center gap-4">
         <a href="/privacy" className="hover:underline">
-          개인정보처리방침
+          {t("footer.privacy")}
         </a>
         <a href="/terms" className="hover:underline">
-          이용약관
+          {t("footer.terms")}
         </a>
       </div>
-      <p>&copy; {new Date().getFullYear()} 색상 도구. All rights reserved.</p>
+      <p>&copy; {new Date().getFullYear()} {t("footer.copyright")}. All rights reserved.</p>
     </footer>
   );
 }
@@ -836,14 +847,15 @@ function Footer() {
 // Main Page
 // -------------------------------------------------------------------
 export default function ColorToolsPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabId>("picker");
 
   const tabs: TabDef[] = [
-    { id: "picker", label: "컬러 피커", icon: <Pipette size={18} /> },
-    { id: "palette", label: "팔레트", icon: <Palette size={18} /> },
-    { id: "contrast", label: "대비율", icon: <Eye size={18} /> },
-    { id: "gradient", label: "그라디언트", icon: <Blend size={18} /> },
-    { id: "extract", label: "색상 추출", icon: <ImageIcon size={18} /> },
+    { id: "picker", labelKey: "tabs.picker", icon: <Pipette size={18} /> },
+    { id: "palette", labelKey: "tabs.palette", icon: <Palette size={18} /> },
+    { id: "contrast", labelKey: "tabs.contrast", icon: <Eye size={18} /> },
+    { id: "gradient", labelKey: "tabs.gradient", icon: <Blend size={18} /> },
+    { id: "extract", labelKey: "tabs.extract", icon: <ImageIcon size={18} /> },
   ];
 
   // Prevent hydration issues
@@ -855,33 +867,35 @@ export default function ColorToolsPage() {
     <div className="min-h-screen flex flex-col font-[family-name:var(--font-inter)]">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-[var(--color-bg)]/90 backdrop-blur-md border-b border-[var(--color-border)]">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <h1 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space)] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text text-transparent">
-            색상 도구
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-            컬러 피커 &middot; 팔레트 생성 &middot; 대비율 검사 &middot;
-            그라디언트 &middot; 색상 추출
-          </p>
+        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold font-[family-name:var(--font-space)] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] bg-clip-text text-transparent">
+              {t("header.title")}
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+              {t("header.subtitle")}
+            </p>
+          </div>
+          <LanguageSwitcher />
         </div>
       </header>
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-6">
         {/* Tabs */}
         <nav className="flex overflow-x-auto gap-1 mb-6 pb-1 -mx-1 px-1 scrollbar-hide">
-          {tabs.map((t) => (
+          {tabs.map((tab) => (
             <button
-              key={t.id}
+              key={tab.id}
               type="button"
-              onClick={() => setActiveTab(t.id)}
+              onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                activeTab === t.id
+                activeTab === tab.id
                   ? "bg-[var(--color-primary)] text-white shadow-md shadow-purple-200"
                   : "text-gray-600 hover:bg-white hover:shadow-sm"
               }`}
             >
-              {t.icon}
-              <span className="hidden sm:inline">{t.label}</span>
+              {tab.icon}
+              <span className="hidden sm:inline">{t(tab.labelKey)}</span>
             </button>
           ))}
         </nav>
@@ -895,6 +909,8 @@ export default function ColorToolsPage() {
           {activeTab === "extract" && <ExtractTab />}
         </div>
 
+        <ColorInfoSection />
+        <RelatedTools currentToolId="color" />
         <Footer />
       </main>
     </div>

@@ -12,6 +12,7 @@ import {
   Layers,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from '../i18n';
 
 interface SidebarProps {
   activeTab: string;
@@ -19,17 +20,19 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'url', label: 'URL QR', icon: QrCode },
-  { id: 'text', label: '텍스트', icon: Type },
-  { id: 'wifi', label: 'Wi-Fi', icon: Wifi },
-  { id: 'contact', label: '연락처', icon: Contact },
-  { id: 'email', label: '이메일', icon: Mail },
-  { id: 'sms', label: 'SMS', icon: MessageSquare },
-  { id: 'location', label: '위치', icon: MapPin },
-  { id: 'calendar', label: '일정', icon: CalendarDays },
+  { id: 'url', labelKey: 'sidebar.urlQr', icon: QrCode },
+  { id: 'text', labelKey: 'sidebar.text', icon: Type },
+  { id: 'wifi', labelKey: 'sidebar.wifi', icon: Wifi },
+  { id: 'contact', labelKey: 'sidebar.contact', icon: Contact },
+  { id: 'email', labelKey: 'sidebar.email', icon: Mail },
+  { id: 'sms', labelKey: 'sidebar.sms', icon: MessageSquare },
+  { id: 'location', labelKey: 'sidebar.location', icon: MapPin },
+  { id: 'calendar', labelKey: 'sidebar.calendar', icon: CalendarDays },
 ];
 
 export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+  const { t } = useTranslation();
+
   return (
     <aside className="flex flex-col w-60 min-h-screen bg-[var(--qr-sidebar)] text-white">
       <div className="flex items-center gap-2.5 px-5 py-6">
@@ -54,7 +57,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               }`}
             >
               <Icon className="w-5 h-5" />
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </button>
           );
         })}
@@ -66,7 +69,7 @@ export default function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
         >
           <Layers className="w-5 h-5" />
-          <span>대량 생성</span>
+          <span>{t('sidebar.batch')}</span>
         </Link>
       </div>
     </aside>

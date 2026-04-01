@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "단위 변환기 | 길이, 무게, 넓이, 온도, 속도, 데이터 변환",
+    "description": "길이, 무게, 넓이, 부피, 온도, 속도, 데이터 등 다양한 단위를 쉽고 빠르게 변환하세요. 평↔㎡, 근↔kg, °C↔°F 등 한국에서 자주 쓰는 단위 변환을 지원합니다.",
+    "ogDescription": "평↔㎡, 근↔kg, °C↔°F 등 다양한 단위를 쉽고 빠르게 변환하세요.",
+    "siteName": "단위 변환기"
+  },
+  "header": {
+    "title": "단위 변환기",
+    "subtitle": "길이, 무게, 넓이, 부피, 온도, 속도, 데이터, 시간 단위를 빠르게 변환하세요"
+  },
+  "converter": {
+    "fromLabel": "변환할 값",
+    "toLabel": "변환 결과",
+    "swapAriaLabel": "단위 교환",
+    "placeholder": "0"
+  },
+  "allResults": {
+    "title": "모든 단위 변환 결과"
+  },
+  "quickConvert": {
+    "title": "빠른 변환"
+  },
+  "faq": {
+    "title": "자주 묻는 단위 변환",
+    "pyeong": {
+      "question": "1평은 몇 제곱미터(㎡)?",
+      "answer": "1평은 약 3.3058 ㎡입니다. 부동산에서 자주 쓰이는 면적 단위로, 정확히는 400/121 ㎡입니다."
+    },
+    "geun": {
+      "question": "1근은 몇 kg?",
+      "answer": "한국에서 1근은 600g(0.6kg)입니다. 고기나 채소 등 식재료 무게를 나타낼 때 주로 사용합니다."
+    },
+    "temperature": {
+      "question": "섭씨(°C)와 화씨(°F) 변환",
+      "answer": "°F = °C x 9/5 + 32. 예: 0°C = 32°F, 100°C = 212°F. 미국 등에서 주로 화씨를 사용합니다."
+    },
+    "mile": {
+      "question": "1마일(mile)은 몇 km?",
+      "answer": "1마일은 약 1.6093 km입니다. 미국과 영국 등에서 거리를 나타낼 때 사용하는 단위입니다."
+    }
+  },
+  "footer": {
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "copyright": "단위 변환기. All rights reserved."
+  },
+  "categories": {
+    "length": "길이",
+    "weight": "무게",
+    "area": "넓이",
+    "volume": "부피",
+    "temperature": "온도",
+    "speed": "속도",
+    "data": "데이터",
+    "time": "시간"
+  },
+  "units": {
+    "mm": { "label": "밀리미터", "symbol": "mm" },
+    "cm": { "label": "센티미터", "symbol": "cm" },
+    "m": { "label": "미터", "symbol": "m" },
+    "km": { "label": "킬로미터", "symbol": "km" },
+    "in": { "label": "인치", "symbol": "in" },
+    "ft": { "label": "피트", "symbol": "ft" },
+    "yd": { "label": "야드", "symbol": "yd" },
+    "mi": { "label": "마일", "symbol": "mi" },
+    "ri": { "label": "리(里)", "symbol": "리" },
+    "ja": { "label": "자(尺)", "symbol": "자" },
+    "chi": { "label": "치(寸)", "symbol": "치" },
+    "mg": { "label": "밀리그램", "symbol": "mg" },
+    "g": { "label": "그램", "symbol": "g" },
+    "kg": { "label": "킬로그램", "symbol": "kg" },
+    "t": { "label": "톤", "symbol": "t" },
+    "oz": { "label": "온스", "symbol": "oz" },
+    "lb": { "label": "파운드", "symbol": "lb" },
+    "geun": { "label": "근(斤)", "symbol": "근" },
+    "nyang": { "label": "냥(兩)", "symbol": "냥" },
+    "don": { "label": "돈(錢)", "symbol": "돈" },
+    "mm2": { "label": "제곱밀리미터", "symbol": "㎟" },
+    "cm2": { "label": "제곱센티미터", "symbol": "㎠" },
+    "m2": { "label": "제곱미터", "symbol": "㎡" },
+    "km2": { "label": "제곱킬로미터", "symbol": "㎢" },
+    "ha": { "label": "헥타르", "symbol": "ha" },
+    "ac": { "label": "에이커", "symbol": "ac" },
+    "pyeong": { "label": "평(坪)", "symbol": "평" },
+    "jeong": { "label": "정(町)", "symbol": "정" },
+    "mL": { "label": "밀리리터", "symbol": "mL" },
+    "L": { "label": "리터", "symbol": "L" },
+    "m3": { "label": "세제곱미터", "symbol": "㎥" },
+    "gal": { "label": "갤런(US)", "symbol": "gal" },
+    "qt": { "label": "쿼트", "symbol": "qt" },
+    "pt": { "label": "파인트", "symbol": "pt" },
+    "floz": { "label": "액량 온스", "symbol": "fl oz" },
+    "cup": { "label": "컵", "symbol": "cup" },
+    "hop": { "label": "홉(合)", "symbol": "홉" },
+    "doe": { "label": "되(升)", "symbol": "되" },
+    "mal": { "label": "말(斗)", "symbol": "말" },
+    "C": { "label": "섭씨", "symbol": "°C" },
+    "F": { "label": "화씨", "symbol": "°F" },
+    "K": { "label": "켈빈", "symbol": "K" },
+    "ms": { "label": "미터/초", "symbol": "m/s" },
+    "kmh": { "label": "킬로미터/시", "symbol": "km/h" },
+    "mph": { "label": "마일/시", "symbol": "mph" },
+    "kn": { "label": "노트", "symbol": "kn" },
+    "mach": { "label": "마하", "symbol": "마하" },
+    "bit": { "label": "비트", "symbol": "bit" },
+    "B": { "label": "바이트", "symbol": "B" },
+    "KB": { "label": "킬로바이트", "symbol": "KB" },
+    "MB": { "label": "메가바이트", "symbol": "MB" },
+    "GB": { "label": "기가바이트", "symbol": "GB" },
+    "TB": { "label": "테라바이트", "symbol": "TB" },
+    "PB": { "label": "페타바이트", "symbol": "PB" },
+    "s": { "label": "초", "symbol": "초" },
+    "min": { "label": "분", "symbol": "분" },
+    "h": { "label": "시간", "symbol": "시간" },
+    "d": { "label": "일", "symbol": "일" },
+    "w": { "label": "주", "symbol": "주" },
+    "mo": { "label": "월(30일)", "symbol": "월" },
+    "y": { "label": "년(365일)", "symbol": "년" }
+  },
+  "quickConverts": {
+    "pyeongToM2": { "label": "평 → ㎡", "description": "부동산 면적 환산" },
+    "geunToKg": { "label": "근 → kg", "description": "식재료 무게 환산" },
+    "cToF": { "label": "°C → °F", "description": "온도 변환" },
+    "mileToKm": { "label": "mile → km", "description": "거리 환산" },
+    "ozToG": { "label": "oz → g", "description": "무게 환산" },
+    "gbToMb": { "label": "GB → MB", "description": "데이터 용량 환산" }
+  }
+}

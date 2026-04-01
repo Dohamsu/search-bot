@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { Upload, X } from "lucide-react";
 import type { DitherMode } from "../lib/dotArt";
+import { useTranslation } from "../i18n";
 
 interface ImageUploaderProps {
   gridSize: number;
@@ -18,6 +19,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 
 export default function ImageUploader({ gridSize, palette, dither = "none", edgeEnhance = false, outline = false, onConvert, onError }: ImageUploaderProps) {
+  const { t } = useTranslation();
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,17 +27,17 @@ export default function ImageUploader({ gridSize, palette, dither = "none", edge
   const processFile = useCallback(
     (file: File) => {
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        onError("지원하지 않는 파일 형식입니다. (PNG, JPG, WebP, GIF)");
+        onError(t("uploader.unsupportedFormat"));
         return;
       }
       if (file.size > MAX_FILE_SIZE) {
-        onError("파일 크기가 5MB를 초과합니다.");
+        onError(t("uploader.fileTooLarge"));
         return;
       }
 
       const reader = new FileReader();
       reader.onerror = () => {
-        onError("파일을 읽는 중 오류가 발생했습니다.");
+        onError(t("uploader.fileReadError"));
       };
       reader.onload = (e) => {
         const dataUrl = e.target?.result as string;
@@ -43,21 +45,21 @@ export default function ImageUploader({ gridSize, palette, dither = "none", edge
 
         const img = new Image();
         img.onerror = () => {
-          onError("이미지를 불러올 수 없습니다. 다른 파일을 시도해주세요.");
+          onError(t("uploader.imageLoadError"));
         };
         img.onload = () => {
           import("../lib/dotArt").then(({ imageToDotGrid }) => {
             const grid = imageToDotGrid(img, { gridSize, palette, dither, edgeEnhance, outline });
             onConvert(grid);
           }).catch(() => {
-            onError("도트 아트 변환 중 오류가 발생했습니다.");
+            onError(t("uploader.convertError"));
           });
         };
         img.src = dataUrl;
       };
       reader.readAsDataURL(file);
     },
-    [gridSize, palette, dither, edgeEnhance, outline, onConvert, onError]
+    [gridSize, palette, dither, edgeEnhance, outline, onConvert, onError, t]
   );
 
   const handleDrop = useCallback(
@@ -98,7 +100,7 @@ export default function ImageUploader({ gridSize, palette, dither = "none", edge
       >
         {preview ? (
           <div className="relative">
-            <img src={preview} alt="업로드 미리보기" className="max-h-32 rounded-lg" />
+            <img src={preview} alt={t("uploader.uploadPreviewAlt")} className="max-h-32 rounded-lg" />
             <button
               onClick={(e) => { e.stopPropagation(); clearPreview(); }}
               className="absolute -top-2 -right-2 p-1 rounded-full bg-gray-800 text-white hover:bg-gray-700"
@@ -109,8 +111,8 @@ export default function ImageUploader({ gridSize, palette, dither = "none", edge
         ) : (
           <>
             <Upload size={32} className="text-gray-400 mb-2" />
-            <p className="text-sm text-gray-500 font-medium">이미지를 드래그하거나 클릭하여 업로드</p>
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WebP, GIF · 최대 5MB</p>
+            <p className="text-sm text-gray-500 font-medium">{t("uploader.uploadHint")}</p>
+            <p className="text-xs text-gray-400 mt-1">{t("uploader.uploadLimit")}</p>
           </>
         )}
         <input

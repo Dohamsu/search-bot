@@ -2,12 +2,15 @@
 
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import { useTranslation } from "../i18n";
 
 interface CompatCardProps {
   compatible: string[];
 }
 
 export default function CompatCard({ compatible }: CompatCardProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       className="rounded-3xl bg-white p-6 shadow-sm"
@@ -18,7 +21,7 @@ export default function CompatCard({ compatible }: CompatCardProps) {
       <div className="mb-4 flex items-center gap-2">
         <Heart className="h-4 w-4 text-[var(--mbti-secondary)]" />
         <h3 className="font-heading text-base font-bold text-[var(--mbti-text)]">
-          최고의 궁합
+          {t("result.bestCompatibility")}
         </h3>
       </div>
       <div className="flex gap-3">

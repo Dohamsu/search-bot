@@ -1,0 +1,130 @@
+{
+  "header": {
+    "title": "Health Calculator"
+  },
+  "common": {
+    "basicInfo": "Basic Info",
+    "male": "Male",
+    "female": "Female",
+    "age": "Age",
+    "height": "Height",
+    "weight": "Weight",
+    "ageUnit": "yrs",
+    "cmUnit": "cm",
+    "kgUnit": "kg",
+    "kcalPerDay": "kcal/day",
+    "kcal": "kcal",
+    "percent": "%"
+  },
+  "tabs": {
+    "bmi": "BMI",
+    "bmr": "BMR",
+    "tdee": "TDEE",
+    "bodyfat": "Body Fat",
+    "standard": "Ideal Weight"
+  },
+  "bmi": {
+    "title": "BMI (Body Mass Index)",
+    "label": "BMI",
+    "unit": "kg/m\u00b2",
+    "emptyState": "Enter height and weight to calculate BMI.",
+    "normalWeightRange": "Normal weight range:",
+    "standardNote": "* Based on Asia-Pacific criteria (WHO: Overweight 25+, Obese 30+)",
+    "classificationTitle": "BMI Classification (Asia-Pacific)",
+    "underweight": "Underweight",
+    "normal": "Normal",
+    "overweight": "Overweight",
+    "obese1": "Obese Class 1",
+    "obese2": "Obese Class 2",
+    "underweightRange": "Underweight: Below 18.5",
+    "normalRange": "Normal: 18.5 - 22.9",
+    "overweightRange": "Overweight: 23 - 24.9",
+    "obese1Range": "Obese Class 1: 25 - 29.9",
+    "obese2Range": "Obese Class 2: 30 and above"
+  },
+  "bmr": {
+    "title": "BMR (Basal Metabolic Rate)",
+    "averageLabel": "Average BMR",
+    "averageSub": "Average of two formulas",
+    "emptyState": "Enter gender, age, height, and weight to calculate BMR.",
+    "note": "* The Mifflin-St Jeor formula is considered more accurate for modern body types."
+  },
+  "tdee": {
+    "title": "TDEE (Total Daily Energy Expenditure)",
+    "activityLevel": "Activity Level",
+    "emptyState": "Enter gender, age, height, and weight to calculate TDEE.",
+    "resultLabel": "Total Daily Energy Expenditure",
+    "deficit": "Lose (-500)",
+    "maintenance": "Maintain",
+    "surplus": "Gain (+500)",
+    "note": "* Based on ~0.45kg/week weight change goal (500kcal adjustment)",
+    "activity0": "Sedentary (little or no exercise)",
+    "activity1": "Lightly active (1-3 days/week)",
+    "activity2": "Moderately active (3-5 days/week)",
+    "activity3": "Very active (6-7 days/week)",
+    "activity4": "Extra active (intense daily exercise)"
+  },
+  "bodyfat": {
+    "title": "Body Fat % (U.S. Navy Formula)",
+    "waist": "Waist",
+    "neck": "Neck",
+    "hip": "Hip",
+    "resultLabel": "Body Fat Percentage",
+    "emptyState": "Enter height and measurements to calculate body fat %.",
+    "invalidInput": "Please check your inputs. Measurements are invalid.",
+    "classificationTitle": "Body Fat % Classification",
+    "essentialFat": "Essential Fat",
+    "athlete": "Athlete",
+    "fitness": "Fitness",
+    "average": "Average",
+    "obese": "Obese",
+    "maleEssential": "Essential Fat: 2-5%",
+    "maleAthlete": "Athlete: 6-13%",
+    "maleFitness": "Fitness: 14-17%",
+    "maleAverage": "Average: 18-24%",
+    "maleObese": "Obese: 25% and above",
+    "femaleEssential": "Essential Fat: 10-13%",
+    "femaleAthlete": "Athlete: 14-20%",
+    "femaleFitness": "Fitness: 21-24%",
+    "femaleAverage": "Average: 25-31%",
+    "femaleObese": "Obese: 32% and above"
+  },
+  "standard": {
+    "title": "Ideal Weight",
+    "averageLabel": "Ideal Weight (Average)",
+    "diffSub": "Difference from current weight: {diff}kg",
+    "emptyState": "Enter height and weight to calculate ideal weight.",
+    "broca": "Broca's Method",
+    "bmiBase": "BMI-based (22)",
+    "currentVs": "vs. Current Weight:",
+    "formulaNote": "* Broca: (Height - 100) \u00d7 0.9 / BMI-based: 22 \u00d7 (Height in m)\u00b2"
+  },
+  "bmiGauge": {
+    "underweight": "Under",
+    "normal": "Normal",
+    "overweight": "Over",
+    "obese1": "Obese1",
+    "obese2": "Obese2"
+  },
+  "disclaimer": {
+    "line1": "This calculator is for reference only. Consult a doctor for accurate health advice.",
+    "line2": "BMI classification follows Asia-Pacific criteria by the Korean Society for the Study of Obesity."
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "Health Calculator"
+  },
+  "category": {
+    "underweight": "Underweight",
+    "normal": "Normal",
+    "overweight": "Overweight",
+    "obese1": "Obese Class 1",
+    "obese2": "Obese Class 2",
+    "essentialFat": "Essential Fat",
+    "athlete": "Athlete",
+    "fitness": "Fitness",
+    "average": "Average",
+    "obese": "Obese"
+  }
+}

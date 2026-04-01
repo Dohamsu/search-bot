@@ -5,6 +5,7 @@ import { Download, Minimize2, Copy, Film, Check } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
 import { renderDotGrid, downloadCanvasAsPNG, copyCanvasToClipboard, fitDotSize, RenderOptions } from "../lib/canvasRenderer";
 import { exportDotArtGif, GIF_EFFECTS, GifEffect } from "../lib/gifExporter";
+import { useTranslation } from "../i18n";
 
 const THUMB_SCALES = [1, 2, 3] as const;
 
@@ -20,6 +21,7 @@ interface DotArtPreviewProps {
 }
 
 export default function DotArtPreview({ grid, options, filename = "dot-art", onError }: DotArtPreviewProps) {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const thumbCanvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,11 +32,18 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
   const [gifExporting, setGifExporting] = useState(false);
   const [selectedEffect, setSelectedEffect] = useState<GifEffect>("blink");
 
-  // 컨테이너 실제 너비 측정 (항상 같은 div에 ref가 붙으므로 안정적)
+  const gifEffectNameMap: Record<string, string> = {
+    blink: t("gifEffects.blink"),
+    bounce: t("gifEffects.bounce"),
+    rotate: t("gifEffects.rotate"),
+    rainbow: t("gifEffects.rainbow"),
+    fade: t("gifEffects.fade"),
+  };
+
   useEffect(() => {
     if (!containerRef.current) return;
     const measure = () => {
-      const w = containerRef.current!.clientWidth - 48; // p-6 패딩 제외
+      const w = containerRef.current!.clientWidth - 48;
       setContainerWidth(w);
     };
     measure();
@@ -43,7 +52,6 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
     return () => observer.disconnect();
   }, []);
 
-  // 컨테이너 크기에 딱 맞게 렌더링
   useEffect(() => {
     if (!grid || !canvasRef.current || containerWidth <= 0) return;
     const gridSize = grid.length;
@@ -57,7 +65,6 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
     renderDotGrid(canvasRef.current, grid, renderOpts);
   }, [grid, options, containerWidth]);
 
-  // 축소 미리보기 렌더링
   useEffect(() => {
     if (!grid || !thumbCanvasRef.current) return;
     const renderOpts: RenderOptions = {
@@ -103,7 +110,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     } catch {
-      onError?.("클립보드 복사에 실패했습니다. 브라우저 권한을 확인해주세요.");
+      onError?.(t("toast.clipboardFail"));
     }
   };
 
@@ -127,7 +134,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
       link.click();
       URL.revokeObjectURL(url);
     } catch {
-      onError?.("GIF 생성에 실패했습니다. 다시 시도해주세요.");
+      onError?.(t("toast.gifFail"));
     } finally {
       setGifExporting(false);
     }
@@ -142,13 +149,13 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
           <div className="flex flex-col items-center text-center">
             <div className="text-4xl mb-3">🎨</div>
             <p className="text-gray-400 text-sm">
-              텍스트를 입력하고 생성 버튼을 눌러보세요
+              {t("preview.emptyHint")}
             </p>
           </div>
         )}
       </div>
 
-      {/* 축소 미리보기 */}
+      {/* Thumbnail Preview */}
       {grid && (
         <div className="flex items-center gap-4 rounded-xl border border-gray-100 bg-gray-50 p-3">
           <div className="flex items-center justify-center rounded-lg bg-white border border-gray-200 p-2">
@@ -160,7 +167,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 text-xs font-medium text-gray-500 mb-1.5">
               <Minimize2 size={12} />
-              축소 미리보기
+              {t("preview.thumbPreview")}
             </div>
             <div className="flex gap-1">
               {THUMB_SCALES.map((s) => (
@@ -178,7 +185,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
               ))}
             </div>
             <p className="mt-1 text-[10px] text-gray-400">
-              {grid.length}×{grid.length}px · 실제 픽셀 크기
+              {t("preview.actualPixelSize", { size: grid.length })}
             </p>
           </div>
         </div>
@@ -186,7 +193,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
 
       {grid && (
         <div className="space-y-3">
-          {/* 투명 배경 토글 */}
+          {/* Transparent background toggle */}
           <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
             <input
               type="checkbox"
@@ -194,10 +201,10 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
               onChange={(e) => setTransparentBg(e.target.checked)}
               className="rounded border-gray-300 text-indigo-500 focus:ring-indigo-500"
             />
-            투명 배경으로 내보내기
+            {t("preview.transparentBg")}
           </label>
 
-          {/* 메인 버튼 그룹 */}
+          {/* Main button group */}
           <div className="flex gap-2">
             <button
               onClick={handleDownload}
@@ -211,11 +218,11 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
               className="flex items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
             >
               {copySuccess ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-              {copySuccess ? "복사됨" : "복사"}
+              {copySuccess ? t("preview.copied") : t("preview.copy")}
             </button>
           </div>
 
-          {/* GIF 내보내기 */}
+          {/* GIF export */}
           <div className="flex gap-2">
             <select
               value={selectedEffect}
@@ -224,7 +231,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
             >
               {GIF_EFFECTS.map((effect) => (
                 <option key={effect.id} value={effect.id}>
-                  {effect.emoji} {effect.name}
+                  {effect.emoji} {gifEffectNameMap[effect.id] ?? effect.name}
                 </option>
               ))}
             </select>
@@ -234,7 +241,7 @@ export default function DotArtPreview({ grid, options, filename = "dot-art", onE
               className="flex items-center justify-center gap-2 rounded-xl bg-purple-500 px-6 py-3 text-sm font-medium text-white shadow-md hover:bg-purple-600 transition-colors disabled:opacity-50"
             >
               <Film size={18} />
-              {gifExporting ? "생성 중..." : "GIF"}
+              {gifExporting ? t("preview.gifExporting") : "GIF"}
             </button>
           </div>
 

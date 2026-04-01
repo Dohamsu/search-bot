@@ -23,42 +23,24 @@ import {
   getZodiacAnimal,
   getDaysUntilNextBirthday,
   getDateDifference,
-  getDayName,
   formatDateToString,
   formatDateKorean,
   formatNumber,
 } from "./lib/dateCalc";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import DateInfoSection from "./components/DateInfoSection";
 
 type TabId = "dday" | "diff" | "addSub" | "age";
-
-interface Tab {
-  id: TabId;
-  label: string;
-  icon: React.ReactNode;
-}
-
-const TABS: Tab[] = [
-  { id: "dday", label: "D-Day", icon: <Calendar className="w-4 h-4" /> },
-  {
-    id: "diff",
-    label: "날짜 차이",
-    icon: <CalendarDays className="w-4 h-4" />,
-  },
-  {
-    id: "addSub",
-    label: "더하기/빼기",
-    icon: <CalendarPlus className="w-4 h-4" />,
-  },
-  { id: "age", label: "만 나이", icon: <User className="w-4 h-4" /> },
-];
-
 
 function todayString(): string {
   return formatDateToString(new Date());
 }
 
-/* ────────────────────────── D-Day 탭 ────────────────────────── */
+/* ────────────────────────── D-Day Tab ────────────────────────── */
 function DDayTab() {
+  const { t } = useTranslation();
   const [targetDate, setTargetDate] = useState("");
 
   const result = useMemo(() => {
@@ -79,18 +61,17 @@ function DDayTab() {
       remainDays,
       months,
       years,
-      targetDayName: getDayName(target),
-      formattedTarget: formatDateKorean(target),
+      formattedTarget: formatDateKorean(target, t),
       isPast: signedDays < 0,
       isToday: signedDays === 0,
     };
-  }, [targetDate]);
+  }, [targetDate, t]);
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)]">
         <label className="block text-sm font-medium text-gray-600 mb-2">
-          목표 날짜 선택
+          {t("dday.selectDate")}
         </label>
         <input
           type="date"
@@ -110,7 +91,7 @@ function DDayTab() {
                 D-Day
               </p>
               <p className="text-lg text-gray-600 mt-3">
-                오늘이 바로 그 날입니다!
+                {t("dday.isToday")}
               </p>
             </div>
           ) : (
@@ -121,8 +102,12 @@ function DDayTab() {
               </p>
               <p className="text-lg text-gray-600 mt-3">
                 {result.isPast
-                  ? `${formatNumber(result.totalDays)}일이 지났습니다`
-                  : `${formatNumber(result.totalDays)}일 남았습니다`}
+                  ? t("dday.daysPassed", {
+                      count: formatNumber(result.totalDays),
+                    })
+                  : t("dday.daysLeft", {
+                      count: formatNumber(result.totalDays),
+                    })}
               </p>
             </div>
           )}
@@ -132,22 +117,31 @@ function DDayTab() {
               <div>
                 <p className="text-2xl font-bold text-[var(--date-primary)] font-[family-name:var(--font-space)]">
                   {result.weeks > 0
-                    ? `${formatNumber(result.weeks)}주 ${result.remainDays}일`
-                    : `${result.remainDays}일`}
+                    ? t("dday.weeksAndDays", {
+                        weeks: formatNumber(result.weeks),
+                        days: result.remainDays,
+                      })
+                    : t("dday.onlyDays", { days: result.remainDays })}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">주 단위</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t("dday.weekUnit")}
+                </p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--date-accent)] font-[family-name:var(--font-space)]">
-                  {result.months.toFixed(1)}개월
+                  {t("dday.months", { count: result.months.toFixed(1) })}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">월 단위</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t("dday.monthUnit")}
+                </p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--date-success)] font-[family-name:var(--font-space)]">
-                  {result.years.toFixed(2)}년
+                  {t("dday.years", { count: result.years.toFixed(2) })}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">년 단위</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t("dday.yearUnit")}
+                </p>
               </div>
             </div>
           )}
@@ -157,8 +151,9 @@ function DDayTab() {
   );
 }
 
-/* ────────────────────────── 날짜 차이 탭 ────────────────────────── */
+/* ────────────────────────── Date Diff Tab ────────────────────────── */
 function DateDiffTab() {
+  const { t } = useTranslation();
   const today = todayString();
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
@@ -181,10 +176,10 @@ function DateDiffTab() {
       totalHours,
       totalMinutes,
       totalSeconds,
-      startFormatted: formatDateKorean(start),
-      endFormatted: formatDateKorean(end),
+      startFormatted: formatDateKorean(start, t),
+      endFormatted: formatDateKorean(end, t),
     };
-  }, [startDate, endDate]);
+  }, [startDate, endDate, t]);
 
   return (
     <div className="space-y-6">
@@ -192,7 +187,7 @@ function DateDiffTab() {
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">
-              시작일
+              {t("diff.startDate")}
             </label>
             <input
               type="date"
@@ -206,7 +201,7 @@ function DateDiffTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">
-              종료일
+              {t("diff.endDate")}
             </label>
             <input
               type="date"
@@ -229,14 +224,14 @@ function DateDiffTab() {
             </p>
 
             <p className="text-5xl font-bold font-[family-name:var(--font-space)] text-[var(--date-primary)]">
-              {formatNumber(result.totalDays)}일
+              {t("diff.days", { count: formatNumber(result.totalDays) })}
             </p>
 
             {(result.diff.years > 0 || result.diff.months > 0) && (
               <p className="text-lg text-gray-600 mt-2">
-                {result.diff.years > 0 && `${result.diff.years}년 `}
-                {result.diff.months > 0 && `${result.diff.months}개월 `}
-                {result.diff.days > 0 && `${result.diff.days}일`}
+                {result.diff.years > 0 && `${result.diff.years}${t("addSub.year")} `}
+                {result.diff.months > 0 && `${result.diff.months}${t("addSub.month")} `}
+                {result.diff.days > 0 && `${result.diff.days}${t("addSub.day")}`}
               </p>
             )}
           </div>
@@ -244,25 +239,31 @@ function DateDiffTab() {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)] text-center">
               <p className="text-3xl font-bold text-[var(--date-accent)] font-[family-name:var(--font-space)]">
-                {formatNumber(result.businessDays)}일
+                {t("diff.days", { count: formatNumber(result.businessDays) })}
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                영업일 (토/일 제외)
+                {t("diff.businessDays")}
               </p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)] text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Clock className="w-4 h-4 text-[var(--date-success)]" />
-                <span className="text-sm text-gray-500">시간 차이</span>
+                <span className="text-sm text-gray-500">
+                  {t("diff.timeDiff")}
+                </span>
               </div>
               <p className="text-lg font-semibold text-gray-700">
-                {formatNumber(result.totalHours)}시간
+                {t("diff.hours", { count: formatNumber(result.totalHours) })}
               </p>
               <p className="text-sm text-gray-500">
-                {formatNumber(result.totalMinutes)}분
+                {t("diff.minutes", {
+                  count: formatNumber(result.totalMinutes),
+                })}
               </p>
               <p className="text-xs text-gray-400">
-                {formatNumber(result.totalSeconds)}초
+                {t("diff.seconds", {
+                  count: formatNumber(result.totalSeconds),
+                })}
               </p>
             </div>
           </div>
@@ -272,8 +273,9 @@ function DateDiffTab() {
   );
 }
 
-/* ────────────────────────── 날짜 더하기/빼기 탭 ────────────────────────── */
+/* ────────────────────────── Add/Subtract Tab ────────────────────────── */
 function DateAddSubTab() {
+  const { t } = useTranslation();
   const today = todayString();
   const [baseDate, setBaseDate] = useState(today);
   const [mode, setMode] = useState<"add" | "sub">("add");
@@ -307,7 +309,7 @@ function DateAddSubTab() {
 
     return {
       date: resultDate,
-      formatted: formatDateKorean(resultDate),
+      formatted: formatDateKorean(resultDate, t),
       dateString: formatDateToString(resultDate),
     };
   }, [
@@ -319,13 +321,14 @@ function DateAddSubTab() {
     monthsInput,
     daysComplexInput,
     useBusinessDays,
+    t,
   ]);
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)]">
         <label className="block text-sm font-medium text-gray-600 mb-2">
-          기준일
+          {t("addSub.baseDate")}
         </label>
         <input
           type="date"
@@ -336,7 +339,7 @@ function DateAddSubTab() {
       </div>
 
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)]">
-        {/* 더하기/빼기 토글 */}
+        {/* Add / Subtract toggle */}
         <div className="flex gap-2 mb-4">
           <button
             onClick={() => setMode("add")}
@@ -347,7 +350,7 @@ function DateAddSubTab() {
             }`}
           >
             <Plus className="w-4 h-4" />
-            더하기
+            {t("addSub.add")}
           </button>
           <button
             onClick={() => setMode("sub")}
@@ -358,11 +361,11 @@ function DateAddSubTab() {
             }`}
           >
             <Minus className="w-4 h-4" />
-            빼기
+            {t("addSub.subtract")}
           </button>
         </div>
 
-        {/* 입력 타입 토글 */}
+        {/* Input type toggle */}
         <div className="flex gap-2 mb-4">
           <button
             onClick={() => setInputType("days")}
@@ -372,7 +375,7 @@ function DateAddSubTab() {
                 : "bg-gray-50 text-gray-500 hover:bg-gray-100"
             }`}
           >
-            일수만
+            {t("addSub.daysOnly")}
           </button>
           <button
             onClick={() => setInputType("complex")}
@@ -382,14 +385,14 @@ function DateAddSubTab() {
                 : "bg-gray-50 text-gray-500 hover:bg-gray-100"
             }`}
           >
-            년/월/일
+            {t("addSub.yearMonthDay")}
           </button>
         </div>
 
         {inputType === "days" ? (
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">
-              일수
+              {t("addSub.days")}
             </label>
             <input
               type="number"
@@ -405,14 +408,14 @@ function DateAddSubTab() {
                 onChange={(e) => setUseBusinessDays(e.target.checked)}
                 className="w-4 h-4 rounded accent-[var(--date-primary)]"
               />
-              영업일 기준 (토/일 제외)
+              {t("addSub.businessDaysBasis")}
             </label>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-2">
-                년
+                {t("addSub.year")}
               </label>
               <input
                 type="number"
@@ -424,7 +427,7 @@ function DateAddSubTab() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-2">
-                월
+                {t("addSub.month")}
               </label>
               <input
                 type="number"
@@ -436,7 +439,7 @@ function DateAddSubTab() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-2">
-                일
+                {t("addSub.day")}
               </label>
               <input
                 type="number"
@@ -452,7 +455,7 @@ function DateAddSubTab() {
 
       {result && (
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-[var(--date-border)] text-center">
-          <p className="text-sm text-gray-500 mb-2">계산 결과</p>
+          <p className="text-sm text-gray-500 mb-2">{t("addSub.result")}</p>
           <p className="text-4xl font-bold font-[family-name:var(--font-space)] text-[var(--date-primary)]">
             {result.formatted}
           </p>
@@ -462,8 +465,9 @@ function DateAddSubTab() {
   );
 }
 
-/* ────────────────────────── 만 나이 탭 ────────────────────────── */
+/* ────────────────────────── Age Tab ────────────────────────── */
 function AgeTab() {
+  const { t } = useTranslation();
   const [birthDate, setBirthDate] = useState("");
 
   const result = useMemo(() => {
@@ -475,13 +479,13 @@ function AgeTab() {
 
     const manAge = getKoreanAge(birth, today);
     const traditionalAge = getKoreanTraditionalAge(birth, today);
-    const zodiac = getZodiacAnimal(birth.getFullYear());
+    const zodiac = getZodiacAnimal(birth.getFullYear(), t);
     const daysUntilBirthday = getDaysUntilNextBirthday(birth, today);
     const livedDays = getDaysBetween(birth, today);
     const livedHours = livedDays * 24;
     const livedMinutes = livedHours * 60;
 
-    // 오늘이 생일인지 확인
+    // Check if today is the birthday
     const isBirthdayToday =
       today.getMonth() === birth.getMonth() &&
       today.getDate() === birth.getDate();
@@ -495,15 +499,15 @@ function AgeTab() {
       livedHours,
       livedMinutes,
       isBirthdayToday,
-      birthFormatted: formatDateKorean(birth),
+      birthFormatted: formatDateKorean(birth, t),
     };
-  }, [birthDate]);
+  }, [birthDate, t]);
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)]">
         <label className="block text-sm font-medium text-gray-600 mb-2">
-          생년월일
+          {t("age.birthDate")}
         </label>
         <input
           type="date"
@@ -521,10 +525,10 @@ function AgeTab() {
               {result.birthFormatted}
             </p>
             <p className="text-6xl font-bold font-[family-name:var(--font-space)] text-[var(--date-primary)]">
-              만 {result.manAge}세
+              {t("age.manAge", { age: result.manAge })}
             </p>
             <p className="text-lg text-gray-600 mt-2">
-              한국 나이 (연 나이) {result.traditionalAge}세
+              {t("age.koreanAge", { age: result.traditionalAge })}
             </p>
           </div>
 
@@ -532,26 +536,32 @@ function AgeTab() {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)] text-center">
               <p className="text-4xl mb-1">{result.zodiac.emoji}</p>
               <p className="text-xl font-bold text-[var(--date-primary)]">
-                {result.zodiac.name}띠
+                {result.zodiac.name}{t("age.zodiacSuffix")}
               </p>
-              <p className="text-xs text-gray-400 mt-1">12지신</p>
+              <p className="text-xs text-gray-400 mt-1">
+                {t("age.zodiacLabel")}
+              </p>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)] text-center">
               <Calendar className="w-8 h-8 text-[var(--date-accent)] mx-auto mb-1" />
               {result.isBirthdayToday ? (
                 <>
                   <p className="text-xl font-bold text-[var(--date-accent)]">
-                    생일 축하합니다!
+                    {t("age.happyBirthday")}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">오늘이 생일!</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {t("age.birthdayToday")}
+                  </p>
                 </>
               ) : (
                 <>
                   <p className="text-xl font-bold text-[var(--date-accent)]">
-                    {formatNumber(result.daysUntilBirthday)}일
+                    {t("age.daysCount", {
+                      count: formatNumber(result.daysUntilBirthday),
+                    })}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    다음 생일까지
+                    {t("age.daysUntilBirthday")}
                   </p>
                 </>
               )}
@@ -560,26 +570,28 @@ function AgeTab() {
 
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--date-border)]">
             <h3 className="text-sm font-medium text-gray-500 mb-4 text-center">
-              살아온 시간
+              {t("age.livedTime")}
             </h3>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-[var(--date-success)] font-[family-name:var(--font-space)]">
                   {formatNumber(result.livedDays)}
                 </p>
-                <p className="text-xs text-gray-400">일</p>
+                <p className="text-xs text-gray-400">{t("age.livedDays")}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--date-primary)] font-[family-name:var(--font-space)]">
                   {formatNumber(result.livedHours)}
                 </p>
-                <p className="text-xs text-gray-400">시간</p>
+                <p className="text-xs text-gray-400">{t("age.livedHours")}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-[var(--date-accent)] font-[family-name:var(--font-space)]">
                   {formatNumber(result.livedMinutes)}
                 </p>
-                <p className="text-xs text-gray-400">분</p>
+                <p className="text-xs text-gray-400">
+                  {t("age.livedMinutes")}
+                </p>
               </div>
             </div>
           </div>
@@ -589,36 +601,61 @@ function AgeTab() {
   );
 }
 
-/* ────────────────────────── 메인 페이지 ────────────────────────── */
+/* ────────────────────────── Main Page ────────────────────────── */
 export default function DateCalculatorPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabId>("dday");
+
+  const tabs: { id: TabId; labelKey: string; icon: React.ReactNode }[] = [
+    {
+      id: "dday",
+      labelKey: "tabs.dday",
+      icon: <Calendar className="w-4 h-4" />,
+    },
+    {
+      id: "diff",
+      labelKey: "tabs.diff",
+      icon: <CalendarDays className="w-4 h-4" />,
+    },
+    {
+      id: "addSub",
+      labelKey: "tabs.addSub",
+      icon: <CalendarPlus className="w-4 h-4" />,
+    },
+    {
+      id: "age",
+      labelKey: "tabs.age",
+      icon: <User className="w-4 h-4" />,
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* 헤더 */}
+      {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-[var(--date-border)] sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--date-primary)] to-[var(--date-accent)] flex items-center justify-center">
               <CalendarDays className="w-5 h-5 text-white" />
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-lg font-bold text-[var(--date-text)]">
-                날짜 계산기
+                {t("header.title")}
               </h1>
               <p className="text-xs text-gray-500">
-                D-day, 날짜 차이, 만 나이 계산
+                {t("header.subtitle")}
               </p>
             </div>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
 
-      {/* 탭 네비게이션 */}
+      {/* Tab Navigation */}
       <nav className="bg-white border-b border-[var(--date-border)] sticky top-[73px] z-10">
         <div className="max-w-2xl mx-auto px-4">
           <div className="flex overflow-x-auto scrollbar-hide">
-            {TABS.map((tab) => (
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
@@ -629,14 +666,14 @@ export default function DateCalculatorPage() {
                 }`}
               >
                 {tab.icon}
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             ))}
           </div>
         </div>
       </nav>
 
-      {/* 메인 콘텐츠 */}
+      {/* Main Content */}
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-6">
         {activeTab === "dday" && <DDayTab />}
         {activeTab === "diff" && <DateDiffTab />}
@@ -644,18 +681,23 @@ export default function DateCalculatorPage() {
         {activeTab === "age" && <AgeTab />}
       </main>
 
-      {/* 푸터 */}
+      <DateInfoSection />
+
+      <RelatedTools currentToolId="date" />
+
+      {/* Footer */}
       <footer className="bg-white border-t border-[var(--date-border)] mt-auto">
         <div className="max-w-2xl mx-auto px-4 py-6">
-
           <div className="flex items-center justify-between text-xs text-gray-400">
-            <p>&copy; {new Date().getFullYear()} 날짜 계산기</p>
+            <p>
+              &copy; {new Date().getFullYear()} {t("footer.copyright")}
+            </p>
             <div className="flex gap-3">
               <a href="/privacy" className="hover:text-gray-600">
-                개인정보처리방침
+                {t("footer.privacy")}
               </a>
               <a href="/terms" className="hover:text-gray-600">
-                이용약관
+                {t("footer.terms")}
               </a>
             </div>
           </div>

@@ -1,0 +1,582 @@
+{
+  "common": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact: rlawlsdnjswk@gmail.com",
+    "copyright": "© 2025 All rights reserved.",
+    "backToHome": "Back to Home",
+    "siteName": "16 Personality Types Test"
+  },
+  "home": {
+    "title": "16 Personality Types Test",
+    "subtitle": "A personality test based on Jung's theory of psychological types",
+    "questionCount": "16 questions / about 3 minutes",
+    "disclaimer": "This is not an official MBTI test. It is independently developed based on Jung's theory of psychological types.",
+    "startButton": "Start the Test",
+    "startButtonAria": "Start the personality type test"
+  },
+  "quiz": {
+    "questionLabel": "Question {current} / {total}",
+    "progressAria": "Progress: {current}/{total} questions",
+    "progressBarAria": "Question {current} of {total} in progress",
+    "answerGroupAria": "Answer choices for question {id}",
+    "questionAria": "Question {number}: {text}",
+    "pickInstruction": "Choose the most natural option for you"
+  },
+  "result": {
+    "testComplete": "Test Complete!",
+    "coreTraits": "Core Personality Traits",
+    "recommendedCareers": "Recommended Careers",
+    "sameCelebrities": "Famous People with This Type",
+    "celebrityDisclaimer": "* Based on publicly available information; not personally confirmed.",
+    "bestCompatibility": "Best Compatibility",
+    "viewAllCompatibility": "View All Compatibility →",
+    "populationPrefix": "Approximately",
+    "shareResult": "Share Result",
+    "linkCopied": "Link copied!",
+    "retakeTest": "Retake Test",
+    "saveImage": "Save Result Image",
+    "imageTitle": "My Personality Type Result",
+    "imagePopulation": "{percentage}% of the population",
+    "imageFooter": "16 Personality Types Test | mbti.onekit.co.kr"
+  },
+  "compatibility": {
+    "analysisLabel": "MBTI Compatibility Analysis",
+    "pageTitle": "Personality Type Compatibility Test",
+    "pageSubtitle": "Select two types and check their compatibility",
+    "myType": "My Type",
+    "otherType": "Their Type",
+    "analyzeButton": "Analyze Compatibility",
+    "resetButton": "Reset",
+    "goToTest": "Take the Personality Test →",
+    "compatibilityScore": "Compatibility Score: {score} / 5",
+    "strengths": "Strengths Together",
+    "challenges": "Potential Challenges",
+    "relationshipTip": "Relationship Tip",
+    "viewOtherCompat": "View Other Matches",
+    "retakeTest": "Retake the Test",
+    "shareResult": "Share Result",
+    "linkCopied": "Link copied!"
+  },
+  "typeGroups": {
+    "analyst": "Analysts (NT)",
+    "diplomat": "Diplomats (NF)",
+    "sentinel": "Sentinels (SJ)",
+    "explorer": "Explorers (SP)"
+  },
+  "questions": {
+    "q1": {
+      "question": "How do you recharge on weekends?",
+      "options": {
+        "o1": "Relax alone at home to recharge",
+        "o2": "Meet up with friends and chat",
+        "o3": "Enjoy a book or movie at a cafe",
+        "o4": "Party with new people"
+      }
+    },
+    "q2": {
+      "question": "When you arrive at a new social gathering, what do you do?",
+      "options": {
+        "o1": "Walk up and introduce yourself first",
+        "o2": "Wait for someone to approach you",
+        "o3": "Stay close to someone you know",
+        "o4": "Take the lead and drive conversations"
+      }
+    },
+    "q3": {
+      "question": "How do you relieve stress?",
+      "options": {
+        "o1": "Listen to music alone or take a walk",
+        "o2": "Call a friend and meet up",
+        "o3": "Write in a journal or organize thoughts alone",
+        "o4": "Talk it out with several people"
+      }
+    },
+    "q4": {
+      "question": "What's your ideal work environment?",
+      "options": {
+        "o1": "Lots of team projects and meetings",
+        "o2": "A place where I can work independently",
+        "o3": "Collaborating in a small team",
+        "o4": "A place that allows remote work"
+      }
+    },
+    "q5": {
+      "question": "How do you plan a trip?",
+      "options": {
+        "o1": "Create a detailed minute-by-minute itinerary",
+        "o2": "Just mark must-see spots and go with the flow",
+        "o3": "Plan around popular restaurants and attractions",
+        "o4": "Wander around and get inspired by the locale"
+      }
+    },
+    "q6": {
+      "question": "What's your preferred way of learning something new?",
+      "options": {
+        "o1": "Follow the textbook step by step",
+        "o2": "Understand the big picture first",
+        "o3": "Learn by doing it hands-on",
+        "o4": "Understand the theory and reasoning first"
+      }
+    },
+    "q7": {
+      "question": "What do you usually talk about in conversations?",
+      "options": {
+        "o1": "Today's events and specific experiences",
+        "o2": "Future possibilities and ideas",
+        "o3": "Fact-based and data-driven topics",
+        "o4": "Imaginative and thought-provoking stories"
+      }
+    },
+    "q8": {
+      "question": "How do you approach problem-solving?",
+      "options": {
+        "o1": "Find answers from past experience",
+        "o2": "Try a completely new approach",
+        "o3": "Apply proven methods step by step",
+        "o4": "Rely on intuition and inspiration"
+      }
+    },
+    "q9": {
+      "question": "When a friend comes to you with a problem, what do you do?",
+      "options": {
+        "o1": "Offer objective analysis and solutions",
+        "o2": "Empathize and listen to their feelings",
+        "o3": "List the pros and cons for them",
+        "o4": "Share in their emotions -- laugh and cry together"
+      }
+    },
+    "q10": {
+      "question": "When making an important decision, what matters most?",
+      "options": {
+        "o1": "Logical reasoning and rational judgment",
+        "o2": "The feelings and impact on people involved",
+        "o3": "Objective data and efficiency",
+        "o4": "Finding a way that satisfies everyone"
+      }
+    },
+    "q11": {
+      "question": "When conflict arises in a team project, what do you do?",
+      "options": {
+        "o1": "Focus on the goal and set emotions aside",
+        "o2": "Check on team members' feelings first",
+        "o3": "Resolve it according to rules and standards",
+        "o4": "Try to understand each other through dialogue"
+      }
+    },
+    "q12": {
+      "question": "What movie genre are you drawn to?",
+      "options": {
+        "o1": "Mystery/Thriller (logical plot)",
+        "o2": "Romance/Drama (emotional connection)",
+        "o3": "Sci-Fi/Documentary (intellectual curiosity)",
+        "o4": "Inspiring human stories"
+      }
+    },
+    "q13": {
+      "question": "How do you go about your daily routine?",
+      "options": {
+        "o1": "Follow a structured schedule",
+        "o2": "Go with how I feel in the moment",
+        "o3": "Make a to-do list and check things off",
+        "o4": "Go with the flow, flexibly"
+      }
+    },
+    "q14": {
+      "question": "How do you handle deadlines?",
+      "options": {
+        "o1": "Finish well ahead of time",
+        "o2": "Peak focus right before the deadline",
+        "o3": "Break it into stages and work through them",
+        "o4": "Need the pressure to get started"
+      }
+    },
+    "q15": {
+      "question": "How do you organize your closet or desk?",
+      "options": {
+        "o1": "Always neat and tidy",
+        "o2": "Comfortable in creative chaos",
+        "o3": "Sorted by category",
+        "o4": "Only organize when necessary"
+      }
+    },
+    "q16": {
+      "question": "How do you react when plans suddenly change?",
+      "options": {
+        "o1": "It stresses me out and feels uncomfortable",
+        "o2": "I actually find it refreshing",
+        "o3": "Quickly make a new plan",
+        "o4": "Embrace the change and adapt"
+      }
+    }
+  },
+  "results": {
+    "ENFP": {
+      "title": "The Enthusiastic Campaigner",
+      "description": "A free spirit who is creative and passionate. Excellent at discovering new possibilities and inspiring others.",
+      "traits": [
+        "Passionate about new possibilities",
+        "Enjoys connecting with people",
+        "Creative and free-spirited",
+        "Highly empathetic"
+      ],
+      "careers": ["Marketer", "Writer", "Counselor", "Actor", "Event Planner"],
+      "celebrities": ["Robert Downey Jr.", "Robin Williams", "Will Smith"]
+    },
+    "INTJ": {
+      "title": "The Strategic Mastermind",
+      "description": "An independent and analytical strategist. Holds high standards and excels at solving complex problems.",
+      "traits": [
+        "Exceptional strategic thinking",
+        "Independent and self-directed",
+        "High standards and perfectionism",
+        "Logical and systematic"
+      ],
+      "careers": ["Strategy Consultant", "Software Architect", "Scientist", "Investment Analyst", "Professor"],
+      "celebrities": ["Elon Musk", "Mark Zuckerberg", "Christopher Nolan"]
+    },
+    "INFP": {
+      "title": "The Dreamy Mediator",
+      "description": "An idealistic mediator with outstanding empathy. Values inner convictions and strives to make the world a better place.",
+      "traits": [
+        "Deep inner values",
+        "Outstanding empathy",
+        "Idealistic worldview",
+        "Creative expressiveness"
+      ],
+      "careers": ["Writer", "Psychologist", "Graphic Designer", "Social Worker", "Musician"],
+      "celebrities": ["William Shakespeare", "Edgar Allan Poe", "Tim Burton"]
+    },
+    "ESTJ": {
+      "title": "The Strict Executive",
+      "description": "A systematic and practical manager. Values rules and order, and acts with strong responsibility and decisiveness.",
+      "traits": [
+        "Excellent organizational management",
+        "Responsibility and leadership",
+        "Practical and realistic",
+        "Systematic and efficient"
+      ],
+      "careers": ["Business Manager", "Judge", "Financial Analyst", "Military Officer", "Project Manager"],
+      "celebrities": ["Henry Ford", "Michelle Obama", "Admiral Yi Sun-sin"]
+    },
+    "ISFJ": {
+      "title": "The Brave Defender",
+      "description": "A warm and dedicated defender. Finds fulfillment in helping others, and is attentive and trustworthy.",
+      "traits": [
+        "Dedicated and warm",
+        "Attentive observation skills",
+        "Strong sense of responsibility",
+        "Seeks stability"
+      ],
+      "careers": ["Nurse", "Teacher", "Librarian", "Social Worker", "Administrative Manager"],
+      "celebrities": ["Mother Teresa", "Beyonce", "Anne Hathaway"]
+    },
+    "ENTP": {
+      "title": "The Bold Debater",
+      "description": "A witty and challenging debater. Overflowing with intellectual curiosity and loves breaking conventions.",
+      "traits": [
+        "Overflowing intellectual curiosity",
+        "Enjoys debate and discussion",
+        "Innovative thinking",
+        "Highly adaptable"
+      ],
+      "careers": ["Entrepreneur", "Lawyer", "Inventor", "Producer", "Political Strategist"],
+      "celebrities": ["Thomas Edison", "Benjamin Franklin", "Sacha Baron Cohen"]
+    },
+    "ISFP": {
+      "title": "The Curious Adventurer",
+      "description": "A quiet and sensitive artist. Views the world through personal values and pursues beauty.",
+      "traits": [
+        "Artistic sensitivity",
+        "Flexible and open-minded",
+        "Lives in the moment",
+        "Values inner convictions"
+      ],
+      "careers": ["Designer", "Photographer", "Chef", "Florist", "Veterinarian"],
+      "celebrities": ["Michael Jackson", "Bob Dylan", "Audrey Hepburn"]
+    },
+    "ENTJ": {
+      "title": "The Bold Commander",
+      "description": "A charismatic leader. Values efficiency and results, and excels at turning big visions into reality.",
+      "traits": [
+        "Powerful leadership",
+        "Strategic vision",
+        "Decisiveness and drive",
+        "Pursuit of efficiency"
+      ],
+      "careers": ["CEO", "Lawyer", "Management Consultant", "Politician", "Entrepreneur"],
+      "celebrities": ["Steve Jobs", "Margaret Thatcher", "Napoleon"]
+    },
+    "INTP": {
+      "title": "The Logical Thinker",
+      "description": "A curious thinker. Enjoys logical analysis and theoretical exploration, and produces original ideas.",
+      "traits": [
+        "Analytical thinking",
+        "Intellectual curiosity",
+        "Original problem-solving",
+        "Objective perspective"
+      ],
+      "careers": ["Software Developer", "Data Scientist", "Philosopher", "Mathematician", "Game Designer"],
+      "celebrities": ["Albert Einstein", "Bill Gates", "Larry Page"]
+    },
+    "ESFP": {
+      "title": "The Free-Spirited Entertainer",
+      "description": "An energetic and fun-loving social personality. Gives energy to those around them and lives in the moment.",
+      "traits": [
+        "Sociable and lively",
+        "Optimistic and present-focused",
+        "Excellent observation skills",
+        "Flexible adaptability"
+      ],
+      "careers": ["Entertainer", "Event Planner", "Sales Representative", "Travel Guide", "Stylist"],
+      "celebrities": ["IU", "Elvis Presley", "Marilyn Monroe"]
+    },
+    "ISTP": {
+      "title": "The Versatile Virtuoso",
+      "description": "A logical yet practical personality. Excels with hands-on skills and solving problems on the spot.",
+      "traits": [
+        "Practical problem-solving",
+        "Calm and logical",
+        "Independent nature",
+        "Excellent adaptability"
+      ],
+      "careers": ["Engineer", "Pilot", "Mechanic", "Firefighter", "Surgeon"],
+      "celebrities": ["Michael Jordan", "Clint Eastwood", "Tom Cruise"]
+    },
+    "ESFJ": {
+      "title": "The Social Consul",
+      "description": "A warm and caring personality. Values harmony and excels at looking after others.",
+      "traits": [
+        "Caring and kind",
+        "Social skills",
+        "Values harmony",
+        "Responsible nature"
+      ],
+      "careers": ["Teacher", "Nurse", "Event Coordinator", "HR Manager", "Customer Service"],
+      "celebrities": ["Taylor Swift", "Jennifer Garner", "Andy Cohen"]
+    },
+    "INFJ": {
+      "title": "The Insightful Advocate",
+      "description": "An insightful and idealistic personality. Understands others through deep empathy and pursues meaningful change.",
+      "traits": [
+        "Deep insight",
+        "Idealistic vision",
+        "Outstanding empathy",
+        "Seeks meaning"
+      ],
+      "careers": ["Counseling Psychologist", "Writer", "Human Rights Lawyer", "Professor", "Coach"],
+      "celebrities": ["Martin Luther King Jr.", "Gandhi", "Lady Gaga"]
+    },
+    "ENFJ": {
+      "title": "The Passionate Protagonist",
+      "description": "A leader who combines charisma and empathy. Passionate about helping others grow and inspiring people.",
+      "traits": [
+        "Helps others grow",
+        "Charismatic leadership",
+        "Excellent communication",
+        "Altruistic nature"
+      ],
+      "careers": ["Teacher", "HR Manager", "Diplomat", "Psychotherapist", "Social Worker"],
+      "celebrities": ["Barack Obama", "Oprah Winfrey", "Martin Luther King Jr."]
+    },
+    "ISTJ": {
+      "title": "The Reliable Logistician",
+      "description": "A trustworthy and diligent personality. Values tradition and rules, and has a strong sense of duty.",
+      "traits": [
+        "Diligent and thorough",
+        "Respects tradition and rules",
+        "Strong sense of responsibility",
+        "Practical mindset"
+      ],
+      "careers": ["Accountant", "Civil Servant", "Banker", "Auditor", "Legal Advisor"],
+      "celebrities": ["Warren Buffett", "Natalie Portman", "Angela Merkel"]
+    },
+    "ESTP": {
+      "title": "The Adventurous Entrepreneur",
+      "description": "An energetic and action-oriented personality. Embraces risk and excels at solving real-world problems.",
+      "traits": [
+        "Action and decisiveness",
+        "Loves adventure",
+        "Practical problem-solving",
+        "Sociable and bold"
+      ],
+      "careers": ["Entrepreneur", "Sales Manager", "Firefighter", "Sports Agent", "Marketer"],
+      "celebrities": ["Donald Trump", "Madonna", "Jack Nicholson"]
+    },
+    "fallback": {
+      "title": "Type {type}",
+      "description": "You are type {type}. You have a unique personality combination.",
+      "traits": [
+        "Unique personality",
+        "Balanced perspective",
+        "Adapts to various situations",
+        "Has unique strengths"
+      ],
+      "careers": ["Can thrive in various fields"]
+    }
+  },
+  "compatData": {
+    "titles": {
+      "score5": ["Dream Team", "Perfect Match", "Best Partners"],
+      "score4": ["Great Match", "Complementary Pair", "Growing Together"],
+      "score3": ["Decent Match", "Good with Effort", "Adaptable Pair"],
+      "score2": ["Challenging Match", "Growth Opportunity", "Patience Required"],
+      "score1": ["Opposites Attract", "Understanding Needed"]
+    },
+    "sameAxisStrengths": {
+      "EI": [
+        "Similar energy direction means your lifestyles sync well",
+        "You have similar expectations for social activities"
+      ],
+      "SN": [
+        "You process information the same way, making communication easy",
+        "You share a similar worldview"
+      ],
+      "TF": [
+        "Similar decision-making styles lead to fewer conflicts",
+        "You share similar values and judgment criteria"
+      ],
+      "JP": [
+        "Your lifestyle patterns and planning styles match well",
+        "You handle tasks in a similar way"
+      ]
+    },
+    "diffAxisStrengths": {
+      "EI": [
+        "Extroversion meets introversion for a balanced social life",
+        "Different energy directions provide diverse perspectives"
+      ],
+      "SN": [
+        "Practical and visionary perspectives complement each other",
+        "You can see both the details and the big picture together"
+      ],
+      "TF": [
+        "Logic and emotion combine for better decisions",
+        "Rational analysis and empathy complement each other"
+      ],
+      "JP": [
+        "Structure meets flexibility for greater adaptability",
+        "You find balance between organization and freedom"
+      ]
+    },
+    "diffAxisChallenges": {
+      "EI": [
+        "You'll need to balance alone time and together time",
+        "Understanding different expectations for social activities is key"
+      ],
+      "SN": [
+        "Recognize and respect differences in communication styles",
+        "Understand the gap between fact-focused and possibility-focused thinking"
+      ],
+      "TF": [
+        "Respect each other's different ways of expressing emotions",
+        "Balance logic and emotion when making decisions together"
+      ],
+      "JP": [
+        "Be considerate about flexibility when plans change",
+        "Compromise between deadlines and freedom is needed"
+      ]
+    },
+    "tips": {
+      "score5": [
+        "Appreciate each other's strengths and enjoy the natural flow of the relationship.",
+        "You already match well, but don't take each other for granted.",
+        "Your differences actually enrich the relationship."
+      ],
+      "score4": [
+        "View your differences as complementary strengths, not weaknesses.",
+        "An open mind to learning from each other deepens the relationship.",
+        "Respecting small differences creates great synergy."
+      ],
+      "score3": [
+        "Build on your similarities while working to understand your differences.",
+        "Listening to each other's perspectives improves the relationship.",
+        "Find shared interests and spend time together."
+      ],
+      "score2": [
+        "Acknowledge the differences and look for what you can learn from each other.",
+        "Patience and effort to understand each other's ways can lead to significant growth.",
+        "Clear communication is key to reducing misunderstandings."
+      ],
+      "score1": [
+        "Completely different perspectives can open new worlds. Keep an open mind.",
+        "Respect each other's differences and start by finding small commonalities.",
+        "Try to find the differences between you fascinating rather than frustrating."
+      ]
+    },
+    "sameTypeStrengths": [
+      "You can instantly understand each other's way of thinking",
+      "You share similar life rhythms and values",
+      "Communication is easy and comfortable"
+    ],
+    "sameTypeChallenges": [
+      "Sharing the same weaknesses makes it hard to compensate for each other",
+      "Similar thinking styles may cause you to miss new perspectives"
+    ],
+    "highScoreStrength": "Natural role division is possible",
+    "noChallenges": "There are few sources of major conflict in this relationship",
+    "descriptions": {
+      "same": "Two {type1}s ({title1}) can deeply understand each other. You share similar values and thinking styles, but be aware that you may also share the same weaknesses -- consciously compensating for them is important.",
+      "score5": "{type1} ({title1}) and {type2} ({title2}) naturally complement each other -- a perfect match. Different strengths create synergy, and being together helps both grow into better versions of themselves.",
+      "score4": "{type1} ({title1}) and {type2} ({title2}) fill in each other's gaps nicely. Slight differences actually make the relationship more interesting and provide new perspectives.",
+      "score3": "{type1} ({title1}) and {type2} ({title2}) share some commonalities and some differences. With effort to understand each other, you can build a stable and balanced relationship.",
+      "score2": "{type1} ({title1}) and {type2} ({title2}) differ in many ways, but that means there's much to learn from each other. With patience and understanding, you can grow together.",
+      "score1": "{type1} ({title1}) and {type2} ({title2}) are opposites in nearly every way. It may be hard to understand at first, but accepting each other's differences can lead to the greatest personal growth."
+    }
+  },
+  "share": {
+    "resultTitle": "My personality type is {type}! - {title}",
+    "resultText": "Discover the {type} personality type!",
+    "compatTitle": "{type1} x {type2} MBTI Compatibility Result",
+    "compatText": "Check out our compatibility! {title}"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "section1Title": "1. Service Overview",
+    "section1Text": "\"16 Personality Types Test\" (hereinafter \"Service\") is a free web service that analyzes users' personality types. This Service does not require registration and does not separately collect or store users' personal information.",
+    "section2Title": "2. Information Collected",
+    "section2Text": "This Service does not store test response data on any server. All test processing is done in the user's browser (client-side), and test results are generated only on the user's device.",
+    "section3Title": "3. Use of Google Analytics",
+    "section3Text": "This Service may use Google Analytics to understand website usage patterns. Google Analytics collects the following anonymized information through cookies:",
+    "section3List": ["Pages visited and time spent", "Access region (country/city level)", "Device and browser type", "Traffic source (search engine, direct access, etc.)"],
+    "section3Suffix": "Collected data is processed in a non-personally identifiable form and managed according to Google's Privacy Policy. For details, see",
+    "section3Link": "Google Privacy Policy",
+    "section3LinkSuffix": ".",
+    "section4Title": "4. Cookie Notice",
+    "section4Text": "This Service may use cookies for the following purposes:",
+    "section4List": ["Website analytics via Google Analytics", "Ad serving via Google AdSense"],
+    "section4Suffix": "You can block cookies through browser settings, but some service features may be limited.",
+    "section5Title": "5. Advertising Services",
+    "section5Text": "This Service may display ads through Google AdSense. Google AdSense may use cookies to serve interest-based ads. For details, see",
+    "section5Link": "Google Ads Policy",
+    "section5LinkSuffix": ".",
+    "section6Title": "6. Contact",
+    "section6Text": "If you have questions about this Privacy Policy, please contact us at the address below.",
+    "section6Email": "Email: rlawlsdnjswk@gmail.com",
+    "section7Title": "7. Policy Changes",
+    "section7Text": "This Privacy Policy may be updated to reflect changes in law or service. Changes will be announced on this page.",
+    "effectiveDate": "Effective: January 1, 2025"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "section1Title": "1. About the Service",
+    "section1Text": "\"16 Personality Types Test\" (hereinafter \"Service\") is a free web service that analyzes users' personality types through simple questions. By using this Service, you agree to the following terms.",
+    "section2Title": "2. Nature of Results & Disclaimer",
+    "section2Text1": "Test results provided by this Service are for entertainment and reference purposes only. This test does not replace professional psychological diagnosis, counseling, or medical evaluation, and should not be treated as a professional psychological assessment.",
+    "section2Text2": "This Service is not responsible for any decisions or actions based on test results. If you have psychological concerns, please consult a professional counselor or psychologist.",
+    "section3Title": "3. Trademark Notice",
+    "section3Text1": "MBTI (Myers-Briggs Type Indicator) is a registered trademark of The Myers-Briggs Company. This Service is not an official MBTI test and has no affiliation, sponsorship, or certification from The Myers-Briggs Company.",
+    "section3Text2": "This Service is an independent personality type analysis based on Carl Jung's theory of personality types.",
+    "section4Title": "4. Celebrity Personality Type Information",
+    "section4Text": "Celebrity personality type information provided by this Service is based on publicly available sources and may not have been personally confirmed by those individuals. This information is provided for reference only.",
+    "section5Title": "5. Intellectual Property",
+    "section5Text": "All intellectual property of this Service, including design, content, and code, belongs to the service operator. Users may share test results for personal purposes, but may not commercially reproduce, distribute, or modify the Service's content without permission.",
+    "section6Title": "6. Advertising",
+    "section6Text": "This Service is provided free of charge and may display ads through Google AdSense and other services to cover operating costs. Ad content does not represent this Service's views.",
+    "section7Title": "7. Service Changes & Suspension",
+    "section7Text": "The service operator may change or suspend the Service without prior notice, and is not liable for any resulting damages.",
+    "section8Title": "8. Terms Changes",
+    "section8Text": "These terms may be updated for service improvements or legal changes. Changes will be announced on this page.",
+    "effectiveDate": "Effective: January 1, 2025"
+  }
+}

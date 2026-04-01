@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   Type,
   Hash,
@@ -27,13 +27,33 @@ import {
   removeDuplicateSpaces,
   removeLineBreaks,
 } from "./lib/textAnalyzer";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import TextInfoSection from "./components/TextInfoSection";
 
 export default function TextCounterPage() {
+  const { t } = useTranslation();
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
 
   const stats = analyzeText(text);
-  const snsLimits = checkSnsLimits(text, stats);
+
+  const snsLabels = useMemo(
+    () => ({
+      kakao: t("sns.kakao"),
+      sms: t("sns.sms"),
+      lms: t("sns.lms"),
+      twitter: t("sns.twitter"),
+      instagram: t("sns.instagram"),
+      charUnit: t("sns.charUnit"),
+      byteUnit: t("sns.byteUnit"),
+      weightUnit: t("sns.weightUnit"),
+    }),
+    [t]
+  );
+
+  const snsLimits = checkSnsLimits(text, stats, snsLabels);
 
   const handleCopy = useCallback(async () => {
     if (!text) return;
@@ -64,7 +84,7 @@ export default function TextCounterPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* 헤더 */}
+      {/* Header */}
       <header className="border-b border-[var(--text-border)] bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-3">
           <div
@@ -73,76 +93,77 @@ export default function TextCounterPage() {
           >
             <Type size={22} />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-xl font-bold font-[family-name:var(--font-space-grotesk-var)]">
-              글자수 세기
+              {t("header.title")}
             </h1>
             <p className="text-xs text-gray-500">
-              실시간 글자수 / 단어수 / 바이트수 카운터
+              {t("header.subtitle")}
             </p>
           </div>
+          <LanguageSwitcher />
         </div>
       </header>
 
-      {/* 메인 콘텐츠 */}
+      {/* Main */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* 왼쪽: 텍스트 입력 */}
+          {/* Left: Text Input */}
           <div className="flex-1 space-y-4">
-            {/* 텍스트 영역 */}
+            {/* Text Area */}
             <div className="bg-white rounded-2xl border border-[var(--text-border)] shadow-sm overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--text-border)] bg-gray-50/50">
                 <span className="text-sm font-medium text-gray-600 flex items-center gap-2">
                   <FileText size={16} />
-                  텍스트 입력
+                  {t("input.label")}
                 </span>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <span>
-                    {stats.charWithSpaces.toLocaleString()}자
+                    {t("input.charCount", { count: stats.charWithSpaces.toLocaleString() })}
                   </span>
                   <span>|</span>
-                  <span>{stats.wordCount.toLocaleString()}단어</span>
+                  <span>{t("input.wordCount", { count: stats.wordCount.toLocaleString() })}</span>
                 </div>
               </div>
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."
+                placeholder={t("input.placeholder")}
                 className="w-full min-h-[240px] p-4 text-base leading-relaxed outline-none bg-white placeholder-gray-300 resize-y"
                 autoFocus
               />
             </div>
 
-            {/* 텍스트 변환 도구 */}
+            {/* Transform Tools */}
             <div className="bg-white rounded-2xl border border-[var(--text-border)] shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <Wrench size={16} style={{ color: "var(--text-primary)" }} />
-                텍스트 변환 도구
+                {t("transform.title")}
               </h2>
               <div className="flex flex-wrap gap-2">
                 <TransformButton
                   icon={<ArrowUpAZ size={14} />}
-                  label="대문자 변환"
+                  label={t("transform.toUpperCase")}
                   onClick={() => handleTransform(toUpperCase)}
                 />
                 <TransformButton
                   icon={<ArrowDownAZ size={14} />}
-                  label="소문자 변환"
+                  label={t("transform.toLowerCase")}
                   onClick={() => handleTransform(toLowerCase)}
                 />
                 <TransformButton
                   icon={<RemoveFormatting size={14} />}
-                  label="앞뒤 공백 제거"
+                  label={t("transform.trim")}
                   onClick={() => handleTransform(trimText)}
                 />
                 <TransformButton
                   icon={<Space size={14} />}
-                  label="중복 공백 제거"
+                  label={t("transform.removeDuplicateSpaces")}
                   onClick={() => handleTransform(removeDuplicateSpaces)}
                 />
                 <TransformButton
                   icon={<WrapText size={14} />}
-                  label="줄바꿈 제거"
+                  label={t("transform.removeLineBreaks")}
                   onClick={() => handleTransform(removeLineBreaks)}
                 />
                 <button
@@ -153,29 +174,29 @@ export default function TextCounterPage() {
                     bg-[var(--text-primary)] text-white hover:opacity-90 active:scale-95"
                 >
                   {copied ? <Check size={14} /> : <Copy size={14} />}
-                  {copied ? "복사 완료!" : "클립보드 복사"}
+                  {copied ? t("transform.copied") : t("transform.copy")}
                 </button>
               </div>
             </div>
 
-            {/* SNS 글자수 체크 */}
+            {/* SNS Character Limits */}
             <div className="bg-white rounded-2xl border border-[var(--text-border)] shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <MessageSquare
                   size={16}
                   style={{ color: "var(--text-accent)" }}
                 />
-                SNS 글자수 체크
+                {t("sns.title")}
               </h2>
               <div className="space-y-3">
                 {snsLimits.map((sns) => (
-                  <SnsLimitBar key={sns.name} sns={sns} />
+                  <SnsLimitBar key={sns.name} sns={sns} exceededLabel={t("sns.exceeded")} />
                 ))}
               </div>
             </div>
           </div>
 
-          {/* 오른쪽: 통계 카드 */}
+          {/* Right: Statistics */}
           <div className="lg:w-[360px] space-y-4">
             <div className="bg-white rounded-2xl border border-[var(--text-border)] shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
@@ -183,94 +204,94 @@ export default function TextCounterPage() {
                   size={16}
                   style={{ color: "var(--text-primary)" }}
                 />
-                텍스트 통계
+                {t("stats.title")}
               </h2>
               <div className="grid grid-cols-2 gap-3">
                 <StatCard
                   icon={<Type size={18} />}
-                  label="글자수 (공백 포함)"
+                  label={t("stats.charWithSpaces")}
                   value={stats.charWithSpaces.toLocaleString()}
                   color="var(--text-primary)"
                 />
                 <StatCard
                   icon={<Type size={18} />}
-                  label="글자수 (공백 제외)"
+                  label={t("stats.charWithoutSpaces")}
                   value={stats.charWithoutSpaces.toLocaleString()}
                   color="var(--text-primary)"
                 />
                 <StatCard
                   icon={<FileText size={18} />}
-                  label="단어 수"
+                  label={t("stats.wordCount")}
                   value={stats.wordCount.toLocaleString()}
                   color="var(--text-accent)"
                 />
                 <StatCard
                   icon={<Hash size={18} />}
-                  label="바이트 (UTF-8)"
+                  label={t("stats.byteUtf8")}
                   value={stats.byteUtf8.toLocaleString()}
                   color="#8B5CF6"
                 />
                 <StatCard
                   icon={<Hash size={18} />}
-                  label="바이트 (EUC-KR)"
+                  label={t("stats.byteEucKr")}
                   value={stats.byteEucKr.toLocaleString()}
                   color="#8B5CF6"
                 />
                 <StatCard
                   icon={<WrapText size={18} />}
-                  label="줄 수"
+                  label={t("stats.lineCount")}
                   value={stats.lineCount.toLocaleString()}
                   color="#F59E0B"
                 />
                 <StatCard
                   icon={<MessageSquare size={18} />}
-                  label="문장 수"
+                  label={t("stats.sentenceCount")}
                   value={stats.sentenceCount.toLocaleString()}
                   color="#EF4444"
                 />
                 <StatCard
                   icon={<FileText size={18} />}
-                  label="원고지 매수"
-                  value={`${stats.manuscriptPages.toLocaleString()}매`}
+                  label={t("stats.manuscriptPages")}
+                  value={t("stats.manuscriptPagesValue", { count: stats.manuscriptPages.toLocaleString() })}
                   color="#10B981"
-                  subtitle="200자 원고지"
+                  subtitle={t("stats.manuscriptSubtitle")}
                 />
                 <StatCard
                   icon={<Clock size={18} />}
-                  label="읽는 시간"
+                  label={t("stats.readingTime")}
                   value={
                     stats.readingTimeMin === 0
-                      ? "0분"
-                      : `약 ${stats.readingTimeMin}분`
+                      ? t("stats.readingTimeZero")
+                      : t("stats.readingTimeValue", { min: stats.readingTimeMin })
                   }
                   color="#6366F1"
-                  subtitle="분당 500자 기준"
+                  subtitle={t("stats.readingTimeSubtitle")}
                   fullWidth
                 />
               </div>
             </div>
 
-            {/* 사용 가이드 */}
+            {/* Usage Guide */}
             <div className="bg-white rounded-2xl border border-[var(--text-border)] shadow-sm p-4">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                사용 가이드
+                {t("guide.title")}
               </h3>
               <ul className="text-xs text-gray-500 space-y-1.5">
                 <li className="flex items-start gap-1.5">
                   <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-[var(--text-primary)] shrink-0" />
-                  텍스트를 입력하면 실시간으로 모든 통계가 업데이트됩니다.
+                  {t("guide.tip1")}
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-[var(--text-primary)] shrink-0" />
-                  SNS 플랫폼별 글자수 제한을 확인할 수 있습니다.
+                  {t("guide.tip2")}
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-[var(--text-primary)] shrink-0" />
-                  텍스트 변환 도구로 대소문자 변환, 공백 제거 등이 가능합니다.
+                  {t("guide.tip3")}
                 </li>
                 <li className="flex items-start gap-1.5">
                   <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-[var(--text-primary)] shrink-0" />
-                  EUC-KR 바이트 수는 SMS/LMS 전송 시 기준이 됩니다.
+                  {t("guide.tip4")}
                 </li>
               </ul>
             </div>
@@ -278,18 +299,21 @@ export default function TextCounterPage() {
         </div>
       </main>
 
-      {/* 푸터 */}
+      <TextInfoSection />
+      <RelatedTools currentToolId="text" />
+
+      {/* Footer */}
       <footer className="border-t border-[var(--text-border)] bg-white/80 mt-8">
         <div className="max-w-7xl mx-auto px-4 py-6">
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
-            <p>&copy; 2026 글자수 세기. All rights reserved.</p>
+            <p>{t("footer.copyright")}</p>
             <div className="flex gap-4">
               <a href="/privacy" className="hover:text-gray-600 transition-colors">
-                개인정보처리방침
+                {t("footer.privacy")}
               </a>
               <a href="/terms" className="hover:text-gray-600 transition-colors">
-                이용약관
+                {t("footer.terms")}
               </a>
             </div>
           </div>
@@ -299,7 +323,7 @@ export default function TextCounterPage() {
   );
 }
 
-/* ───────────── 하위 컴포넌트 ───────────── */
+/* ───────────── Sub-components ───────────── */
 
 function StatCard({
   icon,
@@ -362,7 +386,7 @@ function TransformButton({
   );
 }
 
-function SnsLimitBar({ sns }: { sns: ReturnType<typeof checkSnsLimits>[number] }) {
+function SnsLimitBar({ sns, exceededLabel }: { sns: ReturnType<typeof checkSnsLimits>[number]; exceededLabel: string }) {
   const pct = Math.min(sns.percentage, 100);
   const exceeded = sns.exceeded;
 
@@ -380,7 +404,7 @@ function SnsLimitBar({ sns }: { sns: ReturnType<typeof checkSnsLimits>[number] }
           {exceeded && (
             <span className="inline-flex items-center gap-0.5 ml-1">
               <AlertTriangle size={11} />
-              초과
+              {exceededLabel}
             </span>
           )}
         </span>

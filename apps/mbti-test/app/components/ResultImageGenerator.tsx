@@ -4,6 +4,7 @@ import { useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import type { MBTIResult } from "../lib/results";
+import { useTranslation } from "../i18n";
 
 interface ResultImageGeneratorProps {
   result: MBTIResult;
@@ -11,7 +12,8 @@ interface ResultImageGeneratorProps {
 
 function drawResultCard(
   canvas: HTMLCanvasElement,
-  result: MBTIResult
+  result: MBTIResult,
+  t: (key: string, params?: Record<string, string | number>) => string
 ) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -59,7 +61,7 @@ function drawResultCard(
   ctx.fillStyle = "rgba(255,255,255,0.9)";
   ctx.font = "bold 28px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("나의 성격 유형 결과", w / 2, 120);
+  ctx.fillText(t("result.imageTitle"), w / 2, 120);
 
   const typeGradient = ctx.createLinearGradient(w / 2 - 150, 0, w / 2 + 150, 0);
   typeGradient.addColorStop(0, "#8B5CF6");
@@ -71,11 +73,12 @@ function drawResultCard(
 
   ctx.fillStyle = "#374151";
   ctx.font = "bold 40px sans-serif";
-  ctx.fillText(result.title, w / 2, cardY + 220);
+  ctx.fillText(t(result.titleKey), w / 2, cardY + 220);
 
   ctx.fillStyle = "#6B7280";
   ctx.font = "26px sans-serif";
-  const descLines = wrapText(ctx, result.description, cardW - 120);
+  const descText = t(result.descriptionKey, { type: result.type });
+  const descLines = wrapText(ctx, descText, cardW - 120);
   let descY = cardY + 290;
   for (const line of descLines) {
     ctx.fillText(line, w / 2, descY);
@@ -87,10 +90,10 @@ function drawResultCard(
   const dotColors = ["#8B5CF6", "#EC4899", "#F59E0B", "#10B981"];
   ctx.font = "bold 30px sans-serif";
   ctx.fillStyle = "#1E1B4B";
-  ctx.fillText("핵심 성격 특성", cardX + 60, traitY);
+  ctx.fillText(t("result.coreTraits"), cardX + 60, traitY);
   traitY += 50;
 
-  result.traits.forEach((trait, i) => {
+  result.traitKeys.forEach((traitKey, i) => {
     ctx.fillStyle = dotColors[i % dotColors.length];
     ctx.beginPath();
     ctx.arc(cardX + 80, traitY - 8, 10, 0, Math.PI * 2);
@@ -98,7 +101,7 @@ function drawResultCard(
 
     ctx.fillStyle = "#374151";
     ctx.font = "28px sans-serif";
-    ctx.fillText(trait, cardX + 105, traitY);
+    ctx.fillText(t(traitKey), cardX + 105, traitY);
     traitY += 48;
   });
 
@@ -124,12 +127,12 @@ function drawResultCard(
   ctx.fillStyle = "#8B5CF6";
   ctx.font = "bold 28px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(`전체 인구의 ${result.percentage}%`, w / 2, traitY + 40);
+  ctx.fillText(t("result.imagePopulation", { percentage: result.percentage }), w / 2, traitY + 40);
 
   ctx.fillStyle = "rgba(255,255,255,0.8)";
   ctx.font = "24px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("16가지 성격 유형 테스트 | mbti.onekit.co.kr", w / 2, h - 80);
+  ctx.fillText(t("result.imageFooter"), w / 2, h - 80);
 }
 
 function wrapText(
@@ -157,18 +160,19 @@ function wrapText(
 
 export default function ResultImageGenerator({ result }: ResultImageGeneratorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { t } = useTranslation();
 
   const handleDownload = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    drawResultCard(canvas, result);
+    drawResultCard(canvas, result, t);
 
     const link = document.createElement("a");
     link.download = `mbti-${result.type}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
-  }, [result]);
+  }, [result, t]);
 
   return (
     <div>
@@ -183,7 +187,7 @@ export default function ResultImageGenerator({ result }: ResultImageGeneratorPro
         transition={{ delay: 0.55 }}
       >
         <Download className="h-5 w-5" />
-        결과 이미지 저장
+        {t("result.saveImage")}
       </motion.button>
     </div>
   );

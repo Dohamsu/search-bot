@@ -26,50 +26,18 @@ import {
   type GasPurpose,
   type GasBillResult,
 } from "./lib/billCalc";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import BillInfoSection from "./components/BillInfoSection";
 
 type TabType = "electric" | "water" | "gas";
-
-
-// ============================================================
-// 절약 팁 데이터
-// ============================================================
-const TIPS: Record<TabType, { icon: React.ReactNode; tips: string[] }> = {
-  electric: {
-    icon: <Zap className="w-5 h-5 text-yellow-600" />,
-    tips: [
-      "대기전력 차단 멀티탭을 사용하면 월 평균 5~10% 전기요금을 절약할 수 있습니다.",
-      "에어컨 적정 온도는 26~28도. 1도 올리면 약 7% 절감됩니다.",
-      "LED 조명으로 교체하면 백열등 대비 약 80% 에너지를 절약합니다.",
-      "냉장고 문을 자주 열지 않고, 벽에서 10cm 이상 띄워 놓으세요.",
-      "세탁기/건조기는 모아서 한 번에 돌리는 것이 효율적입니다.",
-    ],
-  },
-  water: {
-    icon: <Droplets className="w-5 h-5 text-blue-600" />,
-    tips: [
-      "절수 샤워 헤드를 사용하면 물 사용량을 약 30~40% 줄일 수 있습니다.",
-      "세탁기는 모아서 돌리고, 적정 수위를 설정하세요.",
-      "양치할 때 컵을 사용하면 연간 약 12,000L의 물을 절약합니다.",
-      "설거지할 때 물을 받아서 하면 흘려보내는 것보다 약 50% 절약됩니다.",
-      "화장실 변기 수조에 물을 채운 페트병을 넣으면 매번 1~2L 절약됩니다.",
-    ],
-  },
-  gas: {
-    icon: <Flame className="w-5 h-5 text-orange-600" />,
-    tips: [
-      "보일러 외출모드를 활용하면 불필요한 난방을 줄일 수 있습니다.",
-      "창문/문틈 단열테이프, 커튼을 활용하면 난방 효율이 올라갑니다.",
-      "보일러 온수 온도를 낮추면 가스 사용량이 줄어듭니다.",
-      "요리할 때 뚜껑을 덮으면 조리 시간이 단축되어 가스를 절약합니다.",
-      "보일러 배관 청소를 정기적으로 하면 효율이 개선됩니다.",
-    ],
-  },
-};
 
 // ============================================================
 // 메인 컴포넌트
 // ============================================================
 export default function UtilityBillPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("electric");
   const [showTips, setShowTips] = useState(false);
 
@@ -111,20 +79,32 @@ export default function UtilityBillPage() {
   const tabs: { key: TabType; label: string; icon: React.ReactNode }[] = [
     {
       key: "electric",
-      label: "전기요금",
+      label: t("tabs.electric"),
       icon: <Zap className="w-5 h-5" />,
     },
     {
       key: "water",
-      label: "수도요금",
+      label: t("tabs.water"),
       icon: <Droplets className="w-5 h-5" />,
     },
     {
       key: "gas",
-      label: "가스요금",
+      label: t("tabs.gas"),
       icon: <Flame className="w-5 h-5" />,
     },
   ];
+
+  const tipIcons: Record<TabType, React.ReactNode> = {
+    electric: <Zap className="w-5 h-5 text-yellow-600" />,
+    water: <Droplets className="w-5 h-5 text-blue-600" />,
+    gas: <Flame className="w-5 h-5 text-orange-600" />,
+  };
+
+  const tipTitleKeys: Record<TabType, string> = {
+    electric: "tips.electricTitle",
+    water: "tips.waterTitle",
+    gas: "tips.gasTitle",
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -134,14 +114,15 @@ export default function UtilityBillPage() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-green-500 flex items-center justify-center">
             <Calculator className="w-6 h-6 text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-lg font-bold font-[family-name:var(--font-space-grotesk-var)] text-gray-900">
-              공과금 계산기
+              {t("header.title")}
             </h1>
             <p className="text-xs text-gray-500">
-              전기 · 수도 · 가스 요금 계산
+              {t("header.subtitle")}
             </p>
           </div>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -168,8 +149,7 @@ export default function UtilityBillPage() {
         <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-xs text-amber-800">
           <Info className="w-4 h-4 mt-0.5 shrink-0" />
           <p>
-            요금은 2026년 기준 근사치입니다. 실제 요금은 지역, 공급사, 계절 등에
-            따라 다를 수 있습니다.
+            {t("disclaimer")}
           </p>
         </div>
 
@@ -179,19 +159,19 @@ export default function UtilityBillPage() {
             <div className="bg-white rounded-2xl border border-yellow-200 shadow-sm p-5 space-y-4">
               <h2 className="text-base font-semibold flex items-center gap-2">
                 <Zap className="w-5 h-5 text-yellow-600" />
-                전기요금 계산기
+                {t("electric.title")}
               </h2>
 
               {/* 사용량 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  전기 사용량 (kWh)
+                  {t("electric.usageLabel")}
                 </label>
                 <input
                   type="number"
                   value={elUsage}
                   onChange={(e) => setElUsage(e.target.value)}
-                  placeholder="예: 350"
+                  placeholder={t("electric.usagePlaceholder")}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 />
               </div>
@@ -199,18 +179,18 @@ export default function UtilityBillPage() {
               {/* 용도 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  용도
+                  {t("electric.purposeLabel")}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {(
                     [
-                      ["residential", "주택용 (저압)"],
-                      ["commercial", "일반용 (갑) I"],
+                      ["residential", t("electric.residential")],
+                      ["commercial", t("electric.commercial")],
                     ] as const
                   ).map(([val, lbl]) => (
                     <button
                       key={val}
-                      onClick={() => setElType(val)}
+                      onClick={() => setElType(val as ElectricType)}
                       className={`py-2 px-3 rounded-lg text-sm border transition-colors cursor-pointer ${
                         elType === val
                           ? "border-yellow-500 bg-yellow-50 text-yellow-800 font-medium"
@@ -227,18 +207,18 @@ export default function UtilityBillPage() {
               {elType === "residential" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    계절
+                    {t("electric.seasonLabel")}
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {(
                       [
-                        ["other", "기타 (3~6월, 9~2월)"],
-                        ["summer", "여름 (7~8월)"],
+                        ["other", t("electric.seasonOther")],
+                        ["summer", t("electric.seasonSummer")],
                       ] as const
                     ).map(([val, lbl]) => (
                       <button
                         key={val}
-                        onClick={() => setElSeason(val)}
+                        onClick={() => setElSeason(val as Season)}
                         className={`py-2 px-3 rounded-lg text-sm border transition-colors cursor-pointer ${
                           elSeason === val
                             ? "border-yellow-500 bg-yellow-50 text-yellow-800 font-medium"
@@ -255,7 +235,7 @@ export default function UtilityBillPage() {
               {/* 복지할인 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  복지할인
+                  {t("electric.discountLabel")}
                 </label>
                 <select
                   value={elDiscount}
@@ -264,12 +244,12 @@ export default function UtilityBillPage() {
                   }
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
                 >
-                  <option value="none">없음</option>
-                  <option value="disability">장애인 할인</option>
-                  <option value="basicLiving">기초생활 수급자</option>
-                  <option value="nextLowest">차상위 계층</option>
-                  <option value="largeFam">대가족 할인</option>
-                  <option value="newborn">출산가구 할인</option>
+                  <option value="none">{t("electric.discountNone")}</option>
+                  <option value="disability">{t("electric.discountDisability")}</option>
+                  <option value="basicLiving">{t("electric.discountBasicLiving")}</option>
+                  <option value="nextLowest">{t("electric.discountNextLowest")}</option>
+                  <option value="largeFam">{t("electric.discountLargeFam")}</option>
+                  <option value="newborn">{t("electric.discountNewborn")}</option>
                 </select>
               </div>
 
@@ -278,7 +258,7 @@ export default function UtilityBillPage() {
                 className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-medium py-3 rounded-xl hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-sm cursor-pointer"
               >
                 <Calculator className="w-4 h-4 inline mr-2" />
-                전기요금 계산하기
+                {t("electric.calcButton")}
               </button>
             </div>
 
@@ -293,39 +273,39 @@ export default function UtilityBillPage() {
             <div className="bg-white rounded-2xl border border-blue-200 shadow-sm p-5 space-y-4">
               <h2 className="text-base font-semibold flex items-center gap-2">
                 <Droplets className="w-5 h-5 text-blue-600" />
-                수도요금 계산기
+                {t("water.title")}
                 <span className="text-xs font-normal text-gray-400 ml-1">
-                  (서울시 기준)
+                  {t("water.seoulBasis")}
                 </span>
               </h2>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  수도 사용량 (m&sup3;)
+                  {t("water.usageLabel")}
                 </label>
                 <input
                   type="number"
                   value={wtUsage}
                   onChange={(e) => setWtUsage(e.target.value)}
-                  placeholder="예: 20"
+                  placeholder={t("water.usagePlaceholder")}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  용도
+                  {t("water.purposeLabel")}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {(
                     [
-                      ["household", "가정용"],
-                      ["business", "업무용"],
+                      ["household", t("water.household")],
+                      ["business", t("water.business")],
                     ] as const
                   ).map(([val, lbl]) => (
                     <button
                       key={val}
-                      onClick={() => setWtPurpose(val)}
+                      onClick={() => setWtPurpose(val as WaterPurpose)}
                       className={`py-2 px-3 rounded-lg text-sm border transition-colors cursor-pointer ${
                         wtPurpose === val
                           ? "border-blue-500 bg-blue-50 text-blue-800 font-medium"
@@ -343,7 +323,7 @@ export default function UtilityBillPage() {
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-sm cursor-pointer"
               >
                 <Calculator className="w-4 h-4 inline mr-2" />
-                수도요금 계산하기
+                {t("water.calcButton")}
               </button>
             </div>
 
@@ -357,39 +337,39 @@ export default function UtilityBillPage() {
             <div className="bg-white rounded-2xl border border-orange-200 shadow-sm p-5 space-y-4">
               <h2 className="text-base font-semibold flex items-center gap-2">
                 <Flame className="w-5 h-5 text-orange-600" />
-                도시가스 요금 계산기
+                {t("gas.title")}
                 <span className="text-xs font-normal text-gray-400 ml-1">
-                  (서울도시가스 기준)
+                  {t("gas.seoulBasis")}
                 </span>
               </h2>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  가스 사용량 (m&sup3;)
+                  {t("gas.usageLabel")}
                 </label>
                 <input
                   type="number"
                   value={gsUsage}
                   onChange={(e) => setGsUsage(e.target.value)}
-                  placeholder="예: 30"
+                  placeholder={t("gas.usagePlaceholder")}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  용도
+                  {t("gas.purposeLabel")}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {(
                     [
-                      ["cooking", "취사용"],
-                      ["heating", "난방용"],
+                      ["cooking", t("gas.cooking")],
+                      ["heating", t("gas.heating")],
                     ] as const
                   ).map(([val, lbl]) => (
                     <button
                       key={val}
-                      onClick={() => setGsPurpose(val)}
+                      onClick={() => setGsPurpose(val as GasPurpose)}
                       className={`py-2 px-3 rounded-lg text-sm border transition-colors cursor-pointer ${
                         gsPurpose === val
                           ? "border-orange-500 bg-orange-50 text-orange-800 font-medium"
@@ -407,7 +387,7 @@ export default function UtilityBillPage() {
                 className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium py-3 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm cursor-pointer"
               >
                 <Calculator className="w-4 h-4 inline mr-2" />
-                가스요금 계산하기
+                {t("gas.calcButton")}
               </button>
             </div>
 
@@ -426,7 +406,7 @@ export default function UtilityBillPage() {
                 <Lightbulb className="w-5 h-5 text-green-600" />
               </div>
               <span className="font-semibold text-sm">
-                공과금 절약 팁
+                {t("tips.title")}
               </span>
             </div>
             {showTips ? (
@@ -440,23 +420,19 @@ export default function UtilityBillPage() {
               {(["electric", "water", "gas"] as const).map((type) => (
                 <div key={type}>
                   <div className="flex items-center gap-2 mb-2">
-                    {TIPS[type].icon}
+                    {tipIcons[type]}
                     <h3 className="font-medium text-sm">
-                      {type === "electric"
-                        ? "전기 절약"
-                        : type === "water"
-                        ? "수도 절약"
-                        : "가스 절약"}
+                      {t(tipTitleKeys[type])}
                     </h3>
                   </div>
                   <ul className="space-y-1.5">
-                    {TIPS[type].tips.map((tip, i) => (
+                    {[0, 1, 2, 3, 4].map((i) => (
                       <li
                         key={i}
                         className="flex items-start gap-2 text-xs text-gray-600"
                       >
                         <TrendingDown className="w-3.5 h-3.5 mt-0.5 shrink-0 text-green-500" />
-                        {tip}
+                        {t(`tips.${type}.${i}`)}
                       </li>
                     ))}
                   </ul>
@@ -467,24 +443,27 @@ export default function UtilityBillPage() {
         </div>
       </main>
 
+      <BillInfoSection />
+
+      <RelatedTools currentToolId="bill" />
+
       {/* Footer */}
       <footer className="border-t border-yellow-200 bg-white/60 mt-8">
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
 
           <div className="flex justify-center gap-4 text-xs text-gray-400">
             <a href="/privacy" className="hover:text-gray-600">
-              개인정보처리방침
+              {t("footer.privacy")}
             </a>
             <a href="/terms" className="hover:text-gray-600">
-              이용약관
+              {t("footer.terms")}
             </a>
           </div>
 
           <p className="text-center text-[11px] text-gray-400 leading-relaxed">
-            이 계산기는 참고용이며, 실제 요금은 지역·공급사에 따라 다를 수
-            있습니다.
+            {t("footer.footerNote")}
             <br />
-            &copy; 2026 공과금 계산기. All rights reserved.
+            {t("footer.copyright")}
           </p>
         </div>
       </footer>
@@ -496,20 +475,23 @@ export default function UtilityBillPage() {
 // 전기요금 결과 컴포넌트
 // ============================================================
 function ElectricResult({ result }: { result: ElectricBillResult }) {
+  const { t, locale } = useTranslation();
   const maxTierAmount = Math.max(...result.tiers.map((t) => t.amount), 1);
+  const currencyUnit = t("result.won");
 
   return (
     <div className="bg-white rounded-2xl border border-yellow-200 shadow-sm p-5 space-y-5">
       {/* 총액 */}
       <div className="text-center">
-        <p className="text-sm text-gray-500 mb-1">예상 전기요금</p>
+        <p className="text-sm text-gray-500 mb-1">{t("result.estimatedElectric")}</p>
         <p className="text-3xl font-bold font-[family-name:var(--font-space-grotesk-var)] text-yellow-700">
+          {locale === "en" && <span className="text-lg mr-1">{currencyUnit}</span>}
           {formatNumber(result.total)}
-          <span className="text-lg ml-1">원</span>
+          {locale === "ko" && <span className="text-lg ml-1">{currencyUnit}</span>}
         </p>
         <p className="text-xs text-gray-400 mt-1">
-          {result.type === "residential" ? "주택용" : "일반용"} ·{" "}
-          {result.season === "summer" ? "여름" : "기타계절"} · {result.usage}
+          {result.type === "residential" ? t("result.residentialLabel") : t("result.commercialLabel")} &middot;{" "}
+          {result.season === "summer" ? t("result.summerLabel") : t("result.otherSeasonLabel")} &middot; {result.usage}
           kWh
         </p>
       </div>
@@ -518,7 +500,7 @@ function ElectricResult({ result }: { result: ElectricBillResult }) {
       {result.type === "residential" && result.tiers.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            누진 구간별 요금
+            {t("result.progressiveTiers")}
           </h3>
           {result.tiers.map((tier, i) => (
             <div key={i} className="space-y-1">
@@ -526,9 +508,9 @@ function ElectricResult({ result }: { result: ElectricBillResult }) {
                 <span className="text-gray-600">{tier.label}</span>
                 <span className="font-medium">
                   {formatNumber(tier.usage)}kWh &times;{" "}
-                  {tier.unitPrice}원 ={" "}
+                  {tier.unitPrice}{currencyUnit} ={" "}
                   <span className="text-yellow-700">
-                    {formatNumber(tier.amount)}원
+                    {formatNumber(tier.amount)}{currencyUnit}
                   </span>
                 </span>
               </div>
@@ -557,26 +539,28 @@ function ElectricResult({ result }: { result: ElectricBillResult }) {
       {/* 상세 내역 */}
       <div className="space-y-2 text-sm">
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-          요금 상세
+          {t("result.feeDetail")}
         </h3>
-        <Row label="기본료" value={result.baseFee} />
-        <Row label="전력량요금" value={result.energyCharge} />
-        <Row label="기후환경요금 (9원/kWh)" value={result.climateCharge} />
-        <Row label="연료비조정액 (5원/kWh)" value={result.fuelAdjust} />
+        <Row label={t("result.baseFee")} value={result.baseFee} currencyUnit={currencyUnit} locale={locale} />
+        <Row label={t("result.energyCharge")} value={result.energyCharge} currencyUnit={currencyUnit} locale={locale} />
+        <Row label={t("result.climateCharge")} value={result.climateCharge} currencyUnit={currencyUnit} locale={locale} />
+        <Row label={t("result.fuelAdjust")} value={result.fuelAdjust} currencyUnit={currencyUnit} locale={locale} />
         {result.discount > 0 && (
           <Row
-            label={`복지할인 (${result.discountLabel})`}
+            label={t("result.welfareDiscount", { label: result.discountLabel })}
             value={-result.discount}
             highlight
+            currencyUnit={currencyUnit}
+            locale={locale}
           />
         )}
         <div className="border-t border-gray-100 pt-2">
-          <Row label="소계" value={result.subtotal} />
+          <Row label={t("result.subtotal")} value={result.subtotal} currencyUnit={currencyUnit} locale={locale} />
         </div>
-        <Row label="부가가치세 (10%)" value={result.vat} />
-        <Row label="전력산업기반기금 (3.7%)" value={result.fund} />
+        <Row label={t("result.vat")} value={result.vat} currencyUnit={currencyUnit} locale={locale} />
+        <Row label={t("result.elecFund")} value={result.fund} currencyUnit={currencyUnit} locale={locale} />
         <div className="border-t border-yellow-200 pt-2">
-          <Row label="총 합계" value={result.total} bold />
+          <Row label={t("result.totalSum")} value={result.total} bold currencyUnit={currencyUnit} locale={locale} />
         </div>
       </div>
     </div>
@@ -587,18 +571,21 @@ function ElectricResult({ result }: { result: ElectricBillResult }) {
 // 수도요금 결과 컴포넌트
 // ============================================================
 function WaterResult({ result }: { result: WaterBillResult }) {
+  const { t, locale } = useTranslation();
   const maxTierAmount = Math.max(...result.tiers.map((t) => t.amount), 1);
+  const currencyUnit = t("result.won");
 
   return (
     <div className="bg-white rounded-2xl border border-blue-200 shadow-sm p-5 space-y-5">
       <div className="text-center">
-        <p className="text-sm text-gray-500 mb-1">예상 수도요금</p>
+        <p className="text-sm text-gray-500 mb-1">{t("result.estimatedWater")}</p>
         <p className="text-3xl font-bold font-[family-name:var(--font-space-grotesk-var)] text-blue-700">
+          {locale === "en" && <span className="text-lg mr-1">{currencyUnit}</span>}
           {formatNumber(result.total)}
-          <span className="text-lg ml-1">원</span>
+          {locale === "ko" && <span className="text-lg ml-1">{currencyUnit}</span>}
         </p>
         <p className="text-xs text-gray-400 mt-1">
-          {result.purpose === "household" ? "가정용" : "업무용"} · 서울시 ·{" "}
+          {result.purpose === "household" ? t("result.householdLabel") : t("result.businessLabel")} &middot; {t("result.seoulCity")} &middot;{" "}
           {result.usage}m&sup3;
         </p>
       </div>
@@ -607,7 +594,7 @@ function WaterResult({ result }: { result: WaterBillResult }) {
       {result.purpose === "household" && result.tiers.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            사용 구간별 요금
+            {t("result.usageTiers")}
           </h3>
           {result.tiers.map((tier, i) => (
             <div key={i} className="space-y-1">
@@ -615,9 +602,9 @@ function WaterResult({ result }: { result: WaterBillResult }) {
                 <span className="text-gray-600">{tier.label}</span>
                 <span className="font-medium">
                   {formatNumber(tier.usage)}m&sup3; &times;{" "}
-                  {formatNumber(tier.unitPrice)}원 ={" "}
+                  {formatNumber(tier.unitPrice)}{currencyUnit} ={" "}
                   <span className="text-blue-700">
-                    {formatNumber(tier.amount)}원
+                    {formatNumber(tier.amount)}{currencyUnit}
                   </span>
                 </span>
               </div>
@@ -640,17 +627,19 @@ function WaterResult({ result }: { result: WaterBillResult }) {
 
       <div className="space-y-2 text-sm">
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-          요금 상세
+          {t("result.feeDetail")}
         </h3>
-        <Row label="상수도 기본료 (15mm)" value={result.baseFee} />
-        <Row label="상수도 사용료" value={result.usageCharge} />
-        <Row label="하수도요금 (470원/m&sup3;)" value={result.sewerCharge} />
+        <Row label={t("result.waterBaseFee")} value={result.baseFee} currencyUnit={currencyUnit} locale={locale} />
+        <Row label={t("result.waterUsageCharge")} value={result.usageCharge} currencyUnit={currencyUnit} locale={locale} />
+        <Row label={t("result.sewerCharge")} value={result.sewerCharge} currencyUnit={currencyUnit} locale={locale} />
         <Row
-          label="물이용부담금 (170원/m&sup3;)"
+          label={t("result.waterUseFee")}
           value={result.waterUseFee}
+          currencyUnit={currencyUnit}
+          locale={locale}
         />
         <div className="border-t border-blue-200 pt-2">
-          <Row label="총 합계" value={result.total} bold />
+          <Row label={t("result.totalSum")} value={result.total} bold currencyUnit={currencyUnit} locale={locale} />
         </div>
       </div>
     </div>
@@ -661,43 +650,48 @@ function WaterResult({ result }: { result: WaterBillResult }) {
 // 가스요금 결과 컴포넌트
 // ============================================================
 function GasResult({ result }: { result: GasBillResult }) {
+  const { t, locale } = useTranslation();
+  const currencyUnit = t("result.won");
+
   return (
     <div className="bg-white rounded-2xl border border-orange-200 shadow-sm p-5 space-y-5">
       <div className="text-center">
-        <p className="text-sm text-gray-500 mb-1">예상 가스요금</p>
+        <p className="text-sm text-gray-500 mb-1">{t("result.estimatedGas")}</p>
         <p className="text-3xl font-bold font-[family-name:var(--font-space-grotesk-var)] text-orange-700">
+          {locale === "en" && <span className="text-lg mr-1">{currencyUnit}</span>}
           {formatNumber(result.total)}
-          <span className="text-lg ml-1">원</span>
+          {locale === "ko" && <span className="text-lg ml-1">{currencyUnit}</span>}
         </p>
         <p className="text-xs text-gray-400 mt-1">
-          {result.purpose === "cooking" ? "취사용" : "난방용"} · 서울도시가스 ·{" "}
+          {result.purpose === "cooking" ? t("result.cookingLabel") : t("result.heatingLabel")} &middot; {t("result.seoulGas")} &middot;{" "}
           {result.usage}m&sup3;
         </p>
       </div>
 
       <div className="bg-orange-50 rounded-lg p-3 text-xs text-orange-800 space-y-1">
         <p>
-          1m&sup3; = {result.mjPerCubic}MJ &times;{" "}
-          {result.unitPricePerMJ}원/MJ ={" "}
-          <strong>약 {formatNumber(result.effectiveUnitPrice)}원/m&sup3;</strong>
+          {t("result.gasConversion", { mj: result.mjPerCubic, price: result.unitPricePerMJ })}
+          <strong>{t("result.gasConversionResult", { unitPrice: formatNumber(result.effectiveUnitPrice) })}</strong>
         </p>
       </div>
 
       <div className="space-y-2 text-sm">
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-          요금 상세
+          {t("result.feeDetail")}
         </h3>
-        <Row label="기본료" value={result.baseFee} />
+        <Row label={t("result.baseFee")} value={result.baseFee} currencyUnit={currencyUnit} locale={locale} />
         <Row
-          label={`사용요금 (${result.usage}m\u00B3 \u00D7 ${formatNumber(result.effectiveUnitPrice)}원)`}
+          label={t("result.gasUsageCharge", { usage: result.usage, unitPrice: formatNumber(result.effectiveUnitPrice) })}
           value={result.usageCharge}
+          currencyUnit={currencyUnit}
+          locale={locale}
         />
         <div className="border-t border-gray-100 pt-2">
-          <Row label="소계" value={result.subtotal} />
+          <Row label={t("result.subtotal")} value={result.subtotal} currencyUnit={currencyUnit} locale={locale} />
         </div>
-        <Row label="부가가치세 (10%)" value={result.vat} />
+        <Row label={t("result.vat")} value={result.vat} currencyUnit={currencyUnit} locale={locale} />
         <div className="border-t border-orange-200 pt-2">
-          <Row label="총 합계" value={result.total} bold />
+          <Row label={t("result.totalSum")} value={result.total} bold currencyUnit={currencyUnit} locale={locale} />
         </div>
       </div>
     </div>
@@ -712,11 +706,15 @@ function Row({
   value,
   bold,
   highlight,
+  currencyUnit,
+  locale,
 }: {
   label: string;
   value: number;
   bold?: boolean;
   highlight?: boolean;
+  currencyUnit: string;
+  locale: string;
 }) {
   return (
     <div
@@ -738,7 +736,9 @@ function Row({
         }
       >
         {value < 0 ? "-" : ""}
-        {formatNumber(Math.abs(value))}원
+        {locale === "en" && `${currencyUnit} `}
+        {formatNumber(Math.abs(value))}
+        {locale === "ko" && currencyUnit}
       </span>
     </div>
   );

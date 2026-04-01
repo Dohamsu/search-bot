@@ -9,21 +9,25 @@ import {
   calculateTDEE,
   calculateBodyFat,
   calculateStandardWeight,
-  ACTIVITY_LEVELS,
+  ACTIVITY_LEVEL_VALUES,
 } from "./lib/healthCalc";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import HealthInfoSection from "./components/HealthInfoSection";
 
 type Tab = "bmi" | "bmr" | "tdee" | "bodyfat" | "standard";
 
-const TABS: { id: Tab; label: string; icon: typeof Heart }[] = [
-  { id: "bmi", label: "BMI", icon: Heart },
-  { id: "bmr", label: "기초대사량", icon: Activity },
-  { id: "tdee", label: "TDEE", icon: Flame },
-  { id: "bodyfat", label: "체지방률", icon: Scale },
-  { id: "standard", label: "표준체중", icon: Target },
-];
-
+const TAB_ICONS: Record<Tab, typeof Heart> = {
+  bmi: Heart,
+  bmr: Activity,
+  tdee: Flame,
+  bodyfat: Scale,
+  standard: Target,
+};
 
 export default function HealthCalculator() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("bmi");
   const [gender, setGender] = useState<Gender>("male");
   const [age, setAge] = useState("");
@@ -61,7 +65,7 @@ export default function HealthCalculator() {
 
   const tdeeResult = useMemo(() => {
     if (!bmrResult) return null;
-    return calculateTDEE(bmrResult.average, ACTIVITY_LEVELS[activityIdx].value);
+    return calculateTDEE(bmrResult.average, ACTIVITY_LEVEL_VALUES[activityIdx]);
   }, [bmrResult, activityIdx]);
 
   const bodyFatResult = useMemo(() => {
@@ -77,22 +81,25 @@ export default function HealthCalculator() {
     [canCalcBase, heightNum, weightNum]
   );
 
+  const tabIds: Tab[] = ["bmi", "bmr", "tdee", "bodyfat", "standard"];
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-[var(--health-border)] sticky top-0 z-30">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-2">
           <Heart className="w-6 h-6 text-[var(--health-primary)]" fill="var(--health-primary)" />
-          <h1 className="font-[family-name:var(--font-space)] text-lg font-bold text-[var(--health-primary)]">
-            건강 계산기
+          <h1 className="font-[family-name:var(--font-space)] text-lg font-bold text-[var(--health-primary)] flex-1">
+            {t("header.title")}
           </h1>
+          <LanguageSwitcher />
         </div>
       </header>
 
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 flex flex-col gap-6">
         {/* Common Inputs */}
         <section className="bg-white rounded-2xl border border-[var(--health-border)] p-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-[var(--health-primary)] mb-4">기본 정보</h2>
+          <h2 className="text-sm font-semibold text-[var(--health-primary)] mb-4">{t("common.basicInfo")}</h2>
 
           {/* Gender Toggle */}
           <div className="flex gap-2 mb-4">
@@ -104,7 +111,7 @@ export default function HealthCalculator() {
                   : "bg-gray-100 text-gray-500 hover:bg-gray-200"
               }`}
             >
-              남성
+              {t("common.male")}
             </button>
             <button
               onClick={() => setGender("female")}
@@ -114,33 +121,36 @@ export default function HealthCalculator() {
                   : "bg-gray-100 text-gray-500 hover:bg-gray-200"
               }`}
             >
-              여성
+              {t("common.female")}
             </button>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <InputField label="나이" value={age} onChange={setAge} unit="세" placeholder="25" />
-            <InputField label="키" value={height} onChange={setHeight} unit="cm" placeholder="170" />
-            <InputField label="체중" value={weight} onChange={setWeight} unit="kg" placeholder="65" />
+            <InputField label={t("common.age")} value={age} onChange={setAge} unit={t("common.ageUnit")} placeholder="25" />
+            <InputField label={t("common.height")} value={height} onChange={setHeight} unit={t("common.cmUnit")} placeholder="170" />
+            <InputField label={t("common.weight")} value={weight} onChange={setWeight} unit={t("common.kgUnit")} placeholder="65" />
           </div>
         </section>
 
         {/* Tab Navigation */}
         <nav className="flex gap-1 bg-white rounded-2xl border border-[var(--health-border)] p-1.5 shadow-sm overflow-x-auto">
-          {TABS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex-1 justify-center ${
-                tab === id
-                  ? "bg-[var(--health-primary)] text-white shadow-md"
-                  : "text-gray-500 hover:bg-gray-100"
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-            </button>
-          ))}
+          {tabIds.map((id) => {
+            const Icon = TAB_ICONS[id];
+            return (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex-1 justify-center ${
+                  tab === id
+                    ? "bg-[var(--health-primary)] text-white shadow-md"
+                    : "text-gray-500 hover:bg-gray-100"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {t(`tabs.${id}`)}
+              </button>
+            );
+          })}
         </nav>
 
         {/* Tab Content */}
@@ -171,25 +181,28 @@ export default function HealthCalculator() {
 
         {/* Disclaimer */}
         <p className="text-xs text-gray-400 text-center leading-relaxed px-2">
-          이 계산기는 참고용이며, 정확한 건강 상담은 전문의와 상의하세요.
+          {t("disclaimer.line1")}
           <br />
-          BMI 판정은 대한비만학회 아시아-태평양 기준을 따릅니다.
+          {t("disclaimer.line2")}
         </p>
       </main>
+
+      <HealthInfoSection />
+      <RelatedTools currentToolId="health" />
 
       {/* Footer */}
       <footer className="border-t border-[var(--health-border)] bg-white/60 backdrop-blur-sm mt-auto">
         <div className="max-w-2xl mx-auto px-4 py-6">
           <div className="flex justify-center gap-4 text-xs text-gray-400">
             <a href="/privacy" className="hover:underline">
-              개인정보처리방침
+              {t("footer.privacy")}
             </a>
             <a href="/terms" className="hover:underline">
-              이용약관
+              {t("footer.terms")}
             </a>
           </div>
           <p className="text-center text-xs text-gray-300 mt-3">
-            &copy; {new Date().getFullYear()} 건강 계산기. All rights reserved.
+            &copy; {new Date().getFullYear()} {t("footer.copyright")}. All rights reserved.
           </p>
         </div>
       </footer>
@@ -265,16 +278,17 @@ function ResultCard({
 /* ────────────────────────── BMI Gauge ────────────────────────── */
 
 function BMIGauge({ bmi }: { bmi: number }) {
+  const { t } = useTranslation();
   // Clamp BMI for display between 10 and 40
   const displayBmi = Math.max(10, Math.min(40, bmi));
   const percent = ((displayBmi - 10) / 30) * 100;
 
   const segments = [
-    { label: "저체중", from: 0, to: ((18.5 - 10) / 30) * 100, color: "#3B82F6" },
-    { label: "정상", from: ((18.5 - 10) / 30) * 100, to: ((23 - 10) / 30) * 100, color: "#22C55E" },
-    { label: "과체중", from: ((23 - 10) / 30) * 100, to: ((25 - 10) / 30) * 100, color: "#EAB308" },
-    { label: "비만1", from: ((25 - 10) / 30) * 100, to: ((30 - 10) / 30) * 100, color: "#F97316" },
-    { label: "비만2", from: ((30 - 10) / 30) * 100, to: 100, color: "#EF4444" },
+    { label: t("bmiGauge.underweight"), from: 0, to: ((18.5 - 10) / 30) * 100, color: "#3B82F6" },
+    { label: t("bmiGauge.normal"), from: ((18.5 - 10) / 30) * 100, to: ((23 - 10) / 30) * 100, color: "#22C55E" },
+    { label: t("bmiGauge.overweight"), from: ((23 - 10) / 30) * 100, to: ((25 - 10) / 30) * 100, color: "#EAB308" },
+    { label: t("bmiGauge.obese1"), from: ((25 - 10) / 30) * 100, to: ((30 - 10) / 30) * 100, color: "#F97316" },
+    { label: t("bmiGauge.obese2"), from: ((30 - 10) / 30) * 100, to: 100, color: "#EF4444" },
   ];
 
   return (
@@ -311,40 +325,42 @@ function BMIGauge({ bmi }: { bmi: number }) {
 /* ────────────────────────── Tab: BMI ────────────────────────── */
 
 function BMITab({ result }: { result: ReturnType<typeof getBMIResult> | null }) {
+  const { t } = useTranslation();
+
   if (!result) {
-    return <EmptyState message="키와 체중을 입력하면 BMI를 계산합니다." />;
+    return <EmptyState message={t("bmi.emptyState")} />;
   }
 
   return (
     <div>
-      <h3 className="font-semibold text-sm mb-4">BMI (체질량지수)</h3>
+      <h3 className="font-semibold text-sm mb-4">{t("bmi.title")}</h3>
       <ResultCard
         value={result.bmi.toFixed(1)}
-        unit="kg/m²"
-        label="BMI"
+        unit={t("bmi.unit")}
+        label={t("bmi.label")}
         color={result.color}
-        sub={result.category}
+        sub={t(result.categoryKey)}
       />
       <BMIGauge bmi={result.bmi} />
 
       <div className="mt-4 bg-gray-50 rounded-xl p-4 text-xs text-gray-600 space-y-1">
         <p>
-          <span className="font-medium">정상 체중 범위:</span>{" "}
+          <span className="font-medium">{t("bmi.normalWeightRange")}</span>{" "}
           {result.normalWeightMin.toFixed(1)} ~ {result.normalWeightMax.toFixed(1)} kg
         </p>
         <p className="text-gray-400 mt-2">
-          * 대한비만학회 아시아-태평양 기준 (WHO 기준: 과체중 25+, 비만 30+)
+          {t("bmi.standardNote")}
         </p>
       </div>
 
       <div className="mt-4 text-xs text-gray-500 space-y-1">
-        <p className="font-medium text-gray-600">BMI 분류 기준 (아시아-태평양)</p>
+        <p className="font-medium text-gray-600">{t("bmi.classificationTitle")}</p>
         <div className="grid grid-cols-2 gap-1">
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#3B82F6"}} />저체중: 18.5 미만</span>
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#22C55E"}} />정상: 18.5 ~ 22.9</span>
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#EAB308"}} />과체중: 23 ~ 24.9</span>
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#F97316"}} />비만 1단계: 25 ~ 29.9</span>
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#EF4444"}} />비만 2단계: 30 이상</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#3B82F6"}} />{t("bmi.underweightRange")}</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#22C55E"}} />{t("bmi.normalRange")}</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#EAB308"}} />{t("bmi.overweightRange")}</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#F97316"}} />{t("bmi.obese1Range")}</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor:"#EF4444"}} />{t("bmi.obese2Range")}</span>
         </div>
       </div>
     </div>
@@ -354,18 +370,20 @@ function BMITab({ result }: { result: ReturnType<typeof getBMIResult> | null }) 
 /* ────────────────────────── Tab: BMR ────────────────────────── */
 
 function BMRTab({ result }: { result: ReturnType<typeof getBMRResult> | null }) {
+  const { t } = useTranslation();
+
   if (!result) {
-    return <EmptyState message="성별, 나이, 키, 체중을 입력하면 기초대사량을 계산합니다." />;
+    return <EmptyState message={t("bmr.emptyState")} />;
   }
 
   return (
     <div>
-      <h3 className="font-semibold text-sm mb-4">기초대사량 (BMR)</h3>
+      <h3 className="font-semibold text-sm mb-4">{t("bmr.title")}</h3>
       <ResultCard
         value={result.average.toFixed(0)}
-        unit="kcal/일"
-        label="평균 기초대사량"
-        sub="두 공식의 평균값"
+        unit={t("common.kcalPerDay")}
+        label={t("bmr.averageLabel")}
+        sub={t("bmr.averageSub")}
       />
       <div className="grid grid-cols-2 gap-3 mt-3">
         <div className="bg-gray-50 rounded-xl p-3 text-center">
@@ -373,18 +391,18 @@ function BMRTab({ result }: { result: ReturnType<typeof getBMRResult> | null }) 
           <p className="font-[family-name:var(--font-space)] text-xl font-bold text-[var(--health-primary)]">
             {result.harrisBenedict.toFixed(0)}
           </p>
-          <p className="text-[10px] text-gray-400">kcal/일</p>
+          <p className="text-[10px] text-gray-400">{t("common.kcalPerDay")}</p>
         </div>
         <div className="bg-gray-50 rounded-xl p-3 text-center">
           <p className="text-[10px] text-gray-400 mb-0.5">Mifflin-St Jeor</p>
           <p className="font-[family-name:var(--font-space)] text-xl font-bold text-[var(--health-primary)]">
             {result.mifflinStJeor.toFixed(0)}
           </p>
-          <p className="text-[10px] text-gray-400">kcal/일</p>
+          <p className="text-[10px] text-gray-400">{t("common.kcalPerDay")}</p>
         </div>
       </div>
       <p className="text-xs text-gray-400 mt-3">
-        * Mifflin-St Jeor 공식이 현대인 체형에 더 정확한 것으로 알려져 있습니다.
+        {t("bmr.note")}
       </p>
     </div>
   );
@@ -401,14 +419,16 @@ function TDEETab({
   activityIdx: number;
   onActivityChange: (i: number) => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <h3 className="font-semibold text-sm mb-4">TDEE (일일 총 에너지 소비량)</h3>
+      <h3 className="font-semibold text-sm mb-4">{t("tdee.title")}</h3>
 
       {/* Activity level */}
-      <label className="block text-xs text-gray-500 mb-2">활동 수준</label>
+      <label className="block text-xs text-gray-500 mb-2">{t("tdee.activityLevel")}</label>
       <div className="space-y-1.5 mb-5">
-        {ACTIVITY_LEVELS.map((level, i) => (
+        {ACTIVITY_LEVEL_VALUES.map((value, i) => (
           <button
             key={i}
             onClick={() => onActivityChange(i)}
@@ -418,46 +438,46 @@ function TDEETab({
                 : "border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200"
             }`}
           >
-            {level.label}
-            <span className="text-gray-400 ml-1">(&times;{level.value})</span>
+            {t(`tdee.activity${i}`)}
+            <span className="text-gray-400 ml-1">(&times;{value})</span>
           </button>
         ))}
       </div>
 
       {!result ? (
-        <EmptyState message="성별, 나이, 키, 체중을 입력하면 TDEE를 계산합니다." />
+        <EmptyState message={t("tdee.emptyState")} />
       ) : (
         <>
           <ResultCard
             value={result.tdee.toFixed(0)}
-            unit="kcal/일"
-            label="일일 총 에너지 소비량"
+            unit={t("common.kcalPerDay")}
+            label={t("tdee.resultLabel")}
           />
           <div className="grid grid-cols-3 gap-2 mt-3">
             <div className="bg-blue-50 rounded-xl p-3 text-center">
-              <p className="text-[10px] text-blue-400 mb-0.5">감량 (-500)</p>
+              <p className="text-[10px] text-blue-400 mb-0.5">{t("tdee.deficit")}</p>
               <p className="font-[family-name:var(--font-space)] text-lg font-bold text-blue-600">
                 {result.deficit.toFixed(0)}
               </p>
-              <p className="text-[10px] text-blue-400">kcal</p>
+              <p className="text-[10px] text-blue-400">{t("common.kcal")}</p>
             </div>
             <div className="bg-green-50 rounded-xl p-3 text-center">
-              <p className="text-[10px] text-green-400 mb-0.5">유지</p>
+              <p className="text-[10px] text-green-400 mb-0.5">{t("tdee.maintenance")}</p>
               <p className="font-[family-name:var(--font-space)] text-lg font-bold text-green-600">
                 {result.maintenance.toFixed(0)}
               </p>
-              <p className="text-[10px] text-green-400">kcal</p>
+              <p className="text-[10px] text-green-400">{t("common.kcal")}</p>
             </div>
             <div className="bg-orange-50 rounded-xl p-3 text-center">
-              <p className="text-[10px] text-orange-400 mb-0.5">증량 (+500)</p>
+              <p className="text-[10px] text-orange-400 mb-0.5">{t("tdee.surplus")}</p>
               <p className="font-[family-name:var(--font-space)] text-lg font-bold text-orange-600">
                 {result.surplus.toFixed(0)}
               </p>
-              <p className="text-[10px] text-orange-400">kcal</p>
+              <p className="text-[10px] text-orange-400">{t("common.kcal")}</p>
             </div>
           </div>
           <p className="text-xs text-gray-400 mt-3">
-            * 주당 약 0.45kg 감량/증량 목표 기준 (500kcal 조절)
+            {t("tdee.note")}
           </p>
         </>
       )}
@@ -486,48 +506,50 @@ function BodyFatTab({
   onNeckChange: (v: string) => void;
   onHipChange: (v: string) => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <h3 className="font-semibold text-sm mb-4">체지방률 (미 해군 공식)</h3>
+      <h3 className="font-semibold text-sm mb-4">{t("bodyfat.title")}</h3>
 
       <div className={`grid ${gender === "female" ? "grid-cols-3" : "grid-cols-2"} gap-3 mb-5`}>
-        <InputField label="허리둘레" value={waist} onChange={onWaistChange} unit="cm" placeholder="80" />
-        <InputField label="목둘레" value={neck} onChange={onNeckChange} unit="cm" placeholder="37" />
+        <InputField label={t("bodyfat.waist")} value={waist} onChange={onWaistChange} unit={t("common.cmUnit")} placeholder="80" />
+        <InputField label={t("bodyfat.neck")} value={neck} onChange={onNeckChange} unit={t("common.cmUnit")} placeholder="37" />
         {gender === "female" && (
-          <InputField label="엉덩이둘레" value={hip} onChange={onHipChange} unit="cm" placeholder="95" />
+          <InputField label={t("bodyfat.hip")} value={hip} onChange={onHipChange} unit={t("common.cmUnit")} placeholder="95" />
         )}
       </div>
 
       {!result ? (
-        <EmptyState message="키와 추가 측정값을 입력하면 체지방률을 계산합니다." />
+        <EmptyState message={t("bodyfat.emptyState")} />
       ) : result.bodyFatPercent < 0 || result.bodyFatPercent > 70 ? (
-        <EmptyState message="입력값을 확인해주세요. 측정값이 올바르지 않습니다." />
+        <EmptyState message={t("bodyfat.invalidInput")} />
       ) : (
         <>
           <ResultCard
             value={result.bodyFatPercent.toFixed(1)}
-            unit="%"
-            label="체지방률"
+            unit={t("common.percent")}
+            label={t("bodyfat.resultLabel")}
             color={result.color}
-            sub={result.category}
+            sub={t(result.categoryKey)}
           />
           <div className="mt-4 text-xs text-gray-500 space-y-1">
-            <p className="font-medium text-gray-600">체지방률 분류 기준</p>
+            <p className="font-medium text-gray-600">{t("bodyfat.classificationTitle")}</p>
             {gender === "male" ? (
               <div className="grid grid-cols-2 gap-1">
-                <span>필수 지방: 2-5%</span>
-                <span>운동선수: 6-13%</span>
-                <span>피트니스: 14-17%</span>
-                <span>보통: 18-24%</span>
-                <span>비만: 25% 이상</span>
+                <span>{t("bodyfat.maleEssential")}</span>
+                <span>{t("bodyfat.maleAthlete")}</span>
+                <span>{t("bodyfat.maleFitness")}</span>
+                <span>{t("bodyfat.maleAverage")}</span>
+                <span>{t("bodyfat.maleObese")}</span>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-1">
-                <span>필수 지방: 10-13%</span>
-                <span>운동선수: 14-20%</span>
-                <span>피트니스: 21-24%</span>
-                <span>보통: 25-31%</span>
-                <span>비만: 32% 이상</span>
+                <span>{t("bodyfat.femaleEssential")}</span>
+                <span>{t("bodyfat.femaleAthlete")}</span>
+                <span>{t("bodyfat.femaleFitness")}</span>
+                <span>{t("bodyfat.femaleAverage")}</span>
+                <span>{t("bodyfat.femaleObese")}</span>
               </div>
             )}
           </div>
@@ -544,8 +566,10 @@ function StandardTab({
 }: {
   result: ReturnType<typeof calculateStandardWeight> | null;
 }) {
+  const { t } = useTranslation();
+
   if (!result) {
-    return <EmptyState message="키와 체중을 입력하면 표준 체중을 계산합니다." />;
+    return <EmptyState message={t("standard.emptyState")} />;
   }
 
   const avg = (result.broca + result.bmiBase) / 2;
@@ -559,39 +583,39 @@ function StandardTab({
 
   return (
     <div>
-      <h3 className="font-semibold text-sm mb-4">표준 체중</h3>
+      <h3 className="font-semibold text-sm mb-4">{t("standard.title")}</h3>
       <ResultCard
         value={avg.toFixed(1)}
-        unit="kg"
-        label="표준 체중 (평균)"
-        sub={`현재 체중과의 차이: ${diffSign}${result.difference.toFixed(1)}kg`}
+        unit={t("common.kgUnit")}
+        label={t("standard.averageLabel")}
+        sub={t("standard.diffSub", { diff: `${diffSign}${result.difference.toFixed(1)}` })}
         color={diffColor}
       />
       <div className="grid grid-cols-2 gap-3 mt-3">
         <div className="bg-gray-50 rounded-xl p-3 text-center">
-          <p className="text-[10px] text-gray-400 mb-0.5">브로카 변법</p>
+          <p className="text-[10px] text-gray-400 mb-0.5">{t("standard.broca")}</p>
           <p className="font-[family-name:var(--font-space)] text-xl font-bold text-[var(--health-primary)]">
             {result.broca.toFixed(1)}
           </p>
-          <p className="text-[10px] text-gray-400">kg</p>
+          <p className="text-[10px] text-gray-400">{t("common.kgUnit")}</p>
         </div>
         <div className="bg-gray-50 rounded-xl p-3 text-center">
-          <p className="text-[10px] text-gray-400 mb-0.5">BMI 기준 (22)</p>
+          <p className="text-[10px] text-gray-400 mb-0.5">{t("standard.bmiBase")}</p>
           <p className="font-[family-name:var(--font-space)] text-xl font-bold text-[var(--health-primary)]">
             {result.bmiBase.toFixed(1)}
           </p>
-          <p className="text-[10px] text-gray-400">kg</p>
+          <p className="text-[10px] text-gray-400">{t("common.kgUnit")}</p>
         </div>
       </div>
       <div className="mt-4 bg-gray-50 rounded-xl p-3 text-xs text-gray-500">
         <p>
-          <span className="font-medium">현재 체중 대비:</span>{" "}
+          <span className="font-medium">{t("standard.currentVs")}</span>{" "}
           <span style={{ color: diffColor, fontWeight: 600 }}>
             {diffSign}{result.differencePercent.toFixed(1)}%
           </span>
         </p>
         <p className="text-gray-400 mt-1">
-          * 브로카 변법: (키 - 100) &times; 0.9 / BMI 기준: 22 &times; (키m)&sup2;
+          {t("standard.formulaNote")}
         </p>
       </div>
     </div>

@@ -7,6 +7,24 @@ import Footer from "../../components/Footer";
 
 const BASE_URL = "https://mbti.onekit.co.kr";
 
+// Static Korean metadata for SEO (server component can't use i18n context)
+import ko from "../../i18n/ko.json";
+
+function getKoTitle(type: string): string {
+  const data = (ko.results as Record<string, { title?: string }>)[type];
+  return data?.title || `${type} 유형`;
+}
+
+function getKoDescription(type: string): string {
+  const data = (ko.results as Record<string, { description?: string }>)[type];
+  return data?.description || "";
+}
+
+function getKoCareers(type: string): string[] {
+  const data = (ko.results as Record<string, { careers?: string[] }>)[type];
+  return data?.careers || [];
+}
+
 interface ResultPageProps {
   params: Promise<{ type: string }>;
 }
@@ -20,20 +38,22 @@ export async function generateMetadata({
 }: ResultPageProps): Promise<Metadata> {
   const { type } = await params;
   const upperType = type.toUpperCase();
-  const result = getResult(upperType);
 
-  if (result.type !== upperType && !getAllTypes().includes(upperType as ReturnType<typeof getAllTypes>[number])) {
+  if (!getAllTypes().includes(upperType as ReturnType<typeof getAllTypes>[number])) {
     return { title: "결과를 찾을 수 없습니다" };
   }
 
-  const pageUrl = `${BASE_URL}/result/${result.type}`;
+  const title = getKoTitle(upperType);
+  const description = getKoDescription(upperType);
+  const careers = getKoCareers(upperType);
+  const pageUrl = `${BASE_URL}/result/${upperType}`;
 
   return {
-    title: `${result.type} - ${result.title} | 16가지 성격 유형 테스트`,
-    description: `${result.type} ${result.title}: ${result.description} MBTI와 유사한 성격 유형 분석. 추천 직업: ${result.careers.join(", ")}`,
+    title: `${upperType} - ${title} | 16가지 성격 유형 테스트`,
+    description: `${upperType} ${title}: ${description} MBTI와 유사한 성격 유형 분석. 추천 직업: ${careers.join(", ")}`,
     openGraph: {
-      title: `나의 성격 유형은 ${result.type} - ${result.title}`,
-      description: result.description,
+      title: `나의 성격 유형은 ${upperType} - ${title}`,
+      description,
       type: "article",
       url: pageUrl,
       locale: "ko_KR",
@@ -41,8 +61,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `나의 성격 유형은 ${result.type} - ${result.title}`,
-      description: result.description,
+      title: `나의 성격 유형은 ${upperType} - ${title}`,
+      description,
     },
     alternates: {
       canonical: pageUrl,
@@ -60,12 +80,14 @@ export default async function ResultPage({ params }: ResultPageProps) {
   }
 
   const result = getResult(upperType);
+  const koTitle = getKoTitle(upperType);
+  const koDescription = getKoDescription(upperType);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${result.type} - ${result.title}`,
-    description: result.description,
+    headline: `${result.type} - ${koTitle}`,
+    description: koDescription,
     url: `${BASE_URL}/result/${result.type}`,
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -74,9 +96,9 @@ export default async function ResultPage({ params }: ResultPageProps) {
     about: {
       "@type": "Thing",
       name: `${result.type} 성격 유형`,
-      description: result.description,
+      description: koDescription,
     },
-    keywords: `${result.type}, ${result.title}, MBTI ${result.type}, 성격유형, 성격 테스트, ${result.careers.join(", ")}`,
+    keywords: `${result.type}, ${koTitle}, MBTI ${result.type}, 성격유형, 성격 테스트, ${getKoCareers(upperType).join(", ")}`,
     inLanguage: "ko",
     isPartOf: {
       "@type": "WebSite",
@@ -92,7 +114,7 @@ export default async function ResultPage({ params }: ResultPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <ResultHeader type={result.type} title={result.title} />
+      <ResultHeader type={result.type} titleKey={result.titleKey} />
 
       <article className="mx-auto flex w-full max-w-lg flex-col gap-4 px-5 py-6">
         <ResultClientWrapper result={result} />

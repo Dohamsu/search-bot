@@ -1,0 +1,102 @@
+{
+  "common": {
+    "copy": "복사",
+    "copied": "복사됨",
+    "devTools": "개발자 도구",
+    "toolList": "도구 목록",
+    "input": "입력",
+    "result": "결과",
+    "error": "오류",
+    "generate": "생성",
+    "encode": "인코딩",
+    "decode": "디코딩",
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "footerDesc": "개발자 도구. 모든 처리는 브라우저에서 수행되며, 서버로 데이터가 전송되지 않습니다.",
+    "headerSubtitle": "JSON, Base64, URL, UUID, Hash, Regex, Lorem Ipsum"
+  },
+  "tabs": {
+    "json": "JSON 포맷터",
+    "base64": "Base64",
+    "url": "URL 인코딩",
+    "uuid": "UUID 생성",
+    "hash": "해시 생성",
+    "regex": "정규식 테스트",
+    "lorem": "Lorem Ipsum"
+  },
+  "json": {
+    "title": "JSON 포맷터 / 검증기",
+    "description": "JSON 문자열을 포맷팅, 압축, 검증할 수 있습니다.",
+    "indent": "들여쓰기:",
+    "spaces2": "2 스페이스",
+    "spaces4": "4 스페이스",
+    "format": "포맷 (Pretty Print)",
+    "minify": "압축 (Minify)",
+    "validate": "검증",
+    "validJson": "JSON이 유효합니다.",
+    "errorLabel": "오류:",
+    "lineCol": "(줄: {line}, 열: {column})",
+    "placeholder": "{\"key\": \"value\"}"
+  },
+  "base64": {
+    "title": "Base64 인코딩 / 디코딩",
+    "description": "텍스트를 Base64로 인코딩/디코딩합니다. UTF-8 (한글 등)을 지원합니다.",
+    "encodeError": "인코딩 중 오류가 발생했습니다.",
+    "decodeError": "유효하지 않은 Base64 문자열입니다.",
+    "placeholder": "인코딩 또는 디코딩할 텍스트를 입력하세요"
+  },
+  "url": {
+    "title": "URL 인코딩 / 디코딩",
+    "description": "URL 문자열을 인코딩/디코딩합니다.",
+    "mode": "모드:",
+    "encodeError": "인코딩 중 오류가 발생했습니다.",
+    "decodeError": "유효하지 않은 URL 인코딩 문자열입니다.",
+    "placeholder": "https://example.com/path?key=값"
+  },
+  "uuid": {
+    "title": "UUID v4 생성기",
+    "description": "랜덤 UUID v4를 생성합니다.",
+    "count": "생성 개수:",
+    "uppercase": "대문자",
+    "hyphen": "하이픈 포함",
+    "resultCount": "생성 결과 ({count}개)"
+  },
+  "hash": {
+    "title": "해시 생성기",
+    "description": "입력 텍스트의 SHA-1, SHA-256, SHA-384, SHA-512 해시를 생성합니다.",
+    "inputLabel": "입력 텍스트",
+    "placeholder": "해시할 텍스트를 입력하세요",
+    "generating": "생성 중...",
+    "generateHash": "해시 생성"
+  },
+  "regex": {
+    "title": "정규식 테스터",
+    "description": "정규식 패턴을 실시간으로 테스트하고 매치 결과를 확인합니다.",
+    "patternLabel": "정규식 패턴",
+    "examplesLabel": "흔한 정규식 예제",
+    "testStringLabel": "테스트 문자열",
+    "testStringPlaceholder": "테스트할 문자열을 입력하세요",
+    "highlightLabel": "매칭 하이라이트",
+    "matchResultLabel": "매치 결과 ({count}개)",
+    "noMatch": "매치 없음",
+    "index": "인덱스: {index}",
+    "groups": "그룹:",
+    "examples": {
+      "email": "이메일",
+      "phone": "전화번호 (한국)",
+      "url": "URL",
+      "ipv4": "IPv4",
+      "htmlTag": "HTML 태그",
+      "numbersOnly": "숫자만",
+      "koreanOnly": "한글만"
+    }
+  },
+  "lorem": {
+    "title": "Lorem Ipsum 생성기",
+    "description": "더미 텍스트를 생성합니다. 한국어도 지원합니다.",
+    "paragraphs": "단락 수:",
+    "wordsPerParagraph": "단락당 단어 수:",
+    "korean": "한국어",
+    "htmlTags": "HTML <p> 태그"
+  }
+}

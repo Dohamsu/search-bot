@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "title": "날짜 계산기 | D-day, 날짜 차이, 요일 계산, 만 나이",
+    "description": "D-day 계산, 날짜 차이, 날짜 더하기/빼기, 만 나이 계산을 무료로 제공합니다.",
+    "siteName": "날짜 계산기"
+  },
+  "header": {
+    "title": "날짜 계산기",
+    "subtitle": "D-day, 날짜 차이, 만 나이 계산"
+  },
+  "tabs": {
+    "dday": "D-Day",
+    "diff": "날짜 차이",
+    "addSub": "더하기/빼기",
+    "age": "만 나이"
+  },
+  "dday": {
+    "selectDate": "목표 날짜 선택",
+    "isToday": "오늘이 바로 그 날입니다!",
+    "daysPassed": "{count}일이 지났습니다",
+    "daysLeft": "{count}일 남았습니다",
+    "weekUnit": "주 단위",
+    "monthUnit": "월 단위",
+    "yearUnit": "년 단위",
+    "weeksAndDays": "{weeks}주 {days}일",
+    "onlyDays": "{days}일",
+    "months": "{count}개월",
+    "years": "{count}년"
+  },
+  "diff": {
+    "startDate": "시작일",
+    "endDate": "종료일",
+    "days": "{count}일",
+    "businessDays": "영업일 (토/일 제외)",
+    "timeDiff": "시간 차이",
+    "hours": "{count}시간",
+    "minutes": "{count}분",
+    "seconds": "{count}초",
+    "yearMonthDay": "{years}년 {months}개월 {days}일"
+  },
+  "addSub": {
+    "baseDate": "기준일",
+    "add": "더하기",
+    "subtract": "빼기",
+    "daysOnly": "일수만",
+    "yearMonthDay": "년/월/일",
+    "days": "일수",
+    "businessDaysBasis": "영업일 기준 (토/일 제외)",
+    "year": "년",
+    "month": "월",
+    "day": "일",
+    "result": "계산 결과"
+  },
+  "age": {
+    "birthDate": "생년월일",
+    "manAge": "만 {age}세",
+    "koreanAge": "한국 나이 (연 나이) {age}세",
+    "zodiacSuffix": "띠",
+    "zodiacLabel": "12지신",
+    "happyBirthday": "생일 축하합니다!",
+    "birthdayToday": "오늘이 생일!",
+    "daysUntilBirthday": "다음 생일까지",
+    "daysCount": "{count}일",
+    "livedTime": "살아온 시간",
+    "livedDays": "일",
+    "livedHours": "시간",
+    "livedMinutes": "분"
+  },
+  "dateFormat": {
+    "full": "{year}년 {month}월 {day}일 ({dayName})"
+  },
+  "dayNames": {
+    "sunday": "일요일",
+    "monday": "월요일",
+    "tuesday": "화요일",
+    "wednesday": "수요일",
+    "thursday": "목요일",
+    "friday": "금요일",
+    "saturday": "토요일"
+  },
+  "zodiac": {
+    "monkey": "원숭이",
+    "rooster": "닭",
+    "dog": "개",
+    "pig": "돼지",
+    "rat": "쥐",
+    "ox": "소",
+    "tiger": "호랑이",
+    "rabbit": "토끼",
+    "dragon": "용",
+    "snake": "뱀",
+    "horse": "말",
+    "sheep": "양"
+  },
+  "footer": {
+    "copyright": "날짜 계산기",
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관"
+  },
+  "privacy": {
+    "title": "개인정보처리방침",
+    "lastModified": "최종 수정일: 2026년 1월 1일",
+    "section1Title": "1. 서비스 개요",
+    "section1Text": "\"날짜 계산기\"(이하 \"서비스\")는 D-day 계산, 날짜 차이, 날짜 더하기/빼기 등을 제공하는 무료 온라인 도구입니다. 서비스는 사용자의 개인정보를 최소한으로 처리하며, 아래 방침에 따라 이를 관리합니다.",
+    "section2Title": "2. 처리하는 개인정보 항목",
+    "section2Text1": "서비스는 회원가입을 요구하지 않으며, 사용자가 입력하는 데이터는 서버에 저장되지 않고 브라우저 내에서만 처리됩니다.",
+    "section2Text2": "다만 서비스 개선 및 이용 통계 분석을 위해 Google Analytics를 통해 다음과 같은 방문 데이터를 자동으로 수집할 수 있습니다.",
+    "section2Item1": "방문 페이지 URL, 접속 시간",
+    "section2Item2": "브라우저 종류, 운영체제, 화면 해상도",
+    "section2Item3": "대략적인 접속 지역 (IP 기반, 익명 처리)",
+    "section2Item4": "페이지 체류 시간, 이동 경로",
+    "section3Title": "3. 수집 목적",
+    "section3Item1": "서비스 이용 현황 파악 및 통계 분석",
+    "section3Item2": "서비스 품질 개선 및 사용자 경험 향상",
+    "section3Item3": "오류 탐지 및 기술적 문제 해결",
+    "section4Title": "4. 보유 기간",
+    "section4Text": "Google Analytics를 통해 수집된 데이터는 Google의 데이터 보존 정책에 따라 처리되며, 기본 보존 기간은 14개월입니다. 서비스 운영자는 별도의 개인정보 데이터베이스를 운영하지 않습니다.",
+    "section5Title": "5. Google Analytics 사용 고지",
+    "section5Text": "서비스는 Google Inc.가 제공하는 웹 분석 서비스인 Google Analytics를 사용합니다. Google Analytics는 쿠키를 사용하여 웹사이트 이용 정보를 수집하며, 수집된 정보는 Google 서버에 전송되어 저장됩니다. 자세한 내용은 ",
+    "section5LinkText": "Google 개인정보처리방침",
+    "section5TextAfter": "을 참고하시기 바랍니다.",
+    "section6Title": "6. 쿠키 사용 안내",
+    "section6Text": "서비스는 Google Analytics 및 Google AdSense의 작동을 위해 쿠키를 사용할 수 있습니다. 쿠키는 사용자의 브라우저에 저장되는 소량의 데이터 파일로, 서비스 이용 분석 및 맞춤형 광고 제공에 활용됩니다. 사용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있으나, 이 경우 일부 기능 이용이 제한될 수 있습니다.",
+    "section7Title": "7. 문의처",
+    "section7Text": "개인정보 처리와 관련한 문의 사항은 아래 이메일로 연락해 주시기 바랍니다.",
+    "email": "이메일: ",
+    "backToMain": "메인으로 돌아가기"
+  },
+  "terms": {
+    "title": "이용약관",
+    "lastModified": "최종 수정일: 2026년 1월 1일",
+    "article1Title": "제1조 (목적)",
+    "article1Text": "본 약관은 \"날짜 계산기\"(이하 \"서비스\")의 이용 조건 및 절차에 관한 사항을 정하는 것을 목적으로 합니다. 서비스는 사용자에게 D-day 계산, 날짜 차이, 날짜 더하기/빼기 등을 제공하는 무료 온라인 도구를 제공합니다.",
+    "article2Title": "제2조 (서비스의 성격)",
+    "article2Text": "서비스가 제공하는 모든 결과는 참고 목적으로만 제공되며, 전문 상담을 대체하지 않습니다. 사용자가 입력한 데이터는 서버에 저장되지 않고 브라우저 내에서만 처리됩니다.",
+    "article3Title": "제3조 (면책 사항)",
+    "article3Item1": "서비스가 제공하는 결과는 참고용이며, 그 정확성이나 완전성을 보장하지 않습니다.",
+    "article3Item2": "계산 결과는 참고용이며, 공휴일이나 윤년 등 특수 케이스에서 차이가 있을 수 있습니다.",
+    "article3Item3": "서비스 이용으로 인해 발생하는 직접적 또는 간접적 손해에 대해 서비스 운영자는 책임을 지지 않습니다.",
+    "article4Title": "제4조 (지적재산권)",
+    "article4Text": "서비스에 포함된 모든 콘텐츠(디자인, 텍스트, 소스 코드, 로고 등)에 대한 지적재산권은 서비스 운영자에게 귀속됩니다. 사용자는 서비스 운영자의 사전 서면 동의 없이 이를 복제, 배포, 수정, 상업적으로 이용할 수 없습니다.",
+    "article5Title": "제5조 (서비스 변경 및 중단)",
+    "article5Text": "서비스 운영자는 운영상, 기술상의 필요에 따라 서비스의 전부 또는 일부를 변경하거나 중단할 수 있습니다. 서비스 변경 또는 중단에 따른 사용자의 손해에 대해 서비스 운영자는 별도의 보상 의무를 지지 않습니다.",
+    "article6Title": "제6조 (광고)",
+    "article6Text": "서비스는 운영 비용 충당을 위해 Google AdSense 등의 광고를 포함할 수 있습니다. 광고에 의한 거래는 사용자와 광고주 간의 문제이며, 서비스 운영자는 이에 대해 책임을 지지 않습니다.",
+    "article7Title": "제7조 (약관의 변경)",
+    "article7Text": "서비스 운영자는 관련 법령에 위배되지 않는 범위 내에서 본 약관을 변경할 수 있으며, 변경된 약관은 서비스 내에 공지함으로써 효력이 발생합니다.",
+    "article8Title": "제8조 (문의)",
+    "article8Text": "본 약관에 관한 문의 사항은 아래 이메일로 연락해 주시기 바랍니다.",
+    "email": "이메일: ",
+    "backToMain": "메인으로 돌아가기"
+  }
+}

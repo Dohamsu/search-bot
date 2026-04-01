@@ -1,0 +1,120 @@
+{
+  "header": {
+    "title": "공과금 계산기",
+    "subtitle": "전기 · 수도 · 가스 요금 계산"
+  },
+  "tabs": {
+    "electric": "전기요금",
+    "water": "수도요금",
+    "gas": "가스요금"
+  },
+  "disclaimer": "요금은 2026년 기준 근사치입니다. 실제 요금은 지역, 공급사, 계절 등에 따라 다를 수 있습니다.",
+  "electric": {
+    "title": "전기요금 계산기",
+    "usageLabel": "전기 사용량 (kWh)",
+    "usagePlaceholder": "예: 350",
+    "purposeLabel": "용도",
+    "residential": "주택용 (저압)",
+    "commercial": "일반용 (갑) I",
+    "seasonLabel": "계절",
+    "seasonOther": "기타 (3~6월, 9~2월)",
+    "seasonSummer": "여름 (7~8월)",
+    "discountLabel": "복지할인",
+    "discountNone": "없음",
+    "discountDisability": "장애인 할인",
+    "discountBasicLiving": "기초생활 수급자",
+    "discountNextLowest": "차상위 계층",
+    "discountLargeFam": "대가족 할인",
+    "discountNewborn": "출산가구 할인",
+    "calcButton": "전기요금 계산하기"
+  },
+  "water": {
+    "title": "수도요금 계산기",
+    "seoulBasis": "(서울시 기준)",
+    "usageLabel": "수도 사용량 (m³)",
+    "usagePlaceholder": "예: 20",
+    "purposeLabel": "용도",
+    "household": "가정용",
+    "business": "업무용",
+    "calcButton": "수도요금 계산하기"
+  },
+  "gas": {
+    "title": "도시가스 요금 계산기",
+    "seoulBasis": "(서울도시가스 기준)",
+    "usageLabel": "가스 사용량 (m³)",
+    "usagePlaceholder": "예: 30",
+    "purposeLabel": "용도",
+    "cooking": "취사용",
+    "heating": "난방용",
+    "calcButton": "가스요금 계산하기"
+  },
+  "result": {
+    "estimatedElectric": "예상 전기요금",
+    "estimatedWater": "예상 수도요금",
+    "estimatedGas": "예상 가스요금",
+    "won": "원",
+    "residentialLabel": "주택용",
+    "commercialLabel": "일반용",
+    "summerLabel": "여름",
+    "otherSeasonLabel": "기타계절",
+    "householdLabel": "가정용",
+    "businessLabel": "업무용",
+    "cookingLabel": "취사용",
+    "heatingLabel": "난방용",
+    "seoulCity": "서울시",
+    "seoulGas": "서울도시가스",
+    "progressiveTiers": "누진 구간별 요금",
+    "usageTiers": "사용 구간별 요금",
+    "feeDetail": "요금 상세",
+    "baseFee": "기본료",
+    "energyCharge": "전력량요금",
+    "climateCharge": "기후환경요금 (9원/kWh)",
+    "fuelAdjust": "연료비조정액 (5원/kWh)",
+    "welfareDiscount": "복지할인 ({label})",
+    "subtotal": "소계",
+    "vat": "부가가치세 (10%)",
+    "elecFund": "전력산업기반기금 (3.7%)",
+    "totalSum": "총 합계",
+    "waterBaseFee": "상수도 기본료 (15mm)",
+    "waterUsageCharge": "상수도 사용료",
+    "sewerCharge": "하수도요금 (470원/m³)",
+    "waterUseFee": "물이용부담금 (170원/m³)",
+    "gasUsageCharge": "사용요금 ({usage}m³ × {unitPrice}원)",
+    "gasConversion": "1m³ = {mj}MJ × {price}원/MJ = ",
+    "gasConversionResult": "약 {unitPrice}원/m³",
+    "commercialTierLabel": "일반용(갑) I"
+  },
+  "tips": {
+    "title": "공과금 절약 팁",
+    "electricTitle": "전기 절약",
+    "waterTitle": "수도 절약",
+    "gasTitle": "가스 절약",
+    "electric": [
+      "대기전력 차단 멀티탭을 사용하면 월 평균 5~10% 전기요금을 절약할 수 있습니다.",
+      "에어컨 적정 온도는 26~28도. 1도 올리면 약 7% 절감됩니다.",
+      "LED 조명으로 교체하면 백열등 대비 약 80% 에너지를 절약합니다.",
+      "냉장고 문을 자주 열지 않고, 벽에서 10cm 이상 띄워 놓으세요.",
+      "세탁기/건조기는 모아서 한 번에 돌리는 것이 효율적입니다."
+    ],
+    "water": [
+      "절수 샤워 헤드를 사용하면 물 사용량을 약 30~40% 줄일 수 있습니다.",
+      "세탁기는 모아서 돌리고, 적정 수위를 설정하세요.",
+      "양치할 때 컵을 사용하면 연간 약 12,000L의 물을 절약합니다.",
+      "설거지할 때 물을 받아서 하면 흘려보내는 것보다 약 50% 절약됩니다.",
+      "화장실 변기 수조에 물을 채운 페트병을 넣으면 매번 1~2L 절약됩니다."
+    ],
+    "gas": [
+      "보일러 외출모드를 활용하면 불필요한 난방을 줄일 수 있습니다.",
+      "창문/문틈 단열테이프, 커튼을 활용하면 난방 효율이 올라갑니다.",
+      "보일러 온수 온도를 낮추면 가스 사용량이 줄어듭니다.",
+      "요리할 때 뚜껑을 덮으면 조리 시간이 단축되어 가스를 절약합니다.",
+      "보일러 배관 청소를 정기적으로 하면 효율이 개선됩니다."
+    ]
+  },
+  "footer": {
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "footerNote": "이 계산기는 참고용이며, 실제 요금은 지역·공급사에 따라 다를 수 있습니다.",
+    "copyright": "© 2026 공과금 계산기. All rights reserved."
+  }
+}

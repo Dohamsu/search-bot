@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { generateQR } from '../lib/qr';
+import { useTranslation } from '../i18n';
+import LanguageSwitcher from '../i18n/LanguageSwitcher';
 
 const MAX_ITEMS = 50;
 const SIZE_OPTIONS = [
@@ -51,6 +53,7 @@ function padNumber(num: number, length: number): string {
 }
 
 export default function BatchPage() {
+  const { t } = useTranslation();
   const [inputText, setInputText] = useState('');
   const [qrSize, setQrSize] = useState(200);
   const [generatedItems, setGeneratedItems] = useState<QRItem[]>([]);
@@ -200,15 +203,16 @@ export default function BatchPage() {
       {/* Header */}
       <header className="bg-white border-b border-zinc-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-14 gap-4">
+          <div className="flex items-center justify-between h-14">
             <Link
               href="/"
               className="flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">QR 생성기로 돌아가기</span>
-              <span className="sm:hidden">돌아가기</span>
+              <span className="hidden sm:inline">{t('batch.backToGenerator')}</span>
+              <span className="sm:hidden">{t('batch.backShort')}</span>
             </Link>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
@@ -221,10 +225,10 @@ export default function BatchPage() {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">
-              QR코드 대량 생성
+              {t('batch.title')}
             </h1>
             <p className="text-sm text-zinc-500 mt-0.5">
-              여러 URL/텍스트를 한 번에 QR코드로 변환
+              {t('batch.subtitle')}
             </p>
           </div>
         </div>
@@ -239,7 +243,7 @@ export default function BatchPage() {
                   htmlFor="batch-input"
                   className="text-sm font-semibold text-zinc-700"
                 >
-                  URL / 텍스트 입력
+                  {t('batch.inputLabel')}
                 </label>
                 <span
                   className={`text-xs font-medium ${
@@ -248,23 +252,20 @@ export default function BatchPage() {
                       : 'text-zinc-400'
                   }`}
                 >
-                  {lineCount} / {MAX_ITEMS}개
+                  {t('batch.count', { count: lineCount, max: MAX_ITEMS })}
                 </span>
               </div>
               <textarea
                 id="batch-input"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={
-                  'URL 또는 텍스트를 한 줄에 하나씩 입력하세요\nhttps://example.com\nhttps://google.com'
-                }
+                placeholder={t('batch.inputPlaceholder')}
                 rows={8}
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition resize-none font-mono leading-relaxed"
               />
               {lineCount > MAX_ITEMS && (
                 <p className="text-xs text-red-500">
-                  최대 {MAX_ITEMS}개까지만 생성됩니다. 처음 {MAX_ITEMS}개만
-                  처리됩니다.
+                  {t('batch.maxWarning', { max: MAX_ITEMS })}
                 </p>
               )}
             </div>
@@ -272,11 +273,11 @@ export default function BatchPage() {
             {/* Options */}
             <div className="flex flex-col gap-3">
               <h3 className="text-sm font-semibold text-zinc-700">
-                QR 옵션
+                {t('batch.optionsTitle')}
               </h3>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-zinc-500 w-16 shrink-0">
-                  크기
+                  {t('batch.optionSize')}
                 </span>
                 <div className="flex gap-2">
                   {SIZE_OPTIONS.map((opt) => (
@@ -296,18 +297,18 @@ export default function BatchPage() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-zinc-500 w-16 shrink-0">
-                  색상
+                  {t('batch.optionColor')}
                 </span>
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded border border-zinc-200 bg-[#111827]" />
-                  <span className="text-xs text-zinc-400">전경 #111827</span>
+                  <span className="text-xs text-zinc-400">{t('batch.optionFg')}</span>
                   <div className="w-6 h-6 rounded border border-zinc-200 bg-white ml-2" />
-                  <span className="text-xs text-zinc-400">배경 #FFFFFF</span>
+                  <span className="text-xs text-zinc-400">{t('batch.optionBg')}</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-zinc-500 w-16 shrink-0">
-                  보정
+                  {t('batch.optionCorrection')}
                 </span>
                 <span className="text-sm text-zinc-600">M (15%)</span>
               </div>
@@ -324,13 +325,13 @@ export default function BatchPage() {
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>
-                      {progress.current} / {progress.total} 생성 중...
+                      {t('batch.progressLabel', { current: progress.current, total: progress.total })}
                     </span>
                   </>
                 ) : (
                   <>
                     <Layers className="w-4 h-4" />
-                    <span>일괄 생성</span>
+                    <span>{t('batch.batchGenerate')}</span>
                   </>
                 )}
               </button>
@@ -339,7 +340,7 @@ export default function BatchPage() {
                 className="h-12 px-4 rounded-xl border border-zinc-200 bg-white text-sm font-medium text-zinc-600 hover:bg-zinc-50 transition-colors cursor-pointer flex items-center gap-2"
               >
                 <Trash2 className="w-4 h-4" />
-                <span className="hidden sm:inline">초기화</span>
+                <span className="hidden sm:inline">{t('batch.reset')}</span>
               </button>
             </div>
           </div>
@@ -351,7 +352,7 @@ export default function BatchPage() {
                 {/* Download Controls */}
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-zinc-700">
-                    생성 결과 ({generatedItems.length}개)
+                    {t('batch.resultsTitle', { count: generatedItems.length })}
                   </h3>
                   <div className="flex gap-2">
                     <button
@@ -359,14 +360,14 @@ export default function BatchPage() {
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-zinc-200 text-xs font-medium text-zinc-600 hover:bg-zinc-50 transition-colors cursor-pointer"
                     >
                       <ImageIcon className="w-3.5 h-3.5" />
-                      한 장에 모아보기
+                      {t('batch.mergedDownload')}
                     </button>
                     <button
                       onClick={handleDownloadAll}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--qr-primary)] text-xs font-medium text-white hover:opacity-90 transition-opacity cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      전체 다운로드
+                      {t('batch.downloadAll')}
                     </button>
                   </div>
                 </div>
@@ -394,7 +395,7 @@ export default function BatchPage() {
                         className="w-full flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-medium text-zinc-500 hover:text-[var(--qr-primary)] hover:bg-blue-50 transition-colors cursor-pointer"
                       >
                         <Download className="w-3 h-3" />
-                        다운로드
+                        {t('batch.download')}
                       </button>
                     </div>
                   ))}
@@ -406,16 +407,16 @@ export default function BatchPage() {
               <div className="flex flex-col items-center justify-center py-16 text-zinc-400">
                 <Layers className="w-12 h-12 mb-3 opacity-30" />
                 <p className="text-sm">
-                  왼쪽에 URL/텍스트를 입력하고
+                  {t('batch.emptyLine1')}
                 </p>
-                <p className="text-sm">&quot;일괄 생성&quot; 버튼을 눌러주세요</p>
+                <p className="text-sm">{t('batch.emptyLine2')}</p>
               </div>
             )}
 
             {isGenerating && generatedItems.length === 0 && (
               <div className="flex flex-col items-center justify-center py-16 text-zinc-400">
                 <Loader2 className="w-10 h-10 animate-spin mb-3 text-[var(--qr-primary)]" />
-                <p className="text-sm">QR코드 생성 중...</p>
+                <p className="text-sm">{t('batch.generatingMsg')}</p>
               </div>
             )}
           </div>

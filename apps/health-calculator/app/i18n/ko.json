@@ -1,0 +1,130 @@
+{
+  "header": {
+    "title": "건강 계산기"
+  },
+  "common": {
+    "basicInfo": "기본 정보",
+    "male": "남성",
+    "female": "여성",
+    "age": "나이",
+    "height": "키",
+    "weight": "체중",
+    "ageUnit": "세",
+    "cmUnit": "cm",
+    "kgUnit": "kg",
+    "kcalPerDay": "kcal/일",
+    "kcal": "kcal",
+    "percent": "%"
+  },
+  "tabs": {
+    "bmi": "BMI",
+    "bmr": "기초대사량",
+    "tdee": "TDEE",
+    "bodyfat": "체지방률",
+    "standard": "표준체중"
+  },
+  "bmi": {
+    "title": "BMI (체질량지수)",
+    "label": "BMI",
+    "unit": "kg/m²",
+    "emptyState": "키와 체중을 입력하면 BMI를 계산합니다.",
+    "normalWeightRange": "정상 체중 범위:",
+    "standardNote": "* 대한비만학회 아시아-태평양 기준 (WHO 기준: 과체중 25+, 비만 30+)",
+    "classificationTitle": "BMI 분류 기준 (아시아-태평양)",
+    "underweight": "저체중",
+    "normal": "정상",
+    "overweight": "과체중",
+    "obese1": "비만 1단계",
+    "obese2": "비만 2단계",
+    "underweightRange": "저체중: 18.5 미만",
+    "normalRange": "정상: 18.5 ~ 22.9",
+    "overweightRange": "과체중: 23 ~ 24.9",
+    "obese1Range": "비만 1단계: 25 ~ 29.9",
+    "obese2Range": "비만 2단계: 30 이상"
+  },
+  "bmr": {
+    "title": "기초대사량 (BMR)",
+    "averageLabel": "평균 기초대사량",
+    "averageSub": "두 공식의 평균값",
+    "emptyState": "성별, 나이, 키, 체중을 입력하면 기초대사량을 계산합니다.",
+    "note": "* Mifflin-St Jeor 공식이 현대인 체형에 더 정확한 것으로 알려져 있습니다."
+  },
+  "tdee": {
+    "title": "TDEE (일일 총 에너지 소비량)",
+    "activityLevel": "활동 수준",
+    "emptyState": "성별, 나이, 키, 체중을 입력하면 TDEE를 계산합니다.",
+    "resultLabel": "일일 총 에너지 소비량",
+    "deficit": "감량 (-500)",
+    "maintenance": "유지",
+    "surplus": "증량 (+500)",
+    "note": "* 주당 약 0.45kg 감량/증량 목표 기준 (500kcal 조절)",
+    "activity0": "비활동적 (운동 거의 안 함)",
+    "activity1": "가벼운 활동 (주 1-3회 운동)",
+    "activity2": "보통 활동 (주 3-5회 운동)",
+    "activity3": "활발한 활동 (주 6-7회 운동)",
+    "activity4": "매우 활발 (고강도 매일 운동)"
+  },
+  "bodyfat": {
+    "title": "체지방률 (미 해군 공식)",
+    "waist": "허리둘레",
+    "neck": "목둘레",
+    "hip": "엉덩이둘레",
+    "resultLabel": "체지방률",
+    "emptyState": "키와 추가 측정값을 입력하면 체지방률을 계산합니다.",
+    "invalidInput": "입력값을 확인해주세요. 측정값이 올바르지 않습니다.",
+    "classificationTitle": "체지방률 분류 기준",
+    "essentialFat": "필수 지방",
+    "athlete": "운동선수",
+    "fitness": "피트니스",
+    "average": "보통",
+    "obese": "비만",
+    "maleEssential": "필수 지방: 2-5%",
+    "maleAthlete": "운동선수: 6-13%",
+    "maleFitness": "피트니스: 14-17%",
+    "maleAverage": "보통: 18-24%",
+    "maleObese": "비만: 25% 이상",
+    "femaleEssential": "필수 지방: 10-13%",
+    "femaleAthlete": "운동선수: 14-20%",
+    "femaleFitness": "피트니스: 21-24%",
+    "femaleAverage": "보통: 25-31%",
+    "femaleObese": "비만: 32% 이상"
+  },
+  "standard": {
+    "title": "표준 체중",
+    "averageLabel": "표준 체중 (평균)",
+    "diffSub": "현재 체중과의 차이: {diff}kg",
+    "emptyState": "키와 체중을 입력하면 표준 체중을 계산합니다.",
+    "broca": "브로카 변법",
+    "bmiBase": "BMI 기준 (22)",
+    "currentVs": "현재 체중 대비:",
+    "formulaNote": "* 브로카 변법: (키 - 100) \u00d7 0.9 / BMI 기준: 22 \u00d7 (키m)\u00b2"
+  },
+  "bmiGauge": {
+    "underweight": "저체중",
+    "normal": "정상",
+    "overweight": "과체중",
+    "obese1": "비만1",
+    "obese2": "비만2"
+  },
+  "disclaimer": {
+    "line1": "이 계산기는 참고용이며, 정확한 건강 상담은 전문의와 상의하세요.",
+    "line2": "BMI 판정은 대한비만학회 아시아-태평양 기준을 따릅니다."
+  },
+  "footer": {
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "copyright": "건강 계산기"
+  },
+  "category": {
+    "underweight": "저체중",
+    "normal": "정상",
+    "overweight": "과체중",
+    "obese1": "비만 1단계",
+    "obese2": "비만 2단계",
+    "essentialFat": "필수 지방",
+    "athlete": "운동선수",
+    "fitness": "피트니스",
+    "average": "보통",
+    "obese": "비만"
+  }
+}

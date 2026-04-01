@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Link2, Link2Off, RotateCcw } from "lucide-react";
+import { useTranslation } from "../i18n";
 
 interface ConvertOptionsProps {
   quality: number;
@@ -27,6 +28,7 @@ export default function ConvertOptions({
   showQuality,
 }: ConvertOptionsProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleResetResize = () => {
     onMaxWidthChange(undefined);
@@ -41,7 +43,7 @@ export default function ConvertOptions({
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-[var(--file-text)] hover:bg-[#FAFAF9] transition-colors"
       >
-        <span>변환 옵션</span>
+        <span>{t("options.title")}</span>
         <svg
           className={`h-4 w-4 text-[#A8A29E] transition-transform ${isOpen ? "rotate-180" : ""}`}
           fill="none"
@@ -59,7 +61,7 @@ export default function ConvertOptions({
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-[#78716C]">
-                  품질
+                  {t("options.quality")}
                 </label>
                 <span className="text-xs font-semibold text-[var(--file-primary)]">
                   {Math.round(quality * 100)}%
@@ -74,8 +76,8 @@ export default function ConvertOptions({
                 className="w-full h-1.5 rounded-full appearance-none bg-[#E7E5E4] accent-[var(--file-primary)] cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-[#A8A29E]">
-                <span>작은 파일</span>
-                <span>최고 품질</span>
+                <span>{t("options.smallFile")}</span>
+                <span>{t("options.bestQuality")}</span>
               </div>
             </div>
           )}
@@ -83,7 +85,7 @@ export default function ConvertOptions({
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-medium text-[#78716C]">
-                리사이즈
+                {t("options.resize")}
               </label>
               {hasResizeValues && (
                 <button
@@ -91,17 +93,17 @@ export default function ConvertOptions({
                   className="flex items-center gap-1 text-xs text-[var(--file-primary)] hover:underline"
                 >
                   <RotateCcw size={10} />
-                  원본 크기
+                  {t("options.originalSize")}
                 </button>
               )}
             </div>
             <div className="flex items-center gap-3">
               <div className="flex flex-1 flex-col gap-1">
-                <span className="text-[10px] text-[#A8A29E]">너비 (px)</span>
+                <span className="text-[10px] text-[#A8A29E]">{t("options.width")}</span>
                 <input
                   type="number"
                   min={1}
-                  placeholder="자동"
+                  placeholder={t("options.auto")}
                   value={maxWidth ?? ""}
                   onChange={(e) =>
                     onMaxWidthChange(e.target.value ? Number(e.target.value) : undefined)
@@ -110,11 +112,11 @@ export default function ConvertOptions({
                 />
               </div>
               <div className="flex flex-1 flex-col gap-1">
-                <span className="text-[10px] text-[#A8A29E]">높이 (px)</span>
+                <span className="text-[10px] text-[#A8A29E]">{t("options.height")}</span>
                 <input
                   type="number"
                   min={1}
-                  placeholder="자동"
+                  placeholder={t("options.auto")}
                   value={maxHeight ?? ""}
                   onChange={(e) =>
                     onMaxHeightChange(e.target.value ? Number(e.target.value) : undefined)
@@ -144,7 +146,7 @@ export default function ConvertOptions({
                 ) : (
                   <Link2Off size={12} className="text-[#A8A29E]" />
                 )}
-                비율 유지
+                {t("options.maintainRatio")}
               </span>
             </label>
           </div>

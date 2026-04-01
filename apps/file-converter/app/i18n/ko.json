@@ -1,0 +1,77 @@
+{
+  "common": {
+    "privacyPolicy": "개인정보처리방침",
+    "terms": "이용약관",
+    "contact": "문의",
+    "copy": "복사",
+    "copied": "복사됨"
+  },
+  "nav": {
+    "title": "FileFlow",
+    "subtitle": "이미지 변환기"
+  },
+  "hero": {
+    "heading": "무료 온라인 파일 변환기 - PNG, JPG, WebP, HEIC 이미지 변환"
+  },
+  "dropzone": {
+    "dragText": "파일을 여기에 끌어놓거나",
+    "selectButton": "파일 선택",
+    "maxSize": "최대 100MB · PNG, JPG, HEIC, WEBP, GIF",
+    "unsupportedFormat": "지원하지 않는 형식입니다",
+    "exceedsMaxSize": "100MB를 초과합니다"
+  },
+  "format": {
+    "converting": "변환 중...",
+    "convert": "변환하기"
+  },
+  "options": {
+    "title": "변환 옵션",
+    "quality": "품질",
+    "smallFile": "작은 파일",
+    "bestQuality": "최고 품질",
+    "resize": "리사이즈",
+    "originalSize": "원본 크기",
+    "width": "너비 (px)",
+    "height": "높이 (px)",
+    "auto": "자동",
+    "maintainRatio": "비율 유지"
+  },
+  "fileList": {
+    "title": "파일 목록",
+    "fileCount": "{count}개 파일"
+  },
+  "fileItem": {
+    "done": "완료",
+    "converting": "변환중",
+    "pending": "대기",
+    "error": "오류",
+    "retry": "재시도",
+    "download": "다운로드",
+    "delete": "삭제"
+  },
+  "zip": {
+    "creating": "ZIP 생성 중... {progress}%",
+    "downloadAll": "전체 다운로드 (ZIP) - {count}개 파일",
+    "error": "ZIP 파일 생성 중 오류가 발생했습니다."
+  },
+  "security": {
+    "message": "100% 브라우저 처리 - 파일이 서버에 업로드되지 않습니다"
+  },
+  "popular": {
+    "title": "인기 변환",
+    "label": "인기 변환"
+  },
+  "tabs": {
+    "convert": "변환",
+    "tools": "도구",
+    "recent": "최근",
+    "preparing": "준비중",
+    "featurePreparing": "\"{name}\" 기능은 준비 중입니다"
+  },
+  "errors": {
+    "unsupportedConversion": "{from} -> {to} 이미지 변환을 지원하지 않습니다",
+    "conversionError": "변환 중 오류가 발생했습니다",
+    "unsupportedFormat": "{from} → {to} 변환은 지원하지 않는 형식입니다",
+    "noFiles": "다운로드할 파일이 없습니다"
+  }
+}

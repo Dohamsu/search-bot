@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import { RefreshCw, Wrench, Clock } from "lucide-react";
+import { useTranslation } from "../i18n";
 
-const tabs = [
-  { label: "변환", icon: RefreshCw, enabled: true },
-  { label: "도구", icon: Wrench, enabled: false },
-  { label: "최근", icon: Clock, enabled: false },
+interface TabDef {
+  labelKey: string;
+  icon: typeof RefreshCw;
+  enabled: boolean;
+}
+
+const tabs: TabDef[] = [
+  { labelKey: "tabs.convert", icon: RefreshCw, enabled: true },
+  { labelKey: "tabs.tools", icon: Wrench, enabled: false },
+  { labelKey: "tabs.recent", icon: Clock, enabled: false },
 ];
 
 interface BottomTabBarProps {
@@ -16,12 +23,13 @@ interface BottomTabBarProps {
 
 export default function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
   const [toast, setToast] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const handleTabClick = (index: number) => {
     if (tabs[index].enabled) {
       onTabChange(index);
     } else {
-      setToast(`"${tabs[index].label}" 기능은 준비 중입니다`);
+      setToast(t("tabs.featurePreparing", { name: t(tabs[index].labelKey) }));
       setTimeout(() => setToast(null), 2000);
     }
   };
@@ -34,7 +42,7 @@ export default function BottomTabBar({ activeTab, onTabChange }: BottomTabBarPro
           const isActive = activeTab === index;
           return (
             <button
-              key={tab.label}
+              key={tab.labelKey}
               onClick={() => handleTabClick(index)}
               className={`flex flex-1 flex-col items-center gap-1 py-3 text-xs font-medium transition-colors ${
                 isActive
@@ -45,9 +53,9 @@ export default function BottomTabBar({ activeTab, onTabChange }: BottomTabBarPro
               }`}
             >
               <Icon size={18} />
-              {tab.label}
+              {t(tab.labelKey)}
               {!tab.enabled && (
-                <span className="text-[9px] leading-none text-[#D6D3D1]">준비중</span>
+                <span className="text-[9px] leading-none text-[#D6D3D1]">{t("tabs.preparing")}</span>
               )}
             </button>
           );

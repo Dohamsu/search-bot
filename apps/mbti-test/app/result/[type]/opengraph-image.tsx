@@ -1,10 +1,24 @@
 import { ImageResponse } from "next/og";
 import { getResult } from "../../lib/results";
+import ko from "../../i18n/ko.json";
 
 export const runtime = "edge";
 export const alt = "16가지 성격 유형 테스트 결과";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+function resolveKoKey(key: string): string {
+  const keys = key.split(".");
+  let value: unknown = ko;
+  for (const k of keys) {
+    if (value && typeof value === "object") {
+      value = (value as Record<string, unknown>)[k];
+    } else {
+      return key;
+    }
+  }
+  return typeof value === "string" ? value : key;
+}
 
 export default async function OgImage({
   params,
@@ -14,6 +28,8 @@ export default async function OgImage({
   const { type } = await params;
   const upperType = type.toUpperCase();
   const result = getResult(upperType);
+  const title = resolveKoKey(result.titleKey);
+  const traits = result.traitKeys.map((k) => resolveKoKey(k));
 
   return new ImageResponse(
     (
@@ -73,7 +89,7 @@ export default async function OgImage({
               marginBottom: 24,
             }}
           >
-            {result.title}
+            {title}
           </div>
 
           <div
@@ -84,7 +100,7 @@ export default async function OgImage({
               justifyContent: "center",
             }}
           >
-            {result.traits.map((trait) => (
+            {traits.map((trait) => (
               <div
                 key={trait}
                 style={{

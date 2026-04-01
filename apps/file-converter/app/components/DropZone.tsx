@@ -3,6 +3,7 @@
 import { CloudUpload, AlertCircle } from "lucide-react";
 import { useCallback, useState } from "react";
 import { SUPPORTED_FORMATS } from "../lib/fileUtils";
+import { useTranslation } from "../i18n";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
@@ -13,6 +14,7 @@ interface DropZoneProps {
 export default function DropZone({ onFilesAdded }: DropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const clearError = () => {
     setError(null);
@@ -28,12 +30,12 @@ export default function DropZone({ onFilesAdded }: DropZoneProps) {
         const ext = file.name.split(".").pop()?.toUpperCase() || "";
 
         if (!SUPPORTED_FORMATS.includes(ext)) {
-          errors.push(`"${file.name}" - 지원하지 않는 형식입니다 (${ext})`);
+          errors.push(`"${file.name}" - ${t("dropzone.unsupportedFormat")} (${ext})`);
           continue;
         }
 
         if (file.size > MAX_FILE_SIZE) {
-          errors.push(`"${file.name}" - 100MB를 초과합니다`);
+          errors.push(`"${file.name}" - ${t("dropzone.exceedsMaxSize")}`);
           continue;
         }
 
@@ -49,7 +51,7 @@ export default function DropZone({ onFilesAdded }: DropZoneProps) {
         onFilesAdded(validFiles);
       }
     },
-    [onFilesAdded]
+    [onFilesAdded, t]
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -109,16 +111,16 @@ export default function DropZone({ onFilesAdded }: DropZoneProps) {
           strokeWidth={1.5}
         />
         <p className="hidden md:block text-lg text-[var(--file-text)]">
-          파일을 여기에 끌어놓거나
+          {t("dropzone.dragText")}
         </p>
         <button
           onClick={handleFileSelect}
           className="rounded-lg bg-[var(--file-accent)] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#EA6C0E]"
         >
-          파일 선택
+          {t("dropzone.selectButton")}
         </button>
         <p className="text-[13px] text-[#A8A29E]">
-          최대 100MB &middot; PNG, JPG, HEIC, WEBP, GIF
+          {t("dropzone.maxSize")}
         </p>
       </div>
 

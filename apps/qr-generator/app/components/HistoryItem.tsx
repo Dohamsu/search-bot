@@ -2,24 +2,27 @@
 
 import { QrCode } from 'lucide-react';
 import type { HistoryEntry } from '../lib/history';
+import { useTranslation } from '../i18n';
 
 interface HistoryItemProps {
   entry: HistoryEntry;
   onClick: (content: string) => void;
 }
 
-function timeAgo(dateStr: string): string {
-  const now = new Date();
-  const date = new Date(dateStr);
-  const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (diff < 60) return '방금 전';
-  if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
-  return `${Math.floor(diff / 86400)}일 전`;
-}
-
 export default function HistoryItem({ entry, onClick }: HistoryItemProps) {
+  const { t } = useTranslation();
+
+  function timeAgo(dateStr: string): string {
+    const now = new Date();
+    const date = new Date(dateStr);
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff < 60) return t('history.timeJustNow');
+    if (diff < 3600) return t('history.timeMinAgo', { min: Math.floor(diff / 60) });
+    if (diff < 86400) return t('history.timeHourAgo', { hour: Math.floor(diff / 3600) });
+    return t('history.timeDayAgo', { day: Math.floor(diff / 86400) });
+  }
+
   return (
     <button
       onClick={() => onClick(entry.content)}

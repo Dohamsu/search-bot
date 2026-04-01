@@ -5,6 +5,7 @@ import { DotGrid } from "../lib/dotArt";
 import { HistoryItem, deleteHistoryItem, clearHistory } from "../lib/history";
 import { renderDotGrid } from "../lib/canvasRenderer";
 import { Trash2 } from "lucide-react";
+import { useTranslation } from "../i18n";
 
 interface HistoryPanelProps {
   history: HistoryItem[];
@@ -58,7 +59,7 @@ function HistoryThumbnail({
           }}
           className="absolute -top-1 -right-1 hidden group-hover:flex items-center justify-center w-4 h-4 rounded-full bg-red-500 text-white text-[10px] shadow-md hover:bg-red-600 transition-colors"
         >
-          ×
+          x
         </button>
       )}
     </div>
@@ -70,6 +71,7 @@ export default function HistoryPanel({
   onLoad,
   onHistoryChange,
 }: HistoryPanelProps) {
+  const { t } = useTranslation();
   const [clearClickCount, setClearClickCount] = useState(0);
 
   if (history.length === 0) return null;
@@ -93,23 +95,23 @@ export default function HistoryPanel({
 
   return (
     <div className="rounded-2xl bg-white shadow-sm border border-gray-100 flex flex-col h-full">
-      {/* 헤더 */}
+      {/* Header */}
       <div className="flex items-center justify-between px-3 py-2.5 border-b border-gray-100 shrink-0">
         <h3 className="text-xs font-semibold text-gray-700">
-          {isAllDefault ? "예시" : `히스토리`}
+          {isAllDefault ? t("history.examples") : t("history.history")}
         </h3>
         {hasUserItems && (
           <button
             onClick={handleClear}
             className="text-gray-300 hover:text-red-500 transition-colors"
-            title={clearClickCount === 1 ? "한번 더 클릭하여 확인" : "전체 삭제"}
+            title={clearClickCount === 1 ? t("history.clearConfirm") : t("history.clearAll")}
           >
             <Trash2 size={13} />
           </button>
         )}
       </div>
 
-      {/* 썸네일 리스트 (세로 스크롤) */}
+      {/* Thumbnail list (vertical scroll) */}
       <div className="flex flex-col items-center gap-2 p-2 overflow-y-auto flex-1 min-h-0">
         {history.map((item) => (
           <HistoryThumbnail
@@ -122,9 +124,9 @@ export default function HistoryPanel({
         ))}
       </div>
 
-      {/* 개수 표시 */}
+      {/* Count */}
       <div className="px-3 py-1.5 border-t border-gray-100 shrink-0">
-        <span className="text-[10px] text-gray-400 block text-center">{history.length}개</span>
+        <span className="text-[10px] text-gray-400 block text-center">{t("history.count", { count: history.length })}</span>
       </div>
     </div>
   );

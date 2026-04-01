@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslation } from "../i18n";
 
 interface ProgressHeaderProps {
   current: number;
@@ -11,16 +12,17 @@ export default function ProgressHeader({
   current,
   total,
 }: ProgressHeaderProps) {
+  const { t } = useTranslation();
   const progress = ((current + 1) / total) * 100;
 
   return (
     <div
       className="flex w-full flex-col items-center gap-3 rounded-b-3xl bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-6 py-6 md:gap-4 md:px-8 md:py-8"
       role="banner"
-      aria-label={`진행률: ${current + 1}/${total} 문항`}
+      aria-label={t("quiz.progressAria", { current: current + 1, total })}
     >
       <p className="font-heading text-sm font-medium text-white/80">
-        질문 {current + 1} / {total}
+        {t("quiz.questionLabel", { current: current + 1, total })}
       </p>
 
       {/* Progress Bar */}
@@ -30,7 +32,7 @@ export default function ProgressHeader({
         aria-valuenow={current + 1}
         aria-valuemin={1}
         aria-valuemax={total}
-        aria-label={`${total}문항 중 ${current + 1}문항 진행 중`}
+        aria-label={t("quiz.progressBarAria", { current: current + 1, total })}
       >
         <motion.div
           className="h-full rounded-full bg-white"

@@ -6,15 +6,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { questions, type OptionScore } from "./lib/questions";
 import { calculateMBTI } from "./lib/calculator";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
 import ProgressHeader from "./components/ProgressHeader";
 import QuestionCard from "./components/QuestionCard";
 import AnswerCard from "./components/AnswerCard";
 import Footer from "./components/Footer";
+import RelatedTools from "./components/RelatedTools";
+import MbtiInfoSection from "./components/MbtiInfoSection";
 
 type Screen = "start" | "quiz";
 
 export default function Home() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [screen, setScreen] = useState<Screen>("start");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<OptionScore[]>([]);
@@ -53,6 +58,9 @@ export default function Home() {
   if (screen === "start") {
     return (
       <div className="flex min-h-dvh flex-col">
+        <div className="flex justify-end px-4 pt-3">
+          <LanguageSwitcher />
+        </div>
         <div className="flex flex-1 flex-col items-center justify-center px-6">
           <motion.div
             className="flex max-w-md flex-col items-center gap-6 text-center"
@@ -71,30 +79,32 @@ export default function Home() {
 
             <div>
               <h1 className="font-heading mb-2 text-3xl font-extrabold text-[var(--mbti-text)] md:text-4xl">
-                16가지 성격 유형 테스트
+                {t("home.title")}
               </h1>
               <p className="text-base text-gray-500">
-                Jung의 심리유형 이론에 기반한 성격 유형 검사
+                {t("home.subtitle")}
               </p>
             </div>
 
             <div className="flex flex-col gap-2 text-sm text-gray-400">
-              <span>16문항 / 약 3분 소요</span>
-              <span className="text-xs text-gray-300">본 검사는 공식 MBTI 검사가 아닌, Jung의 심리유형 이론에 기반한 자체 제작 검사입니다.</span>
+              <span>{t("home.questionCount")}</span>
+              <span className="text-xs text-gray-300">{t("home.disclaimer")}</span>
             </div>
 
             <motion.button
               onClick={handleStart}
-              aria-label="성격 유형 테스트 시작하기"
+              aria-label={t("home.startButtonAria")}
               className="mt-4 flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-10 py-4 text-lg font-semibold text-white shadow-lg"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              테스트 시작하기
+              {t("home.startButton")}
               <ArrowRight className="h-5 w-5" />
             </motion.button>
           </motion.div>
         </div>
+        <MbtiInfoSection />
+        <RelatedTools currentToolId="mbti" />
         <Footer />
       </div>
     );
@@ -120,7 +130,7 @@ export default function Home() {
           >
             <QuestionCard
               questionNumber={question.id}
-              questionText={question.question}
+              questionTextKey={question.questionKey}
             />
           </motion.div>
         </AnimatePresence>
@@ -130,7 +140,7 @@ export default function Home() {
             key={currentQuestion}
             className="grid w-full max-w-[800px] grid-cols-1 gap-3 md:grid-cols-2 md:gap-4"
             role="group"
-            aria-label={`질문 ${question.id}의 답변 선택지`}
+            aria-label={t("quiz.answerGroupAria", { id: question.id })}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -140,7 +150,7 @@ export default function Home() {
               <AnswerCard
                 key={i}
                 emoji={option.emoji}
-                text={option.text}
+                textKey={option.textKey}
                 isSelected={selectedOption === i}
                 isLocked={selectedOption !== null}
                 onClick={() => handleAnswer(i)}

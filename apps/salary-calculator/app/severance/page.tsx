@@ -10,6 +10,8 @@ import {
   calculateSeverance,
   type SeveranceResult,
 } from "../lib/severance";
+import { useTranslation } from "../i18n";
+import LanguageSwitcher from "../i18n/LanguageSwitcher";
 
 function parseNumber(value: string): number {
   const raw = value.replace(/,/g, "");
@@ -19,19 +21,6 @@ function parseNumber(value: string): number {
 
 function formatCurrency(amount: number): string {
   return Math.round(amount).toLocaleString("ko-KR");
-}
-
-function formatWorkingPeriod(days: number): string {
-  const years = Math.floor(days / 365);
-  const remainDays = days % 365;
-  const months = Math.floor(remainDays / 30);
-  const d = remainDays % 30;
-
-  const parts: string[] = [];
-  if (years > 0) parts.push(`${years}년`);
-  if (months > 0) parts.push(`${months}개월`);
-  if (d > 0) parts.push(`${d}일`);
-  return parts.length > 0 ? parts.join(" ") : "0일";
 }
 
 function getDefaultStartDate(): string {
@@ -45,6 +34,7 @@ function getDefaultEndDate(): string {
 }
 
 export default function SeverancePage() {
+  const { t } = useTranslation();
   const [startDate, setStartDate] = useState(getDefaultStartDate());
   const [endDate, setEndDate] = useState(getDefaultEndDate());
   const [recentSalary, setRecentSalary] = useState("9,000,000");
@@ -55,21 +45,34 @@ export default function SeverancePage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resultRef = useRef<HTMLElement>(null);
 
+  const formatWorkingPeriod = useCallback((days: number): string => {
+    const years = Math.floor(days / 365);
+    const remainDays = days % 365;
+    const months = Math.floor(remainDays / 30);
+    const d = remainDays % 30;
+
+    const parts: string[] = [];
+    if (years > 0) parts.push(t("workingPeriod.years", { n: years }));
+    if (months > 0) parts.push(t("workingPeriod.months", { n: months }));
+    if (d > 0) parts.push(t("workingPeriod.days", { n: d }));
+    return parts.length > 0 ? parts.join(" ") : t("workingPeriod.zeroDays");
+  }, [t]);
+
   const validate = useCallback((): string | null => {
-    if (!startDate) return "입사일을 입력해 주세요";
-    if (!endDate) return "퇴사일을 입력해 주세요";
+    if (!startDate) return t("severanceValidation.enterStartDate");
+    if (!endDate) return t("severanceValidation.enterEndDate");
     const start = new Date(startDate);
     const end = new Date(endDate);
-    if (end <= start) return "퇴사일은 입사일 이후여야 합니다";
+    if (end <= start) return t("severanceValidation.endAfterStart");
     const diffDays = Math.floor(
       (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
     );
     if (diffDays < 365)
-      return "퇴직금은 1년 이상 근무한 경우에 발생합니다";
+      return t("severanceValidation.minOneYear");
     const salary = parseNumber(recentSalary);
-    if (salary <= 0) return "최근 3개월 급여 총액을 입력해 주세요";
+    if (salary <= 0) return t("severanceValidation.enterRecentSalary");
     return null;
-  }, [startDate, endDate, recentSalary]);
+  }, [startDate, endDate, recentSalary, t]);
 
   const compute = useCallback(() => {
     const msg = validate();
@@ -104,9 +107,8 @@ export default function SeverancePage() {
   }, [compute]);
 
   useEffect(() => {
-    document.title =
-      "퇴직금 계산기 2026 | 퇴직소득세 자동 계산 - 연봉계산기";
-  }, []);
+    document.title = t("severance.title") + " 2026";
+  }, [t]);
 
   const handleCalculate = () => {
     compute();
@@ -156,36 +158,34 @@ export default function SeverancePage() {
         <button
           onClick={handleBackClick}
           className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-100"
-          aria-label="맨 위로 이동"
+          aria-label={t("common.backToTop")}
         >
           <ChevronLeft className="h-5 w-5 text-[var(--salary-text)]" />
         </button>
         <span className="font-[family-name:var(--font-space-grotesk-var)] text-base font-bold text-[var(--salary-primary)]">
-          퇴직금계산기
+          {t("severance.mobileTitle")}
         </span>
-        <div className="h-9 w-9" />
+        <LanguageSwitcher />
       </div>
 
       <div className="flex min-h-[calc(100vh-64px)] flex-col md:flex-row">
-        {/* 입력 패널 */}
         <section
           className="w-full shrink-0 border-b border-[var(--salary-border)] bg-white p-6 md:w-[480px] md:border-b-0 md:border-r md:p-8"
-          aria-label="퇴직금 정보 입력"
+          aria-label={t("severance.inputSection")}
         >
           <div className="mb-6">
             <h1 className="text-[22px] font-bold text-[var(--salary-text)]">
-              퇴직금 계산
+              {t("severance.title")}
             </h1>
             <p className="mt-1 text-sm text-slate-500">
-              근무 정보를 입력하면 퇴직금 실수령액을 계산해 드립니다
+              {t("severance.desc")}
             </p>
           </div>
 
           <div className="flex flex-col gap-4">
-            {/* 입사일 */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-[var(--salary-text)]">
-                입사일
+                {t("severance.startDate")}
               </label>
               <input
                 type="date"
@@ -195,10 +195,9 @@ export default function SeverancePage() {
               />
             </div>
 
-            {/* 퇴사일 */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-[var(--salary-text)]">
-                퇴사일
+                {t("severance.endDate")}
               </label>
               <input
                 type="date"
@@ -208,25 +207,22 @@ export default function SeverancePage() {
               />
             </div>
 
-            {/* 최근 3개월 급여 총액 */}
             <InputField
-              label="최근 3개월 급여 총액 (원)"
+              label={t("severance.recentSalary")}
               value={recentSalary}
               placeholder="9,000,000"
               onChange={setRecentSalary}
             />
 
-            {/* 연간 상여금 */}
             <InputField
-              label="연간 상여금 (원)"
+              label={t("severance.annualBonus")}
               value={annualBonus}
               placeholder="0"
               onChange={setAnnualBonus}
             />
 
-            {/* 연차수당 */}
             <InputField
-              label="연차수당 (원)"
+              label={t("severance.leaveAllowance")}
               value={leaveAllowance}
               placeholder="0"
               onChange={setLeaveAllowance}
@@ -241,146 +237,138 @@ export default function SeverancePage() {
             onClick={handleCalculate}
             className="mt-6 h-12 w-full rounded-lg bg-[var(--salary-primary)] text-sm font-semibold text-white transition-colors hover:bg-blue-700"
           >
-            퇴직금 계산하기
+            {t("severance.calculateBtn")}
           </button>
 
-          {/* 안내 */}
           <div className="mt-4 rounded-lg bg-blue-50 p-3">
             <p className="text-xs leading-relaxed text-blue-700">
-              <strong>최근 3개월 급여 총액</strong>은 퇴직 전 3개월간 받은
-              기본급 + 각종 수당의 합계입니다. 월급이 300만원이라면 약
-              900만원을 입력하세요.
+              <strong>{t("severance.salaryHintLabel")}</strong>
+              {" "}{t("severance.salaryHint")}
             </p>
           </div>
         </section>
 
-        {/* 결과 패널 */}
         <section
           ref={resultRef}
           className="flex-1 overflow-y-auto p-4 pb-20 md:p-8 md:pb-8"
-          aria-label="퇴직금 계산 결과"
+          aria-label={t("severance.resultSection")}
         >
           <div className="mx-auto flex max-w-xl flex-col gap-5">
-            {/* 히어로 카드: 퇴직금 실수령액 */}
             <div className="rounded-xl bg-[var(--salary-primary)] p-6">
               <div className="flex items-start justify-between">
-                <p className="text-sm text-white/80">퇴직금 실수령액</p>
+                <p className="text-sm text-white/80">{t("severance.netSeverancePay")}</p>
                 <Briefcase className="h-5 w-5 text-white/40" />
               </div>
               <p className="mt-2 font-[family-name:var(--font-space-grotesk-var)] text-[32px] font-bold leading-tight text-white md:text-[40px]">
                 {result ? formatCurrency(result.netSeverancePay) : "0"}
                 <span className="ml-1 text-lg font-normal text-white/80">
-                  원
+                  {t("common.won")}
                 </span>
               </p>
               {result && result.severancePay > 0 && (
                 <div className="mt-3 flex items-center gap-3">
                   <span className="text-sm text-white/70">
-                    퇴직금 총액{" "}
-                    {formatCurrency(result.severancePay)}원
+                    {t("severance.grossSeverancePay", { amount: formatCurrency(result.severancePay) })}
                   </span>
                   <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium text-white">
-                    세금{" "}
-                    {result.severancePay > 0
-                      ? (
-                          (result.totalTax / result.severancePay) *
-                          100
-                        ).toFixed(1)
-                      : "0"}
-                    %
+                    {t("severance.taxRate", {
+                      rate: result.severancePay > 0
+                        ? ((result.totalTax / result.severancePay) * 100).toFixed(1)
+                        : "0",
+                    })}
                   </span>
                 </div>
               )}
             </div>
 
-            {/* 근속기간 카드 */}
             {result && result.workingDays > 0 && (
               <div className="rounded-xl border border-[var(--salary-border)] bg-white p-6">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-[var(--salary-primary)]" />
                   <h3 className="text-sm font-semibold text-[var(--salary-text)]">
-                    근속기간
+                    {t("severance.workingPeriod")}
                   </h3>
                 </div>
                 <p className="mt-3 font-[family-name:var(--font-space-grotesk-var)] text-xl font-bold text-[var(--salary-text)]">
                   {formatWorkingPeriod(result.workingDays)}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
-                  총 {formatCurrency(result.workingDays)}일 (근속연수{" "}
-                  {result.workingYears}년)
+                  {t("severance.totalDays", {
+                    days: formatCurrency(result.workingDays),
+                    years: result.workingYears,
+                  })}
                 </p>
               </div>
             )}
 
-            {/* 퇴직금 상세 */}
             {result && result.severancePay > 0 && (
               <div className="rounded-xl border border-[var(--salary-border)] bg-white p-6">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-[var(--salary-primary)]" />
                   <h3 className="text-sm font-semibold text-[var(--salary-text)]">
-                    퇴직금 산정 내역
+                    {t("severance.calculationDetail")}
                   </h3>
                 </div>
                 <div className="mt-4 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] text-slate-500">
-                      1일 평균임금
+                      {t("severance.dailyAvgWage")}
                     </span>
                     <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-medium text-[var(--salary-text)]">
-                      {formatCurrency(result.dailyAvgWage)}원
+                      {formatCurrency(result.dailyAvgWage)}{t("common.won")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] text-slate-500">
-                      퇴직금 총액
+                      {t("severance.severanceTotal")}
                     </span>
                     <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-medium text-[var(--salary-text)]">
-                      {formatCurrency(result.severancePay)}원
+                      {formatCurrency(result.severancePay)}{t("common.won")}
                     </span>
                   </div>
                   <div className="border-t border-[var(--salary-border)] pt-3">
                     <p className="mb-2 text-xs font-medium text-slate-400">
-                      퇴직소득세 계산
+                      {t("severance.severanceTaxCalc")}
                     </p>
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
                         <span className="text-[13px] text-slate-500">
-                          근속연수공제
+                          {t("severance.servicePeriodDeduction")}
                         </span>
                         <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] text-slate-500">
-                          {formatCurrency(result.servicePeriodDeduction)}원
+                          {formatCurrency(result.servicePeriodDeduction)}{t("common.won")}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-[13px] text-slate-500">
-                          환산급여
+                          {t("severance.convertedSalary")}
                         </span>
                         <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] text-slate-500">
-                          {formatCurrency(result.convertedSalary)}원
+                          {formatCurrency(result.convertedSalary)}{t("common.won")}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-[13px] text-slate-500">
-                          환산급여공제
+                          {t("severance.convertedSalaryDeduction")}
                         </span>
                         <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] text-slate-500">
-                          {formatCurrency(result.convertedSalaryDeduction)}원
+                          {formatCurrency(result.convertedSalaryDeduction)}{t("common.won")}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-[13px] text-slate-500">
-                          과세표준
+                          {t("severance.taxBase")}
                         </span>
                         <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] text-slate-500">
-                          {formatCurrency(result.taxBase)}원
+                          {formatCurrency(result.taxBase)}{t("common.won")}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-[13px] text-slate-500">
-                          환산산출세액
+                          {t("severance.convertedTax")}
                         </span>
                         <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] text-slate-500">
-                          {formatCurrency(result.convertedTax)}원
+                          {formatCurrency(result.convertedTax)}{t("common.won")}
                         </span>
                       </div>
                     </div>
@@ -389,43 +377,42 @@ export default function SeverancePage() {
               </div>
             )}
 
-            {/* 공제 상세 카드 */}
             {result && result.severancePay > 0 && (
               <div className="rounded-xl border border-[var(--salary-border)] bg-white p-6">
                 <h3 className="text-sm font-semibold text-[var(--salary-text)]">
-                  세금 공제 내역
+                  {t("severance.taxDeductionDetail")}
                 </h3>
                 <div className="mt-4 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] text-slate-500">
-                      퇴직소득세
+                      {t("severance.severanceTax")}
                     </span>
                     <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-medium text-red-500">
-                      -{formatCurrency(result.severanceTax)}원
+                      -{formatCurrency(result.severanceTax)}{t("common.won")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] text-slate-500">
-                      지방소득세
+                      {t("severance.localTax")}
                     </span>
                     <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-medium text-red-500">
-                      -{formatCurrency(result.localTax)}원
+                      -{formatCurrency(result.localTax)}{t("common.won")}
                     </span>
                   </div>
                   <div className="mt-1 flex items-center justify-between border-t border-[var(--salary-border)] pt-3">
                     <span className="text-[13px] font-semibold text-[var(--salary-text)]">
-                      총 공제액
+                      {t("severance.totalTaxDeduction")}
                     </span>
                     <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-bold text-red-500">
-                      -{formatCurrency(result.totalTax)}원
+                      -{formatCurrency(result.totalTax)}{t("common.won")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] font-semibold text-[var(--salary-primary)]">
-                      실수령액
+                      {t("severance.netAmount")}
                     </span>
                     <span className="font-[family-name:var(--font-space-grotesk-var)] text-[13px] font-bold text-[var(--salary-primary)]">
-                      {formatCurrency(result.netSeverancePay)}원
+                      {formatCurrency(result.netSeverancePay)}{t("common.won")}
                     </span>
                   </div>
                 </div>
@@ -433,10 +420,7 @@ export default function SeverancePage() {
             )}
 
             <p className="mt-6 text-xs leading-relaxed text-slate-400">
-              본 계산 결과는 2026년 퇴직소득세 기준 참고용이며, 법적 효력이
-              없습니다. 실제 퇴직금은 회사의 퇴직급여 규정, 퇴직연금 가입
-              여부 등에 따라 달라질 수 있으므로, 정확한 계산은 회사 인사부서
-              또는 세무 전문가에게 문의하시기 바랍니다.
+              {t("severance.disclaimer")}
             </p>
           </div>
         </section>

@@ -255,17 +255,40 @@ export function highlightMatches(
   return segments;
 }
 
-// ─── 정규식 예제 ──────────────────────────────────
+// ─── 정규식 예제 (locale-aware) ──────────────────────
 
-export const REGEX_EXAMPLES = [
-  { name: "이메일", pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", flags: "g" },
-  { name: "전화번호 (한국)", pattern: "0\\d{1,2}-\\d{3,4}-\\d{4}", flags: "g" },
-  { name: "URL", pattern: "https?://[\\w\\-]+(\\.[\\w\\-]+)+[\\w\\-.,@?^=%&:/~+#]*", flags: "g" },
-  { name: "IPv4", pattern: "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b", flags: "g" },
-  { name: "HTML 태그", pattern: "<[^>]+>", flags: "g" },
-  { name: "숫자만", pattern: "\\d+", flags: "g" },
-  { name: "한글만", pattern: "[가-힣]+", flags: "g" },
+export interface RegexExample {
+  nameKey: string;
+  pattern: string;
+  flags: string;
+}
+
+const REGEX_EXAMPLES_KO: RegexExample[] = [
+  { nameKey: "regex.examples.email", pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", flags: "g" },
+  { nameKey: "regex.examples.phone", pattern: "0\\d{1,2}-\\d{3,4}-\\d{4}", flags: "g" },
+  { nameKey: "regex.examples.url", pattern: "https?://[\\w\\-]+(\\.[\\w\\-]+)+[\\w\\-.,@?^=%&:/~+#]*", flags: "g" },
+  { nameKey: "regex.examples.ipv4", pattern: "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b", flags: "g" },
+  { nameKey: "regex.examples.htmlTag", pattern: "<[^>]+>", flags: "g" },
+  { nameKey: "regex.examples.numbersOnly", pattern: "\\d+", flags: "g" },
+  { nameKey: "regex.examples.koreanOnly", pattern: "[가-힣]+", flags: "g" },
 ];
+
+const REGEX_EXAMPLES_EN: RegexExample[] = [
+  { nameKey: "regex.examples.email", pattern: "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", flags: "g" },
+  { nameKey: "regex.examples.phone", pattern: "\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}", flags: "g" },
+  { nameKey: "regex.examples.url", pattern: "https?://[\\w\\-]+(\\.[\\w\\-]+)+[\\w\\-.,@?^=%&:/~+#]*", flags: "g" },
+  { nameKey: "regex.examples.ipv4", pattern: "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b", flags: "g" },
+  { nameKey: "regex.examples.htmlTag", pattern: "<[^>]+>", flags: "g" },
+  { nameKey: "regex.examples.numbersOnly", pattern: "\\d+", flags: "g" },
+  { nameKey: "regex.examples.koreanOnly", pattern: "[가-힣]+", flags: "g" },
+];
+
+export function getRegexExamples(locale: string): RegexExample[] {
+  return locale === "en" ? REGEX_EXAMPLES_EN : REGEX_EXAMPLES_KO;
+}
+
+// Keep backward-compatible export (defaults to Korean)
+export const REGEX_EXAMPLES = REGEX_EXAMPLES_KO;
 
 // ─── Lorem Ipsum 생성기 ────────────────────────────
 

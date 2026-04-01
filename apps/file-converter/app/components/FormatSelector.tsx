@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { FORMAT_OPTIONS } from "../lib/fileUtils";
+import { useTranslation } from "../i18n";
 
 interface FormatSelectorProps {
   fromFormat: string;
@@ -20,6 +21,8 @@ export default function FormatSelector({
   onConvert,
   isConverting,
 }: FormatSelectorProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-end gap-3 md:gap-4">
@@ -57,7 +60,7 @@ export default function FormatSelector({
           disabled={isConverting}
           className="hidden md:block rounded-lg bg-[var(--file-primary)] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0A5A5A] disabled:opacity-50"
         >
-          {isConverting ? "변환 중..." : "변환하기"}
+          {isConverting ? t("format.converting") : t("format.convert")}
         </button>
       </div>
       <button
@@ -65,7 +68,7 @@ export default function FormatSelector({
         disabled={isConverting}
         className="md:hidden w-full rounded-lg bg-[var(--file-primary)] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0A5A5A] disabled:opacity-50"
       >
-        {isConverting ? "변환 중..." : "변환하기"}
+        {isConverting ? t("format.converting") : t("format.convert")}
       </button>
     </div>
   );

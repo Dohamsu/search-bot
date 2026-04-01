@@ -80,7 +80,7 @@ export function convertToAll(
 /**
  * Format a number for display with appropriate precision.
  */
-export function formatNumber(num: number): string {
+export function formatNumber(num: number, locale: string = "ko-KR"): string {
   if (num === 0) return "0";
 
   const abs = Math.abs(num);
@@ -92,19 +92,19 @@ export function formatNumber(num: number): string {
 
   if (abs >= 1000) {
     // Show with commas, up to 4 decimal places
-    return Number(num.toFixed(4)).toLocaleString("ko-KR", {
+    return Number(num.toFixed(4)).toLocaleString(locale, {
       maximumFractionDigits: 4,
     });
   }
 
   if (abs >= 1) {
-    return Number(num.toFixed(6)).toLocaleString("ko-KR", {
+    return Number(num.toFixed(6)).toLocaleString(locale, {
       maximumFractionDigits: 6,
     });
   }
 
   if (abs >= 0.0001) {
-    return Number(num.toFixed(8)).toLocaleString("ko-KR", {
+    return Number(num.toFixed(8)).toLocaleString(locale, {
       maximumFractionDigits: 8,
     });
   }

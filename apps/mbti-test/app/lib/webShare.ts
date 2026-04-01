@@ -10,10 +10,9 @@ interface ShareResult {
 }
 
 /**
- * navigator.share() 래핑, 클립보드 fallback
+ * navigator.share() wrapper with clipboard fallback
  */
 export async function shareResult(options: ShareOptions): Promise<ShareResult> {
-  // 1. Web Share API 지원 시 시도
   if (typeof navigator !== "undefined" && navigator.share) {
     try {
       await navigator.share({
@@ -23,25 +22,21 @@ export async function shareResult(options: ShareOptions): Promise<ShareResult> {
       });
       return { success: true, method: "webshare" };
     } catch (e) {
-      // 사용자가 공유를 취소한 경우
       if (e instanceof Error && e.name === "AbortError") {
         return { success: false, method: "none" };
       }
-      // 다른 에러 → 클립보드 fallback
     }
   }
 
-  // 2. 클립보드 API fallback
   if (typeof navigator !== "undefined" && navigator.clipboard) {
     try {
       await navigator.clipboard.writeText(options.url);
       return { success: true, method: "clipboard" };
     } catch {
-      // 클립보드 API 실패 → execCommand fallback
+      // clipboard API failed -> execCommand fallback
     }
   }
 
-  // 3. execCommand fallback
   if (typeof document !== "undefined") {
     try {
       const textarea = document.createElement("textarea");
@@ -54,7 +49,7 @@ export async function shareResult(options: ShareOptions): Promise<ShareResult> {
       document.body.removeChild(textarea);
       return { success: true, method: "clipboard" };
     } catch {
-      // 모든 방법 실패
+      // all methods failed
     }
   }
 
@@ -62,7 +57,7 @@ export async function shareResult(options: ShareOptions): Promise<ShareResult> {
 }
 
 /**
- * MBTI 결과 공유용 헬퍼
+ * MBTI result share helper
  */
 export async function shareMBTIResult(
   type: string,
@@ -74,14 +69,14 @@ export async function shareMBTIResult(
       : "";
 
   return shareResult({
-    title: `나의 MBTI는 ${type}! - ${title}`,
-    text: `${type} 유형의 성격을 확인해보세요!`,
+    title,
+    text: title,
     url,
   });
 }
 
 /**
- * 궁합 결과 공유용 헬퍼
+ * Compatibility result share helper
  */
 export async function shareCompatibility(
   type1: string,
@@ -95,8 +90,8 @@ export async function shareCompatibility(
       : "";
 
   return shareResult({
-    title: `${type1} x ${type2} MBTI 궁합 결과`,
-    text: `우리의 궁합을 확인해보세요! ${title}`,
+    title,
+    text: title,
     url,
   });
 }

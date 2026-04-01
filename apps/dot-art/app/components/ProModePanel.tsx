@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Sparkles, Loader2, Info, Timer, Zap, Crown, Rocket } from "lucide-react";
 import { DotGrid } from "../lib/dotArt";
 import { generateWithDalle, MODEL_OPTIONS, ModelOption, COOLDOWN_MS, getRecommendedModel, getMaxModelIndex } from "../lib/proMode";
+import { useTranslation } from "../i18n";
 
 const COOLDOWN_STORAGE_KEY = "dot-art-pro-last-gen";
 
@@ -35,13 +36,25 @@ function formatTime(ms: number): string {
 }
 
 export default function ProModePanel({ gridSize, onGenerate, onError }: ProModePanelProps) {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<ModelOption>(() => getRecommendedModel(gridSize));
   const [cooldown, setCooldown] = useState(0);
   const maxModelIdx = getMaxModelIndex(gridSize);
 
-  // 그리드 크기 변경 시 추천 모델로 자동 전환
+  const modelLabelMap: Record<string, string> = {
+    "d2-256": t("modelOptions.fast"),
+    "d2-512": t("modelOptions.balanced"),
+    "d3-1024": t("modelOptions.highQuality"),
+  };
+
+  const modelDescMap: Record<string, string> = {
+    "d2-256": t("modelOptions.fastDesc"),
+    "d2-512": t("modelOptions.balancedDesc"),
+    "d3-1024": t("modelOptions.highQualityDesc"),
+  };
+
   useEffect(() => {
     const recommended = getRecommendedModel(gridSize);
     const currentIdx = MODEL_OPTIONS.findIndex(m => m.id === selectedModel.id);
@@ -51,7 +64,6 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
     }
   }, [gridSize, selectedModel.id]);
 
-  // 쿨다운 타이머
   useEffect(() => {
     setCooldown(getRemainingCooldown());
     const interval = setInterval(() => {
@@ -76,11 +88,11 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
-      onError("프롬프트를 입력해주세요");
+      onError(t("proMode.enterPrompt"));
       return;
     }
     if (isCoolingDown) {
-      onError(`${formatTime(cooldown)} 후에 다시 시도해주세요`);
+      onError(t("proMode.retryCooldown", { time: formatTime(cooldown) }));
       return;
     }
 
@@ -90,7 +102,7 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
       onGenerate(result);
       startCooldown();
     } catch (err) {
-      onError(err instanceof Error ? err.message : "생성 실패");
+      onError(err instanceof Error ? err.message : t("proMode.generateFail"));
     } finally {
       setLoading(false);
     }
@@ -100,22 +112,22 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
     <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 space-y-5">
       <div className="flex items-center gap-2">
         <Sparkles size={20} className="text-indigo-500" />
-        <h2 className="text-base font-semibold text-gray-900">Pro 모드 (AI 생성)</h2>
+        <h2 className="text-base font-semibold text-gray-900">{t("proMode.title")}</h2>
       </div>
 
       <div className="rounded-xl bg-indigo-50 border border-indigo-200 p-4 text-sm text-indigo-800 flex gap-3">
         <Info size={18} className="flex-shrink-0 mt-0.5" />
         <div>
-          <p className="font-medium">AI가 이미지를 생성하고 자동으로 도트 아트로 변환합니다</p>
+          <p className="font-medium">{t("proMode.infoTitle")}</p>
           <p className="mt-1 text-xs text-indigo-600">
-            생성 후 5분간 재요청이 제한됩니다.
+            {t("proMode.infoSub")}
           </p>
         </div>
       </div>
 
-      {/* 모델 선택 */}
+      {/* Model Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">AI 모델 선택</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("proMode.modelSelect")}</label>
         <div className="grid grid-cols-3 gap-2">
           {MODEL_OPTIONS.map((opt, idx) => {
             const Icon = MODEL_ICONS[opt.id] || Zap;
@@ -135,42 +147,39 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
                 }`}
               >
                 <Icon size={18} />
-                <span className="font-semibold">{opt.label}</span>
+                <span className="font-semibold">{modelLabelMap[opt.id] ?? opt.label}</span>
                 <span className={`text-[10px] ${disabled ? "text-gray-300" : active ? "text-indigo-500" : "text-gray-400"}`}>
-                  {opt.price}/회
+                  {opt.price}{t("proMode.perUse")}
                 </span>
               </button>
             );
           })}
         </div>
-        <p className="mt-1.5 text-xs text-gray-400">{selectedModel.description}</p>
+        <p className="mt-1.5 text-xs text-gray-400">{modelDescMap[selectedModel.id] ?? selectedModel.description}</p>
         {maxModelIdx < 2 && (
           <p className="text-xs text-amber-600">
-            {gridSize}x{gridSize} 그리드에서는 저해상도 모델이 더 깨끗한 결과를 제공합니다
+            {t("proMode.gridLowResHint", { size: gridSize })}
           </p>
         )}
       </div>
 
-      {/* 프롬프트 */}
+      {/* Prompt */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">프롬프트</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("proMode.prompt")}</label>
         <input
           type="text"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !loading && !isCoolingDown && handleGenerate()}
-          placeholder="예: 귀여운 고양이, a cute dragon"
+          placeholder={t("proMode.promptPlaceholder")}
           className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
         <p className="mt-1.5 text-xs text-gray-400">
-          한국어·영어 모두 입력 가능합니다 (한국어는 자동 번역)
+          {t("proMode.promptHint")}
         </p>
       </div>
 
-      {/* 광고 슬롯 (추후 활성화) */}
-      {/* <div id="dot-art-pro-ad-slot" className="min-h-[100px] bg-gray-50 rounded-xl flex items-center justify-center text-xs text-gray-300">광고 영역</div> */}
-
-      {/* 생성 버튼 */}
+      {/* Generate Button */}
       <button
         onClick={handleGenerate}
         disabled={loading || isCoolingDown}
@@ -179,17 +188,17 @@ export default function ProModePanel({ gridSize, onGenerate, onError }: ProModeP
         {loading ? (
           <>
             <Loader2 size={18} className="animate-spin" />
-            AI 생성 중... ({selectedModel.label})
+            {t("proMode.generating", { model: modelLabelMap[selectedModel.id] ?? selectedModel.label })}
           </>
         ) : isCoolingDown ? (
           <>
             <Timer size={18} />
-            {formatTime(cooldown)} 후 생성 가능
+            {t("proMode.cooldown", { time: formatTime(cooldown) })}
           </>
         ) : (
           <>
             <Sparkles size={18} />
-            AI 도트 아트 생성
+            {t("proMode.generate")}
           </>
         )}
       </button>

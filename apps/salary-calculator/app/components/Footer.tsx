@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "../i18n";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="border-t border-[var(--salary-border)] bg-slate-50 py-4">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
@@ -10,13 +15,13 @@ export default function Footer() {
               href="/privacy"
               className="underline transition-colors hover:text-[var(--salary-primary)]"
             >
-              개인정보처리방침
+              {t("footer.privacy")}
             </Link>
             <Link
               href="/terms"
               className="underline transition-colors hover:text-[var(--salary-primary)]"
             >
-              이용약관
+              {t("footer.terms")}
             </Link>
           </div>
           <span className="hidden md:inline text-slate-300">|</span>
@@ -27,7 +32,7 @@ export default function Footer() {
             rlawlsdnjswk@gmail.com
           </a>
           <span className="hidden md:inline text-slate-300">|</span>
-          <span>© 2026 연봉계산기</span>
+          <span>{t("footer.copyright")}</span>
         </div>
       </div>
     </footer>

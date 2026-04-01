@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "title": "Color Tools | Color Picker, Palette Generator, HEX<->RGB Converter",
+    "description": "Free color tools including color picker, palette generator, HEX/RGB/HSL converter, contrast checker, and gradient generator for designers.",
+    "siteName": "Color Tools"
+  },
+  "header": {
+    "title": "Color Tools",
+    "subtitle": "Color Picker · Palette Generator · Contrast Checker · Gradient · Color Extraction"
+  },
+  "tabs": {
+    "picker": "Color Picker",
+    "palette": "Palette",
+    "contrast": "Contrast",
+    "gradient": "Gradient",
+    "extract": "Extract"
+  },
+  "common": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "delete": "Delete",
+    "random": "Random"
+  },
+  "picker": {
+    "nativePicker": "Native Picker"
+  },
+  "palette": {
+    "baseColor": "Base Color",
+    "analogous": "Analogous",
+    "complementary": "Complementary",
+    "triadic": "Triadic",
+    "split": "Split Comp.",
+    "monochromatic": "Monochromatic"
+  },
+  "contrast": {
+    "foreground": "Foreground (Text)",
+    "background": "Background",
+    "ratio": "Contrast Ratio",
+    "ratioValue": "Contrast Ratio {value}:1",
+    "previewLarge": "Large Text Preview (24px)",
+    "previewNormal": "Normal text preview (16px) - The quick brown fox jumps over the lazy dog 0123456789",
+    "aaNormal": "AA Normal Text (4.5:1)",
+    "aaaNormal": "AAA Normal Text (7:1)",
+    "aaLarge": "AA Large Text (3:1)"
+  },
+  "gradient": {
+    "horizontal": "Horizontal →",
+    "vertical": "Vertical ↓",
+    "diagonal": "Diagonal ↘",
+    "radial": "Radial",
+    "addStop": "Add Color Stop"
+  },
+  "extract": {
+    "uploadedImage": "Uploaded image",
+    "dropzone": "Drag & drop an image or click to upload",
+    "formats": "PNG, JPG, WEBP",
+    "extractedColors": "Extracted Colors ({count})"
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "Color Tools"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastModified": "Last modified: January 1, 2026",
+    "section1Title": "1. Service Overview",
+    "section1Content": "\"Color Tools\" (hereinafter \"Service\") is a free online tool that provides color conversion, palette generation, contrast checking, and more. The Service processes personal information to a minimum and manages it in accordance with the following policy.",
+    "section2Title": "2. Personal Information Collected",
+    "section2Content1": "The Service does not require registration, and data entered by users is processed only within the browser and is not stored on any server.",
+    "section2Content2": "However, for service improvement and usage statistics analysis, the following visit data may be automatically collected through Google Analytics.",
+    "section2Item1": "Visited page URL, access time",
+    "section2Item2": "Browser type, operating system, screen resolution",
+    "section2Item3": "Approximate access location (IP-based, anonymized)",
+    "section2Item4": "Page dwell time, navigation path",
+    "section3Title": "3. Purpose of Collection",
+    "section3Item1": "Understanding service usage and statistical analysis",
+    "section3Item2": "Improving service quality and user experience",
+    "section3Item3": "Error detection and technical problem resolution",
+    "section4Title": "4. Retention Period",
+    "section4Content": "Data collected through Google Analytics is processed in accordance with Google's data retention policy, with a default retention period of 14 months. The Service operator does not maintain a separate personal information database.",
+    "section5Title": "5. Google Analytics Disclosure",
+    "section5Content": "The Service uses Google Analytics, a web analytics service provided by Google Inc. Google Analytics uses cookies to collect website usage information, and the collected information is transmitted to and stored on Google servers. For more details, please refer to the ",
+    "section5Link": "Google Privacy Policy",
+    "section5Suffix": ".",
+    "section6Title": "6. Cookie Usage Notice",
+    "section6Content": "The Service may use cookies for the operation of Google Analytics and Google AdSense. Cookies are small data files stored in the user's browser, used for service usage analysis and personalized advertising. Users can refuse cookie storage through browser settings, but some features may be limited in this case.",
+    "section7Title": "7. Contact",
+    "section7Content": "For inquiries regarding the processing of personal information, please contact us at the email below.",
+    "email": "Email: ",
+    "backToMain": "Back to main"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastModified": "Last modified: January 1, 2026",
+    "article1Title": "Article 1 (Purpose)",
+    "article1Content": "These terms and conditions aim to establish matters regarding the conditions and procedures for using \"Color Tools\" (hereinafter \"Service\"). The Service provides users with free online tools including color conversion, palette generation, and contrast checking.",
+    "article2Title": "Article 2 (Nature of Service)",
+    "article2Content": "All results provided by the Service are for reference purposes only and do not replace professional consultation. Data entered by users is processed only within the browser and is not stored on any server.",
+    "article3Title": "Article 3 (Disclaimer)",
+    "article3Item1": "Results provided by the Service are for reference only, and their accuracy or completeness is not guaranteed.",
+    "article3Item2": "Color conversion results may differ from actual colors depending on monitor settings and other factors.",
+    "article3Item3": "The Service operator is not responsible for any direct or indirect damages arising from the use of the Service.",
+    "article4Title": "Article 4 (Intellectual Property)",
+    "article4Content": "Intellectual property rights for all content included in the Service (design, text, source code, logos, etc.) belong to the Service operator. Users may not reproduce, distribute, modify, or commercially use such content without prior written consent from the Service operator.",
+    "article5Title": "Article 5 (Service Changes and Suspension)",
+    "article5Content": "The Service operator may change or suspend all or part of the Service as necessary for operational or technical reasons. The Service operator has no obligation to compensate for user damages resulting from service changes or suspension.",
+    "article6Title": "Article 6 (Advertising)",
+    "article6Content": "The Service may include advertisements such as Google AdSense to cover operational costs. Transactions resulting from advertisements are matters between the user and the advertiser, and the Service operator is not responsible for them.",
+    "article7Title": "Article 7 (Changes to Terms)",
+    "article7Content": "The Service operator may change these terms within the scope that does not violate relevant laws, and the changed terms take effect upon notification within the Service.",
+    "article8Title": "Article 8 (Contact)",
+    "article8Content": "For inquiries regarding these terms, please contact us at the email below.",
+    "email": "Email: ",
+    "backToMain": "Back to main"
+  }
+}

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { LocaleProvider } from "./i18n";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const SITE_URL = "https://file.onekit.co.kr";
@@ -179,7 +181,7 @@ export default function RootLayout({
         )}
       </head>
       <body className={`${inter.variable} antialiased font-inter`}>
-        {children}
+        <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>
   );

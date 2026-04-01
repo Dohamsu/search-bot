@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Download, MessageCircle, Link2 } from 'lucide-react';
 import { generateQRSvg, type QROptions } from '../lib/qr';
 import { initKakao, shareViaKakao } from '../lib/kakaoShare';
+import { useTranslation } from '../i18n';
 
 interface QRPreviewProps {
   qrDataUrl: string | null;
@@ -14,6 +15,7 @@ interface QRPreviewProps {
 }
 
 export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions, onToast }: QRPreviewProps) {
+  const { t } = useTranslation();
   const [downloadFormat, setDownloadFormat] = useState<'png' | 'svg'>('png');
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
         link.click();
         URL.revokeObjectURL(url);
       } catch {
-        onToast?.('SVG 다운로드에 실패했습니다');
+        onToast?.(t('toast.svgFailed'));
       }
     } else {
       const link = document.createElement('a');
@@ -50,18 +52,15 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
     const result = await shareViaKakao({
       qrTypeName: getQrTypeName(),
       inputSummary: inputValue ? truncate(inputValue, 40) : undefined,
+      t,
     });
 
     if (result.success) {
       if (result.method === 'clipboard') {
-        onToast?.('카카오톡 공유를 사용할 수 없어 링크가 클립보드에 복사되었습니다');
-      } else if (result.method === 'kakao') {
-        // 카카오톡 공유 성공 - 별도 토스트 불필요
-      } else if (result.method === 'webshare') {
-        // Web Share API 성공 - 별도 토스트 불필요
+        onToast?.(t('toast.kakaoFallback'));
       }
     } else {
-      onToast?.('공유에 실패했습니다');
+      onToast?.(t('toast.shareFailed'));
     }
   };
 
@@ -69,30 +68,29 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
     try {
       const siteUrl = "https://qr.onekit.co.kr";
       await navigator.clipboard.writeText(siteUrl);
-      onToast?.('링크가 클립보드에 복사되었습니다');
+      onToast?.(t('toast.linkCopied'));
     } catch {
-      onToast?.('복사에 실패했습니다');
+      onToast?.(t('toast.copyFailed'));
     }
   };
 
-  /** QR 콘텐츠에서 QR 유형 이름 추론 */
   const getQrTypeName = (): string => {
-    if (!qrContent) return 'QR코드';
-    if (qrContent.startsWith('WIFI:')) return 'Wi-Fi';
-    if (qrContent.startsWith('BEGIN:VCARD')) return '연락처';
-    if (qrContent.startsWith('mailto:')) return '이메일';
-    if (qrContent.startsWith('smsto:') || qrContent.startsWith('sms:')) return 'SMS';
-    if (qrContent.startsWith('geo:')) return '위치';
-    if (qrContent.startsWith('BEGIN:VEVENT')) return '캘린더';
-    if (qrContent.startsWith('http://') || qrContent.startsWith('https://')) return 'URL';
-    return 'QR코드';
+    if (!qrContent) return t('share.qrTypeName');
+    if (qrContent.startsWith('WIFI:')) return t('share.qrTypeWifi');
+    if (qrContent.startsWith('BEGIN:VCARD')) return t('share.qrTypeContact');
+    if (qrContent.startsWith('mailto:')) return t('share.qrTypeEmail');
+    if (qrContent.startsWith('smsto:') || qrContent.startsWith('sms:')) return t('share.qrTypeSms');
+    if (qrContent.startsWith('geo:')) return t('share.qrTypeLocation');
+    if (qrContent.startsWith('BEGIN:VEVENT')) return t('share.qrTypeCalendar');
+    if (qrContent.startsWith('http://') || qrContent.startsWith('https://')) return t('share.qrTypeUrl');
+    return t('share.qrTypeName');
   };
 
   return (
     <div className="w-full lg:w-80 shrink-0">
       <div className="bg-white rounded-xl border border-zinc-200 p-6 flex flex-col items-center gap-5">
         <h3 className="text-sm font-semibold text-zinc-700 self-start">
-          QR 미리보기
+          {t('preview.title')}
         </h3>
 
         <div className="w-[200px] h-[200px] rounded-lg border border-zinc-100 flex items-center justify-center bg-zinc-50">
@@ -106,13 +104,13 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
             />
           ) : (
             <div className="text-zinc-300 text-sm text-center px-4">
-              QR코드가 여기에 표시됩니다
+              {t('preview.placeholder')}
             </div>
           )}
         </div>
 
         <div className="flex items-center gap-2 self-start">
-          <span className="text-xs text-zinc-500">다운로드 형식:</span>
+          <span className="text-xs text-zinc-500">{t('preview.downloadFormat')}</span>
           <button
             onClick={() => setDownloadFormat('png')}
             className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
@@ -142,7 +140,7 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
             className="w-full flex items-center justify-center gap-2 h-10 rounded-lg bg-[var(--qr-primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <Download className="w-4 h-4" />
-            다운로드
+            {t('preview.download')}
           </button>
           <div className="flex gap-2 w-full">
             <button
@@ -151,7 +149,7 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
               className="flex-1 flex items-center justify-center gap-2 h-10 rounded-lg bg-[#FEE500] text-[#3C1E1E] text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               <MessageCircle className="w-4 h-4" />
-              카카오톡 공유
+              {t('preview.kakaoShare')}
             </button>
             <button
               onClick={handleCopyLink}
@@ -159,7 +157,7 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
               className="flex items-center justify-center gap-2 h-10 px-4 rounded-lg border border-zinc-200 text-zinc-700 text-sm font-medium hover:bg-zinc-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               <Link2 className="w-4 h-4" />
-              링크 복사
+              {t('preview.copyLink')}
             </button>
           </div>
         </div>
@@ -168,7 +166,6 @@ export default function QRPreview({ qrDataUrl, inputValue, qrContent, qrOptions,
   );
 }
 
-/** 문자열을 maxLen 이하로 잘라서 반환 */
 function truncate(str: string, maxLen: number): string {
   if (str.length <= maxLen) return str;
   return str.slice(0, maxLen - 3) + '...';

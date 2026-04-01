@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslation } from "../i18n";
 
 interface AnswerCardProps {
   emoji: string;
-  text: string;
+  textKey: string;
   isSelected: boolean;
   isLocked: boolean;
   onClick: () => void;
@@ -13,12 +14,14 @@ interface AnswerCardProps {
 
 export default function AnswerCard({
   emoji,
-  text,
+  textKey,
   isSelected,
   isLocked,
   onClick,
   index,
 }: AnswerCardProps) {
+  const { t } = useTranslation();
+  const text = t(textKey);
   const lockedNotSelected = isLocked && !isSelected;
 
   return (

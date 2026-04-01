@@ -20,15 +20,13 @@ import QRCustomizer from './components/QRCustomizer';
 import HistoryItem from './components/HistoryItem';
 import BottomBar from './components/BottomBar';
 import Toast from './components/Toast';
+import LanguageSwitcher from './i18n/LanguageSwitcher';
+import RelatedTools from './components/RelatedTools';
+import QrInfoSection from './components/QrInfoSection';
+import { useTranslation } from './i18n';
 import { generateQR, type QROptions } from './lib/qr';
 import { applyLogoToQR } from './lib/qrWithLogo';
 import { getHistory, addHistory, clearHistory, type HistoryEntry } from './lib/history';
-
-const quickChips = [
-  { label: '네이버', url: 'https://www.naver.com' },
-  { label: '구글', url: 'https://www.google.com' },
-  { label: '유튜브', url: 'https://www.youtube.com' },
-];
 
 const wifiEncTypes = ['WPA', 'WEP', 'nopass'] as const;
 
@@ -133,6 +131,7 @@ function isFieldsFilled(tab: string, fields: Record<string, string>): boolean {
 }
 
 export default function Home() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('url');
   const [bottomTab, setBottomTab] = useState('generate');
   const [fields, setFields] = useState<Record<string, string>>({});
@@ -149,6 +148,12 @@ export default function Home() {
     errorCorrectionLevel: 'M',
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
+
+  const quickChips = [
+    { label: t('chips.naver'), url: 'https://www.naver.com' },
+    { label: t('chips.google'), url: 'https://www.google.com' },
+    { label: t('chips.youtube'), url: 'https://www.youtube.com' },
+  ];
 
   useEffect(() => {
     setHistory(getHistory());
@@ -273,27 +278,30 @@ export default function Home() {
       )}
 
       <main className="flex-1 flex flex-col min-h-screen">
-        <h1 className="sr-only">QR Studio - 무료 QR코드 생성기</h1>
+        <h1 className="sr-only">{t('header.subtitle')}</h1>
         <header className="lg:hidden flex items-center justify-between px-4 h-14 bg-white border-b border-zinc-200">
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="p-2 cursor-pointer"
-            aria-label="메뉴 열기"
+            aria-label={t('header.menuOpen')}
           >
             <Menu className="w-5 h-5 text-zinc-700" />
           </button>
           <div className="flex items-center gap-2">
             <QrCode className="w-5 h-5 text-[var(--qr-primary)]" />
             <span className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-zinc-900">
-              QR Studio
+              {t('header.title')}
             </span>
           </div>
-          <div className="w-9" />
+          <LanguageSwitcher />
         </header>
 
         {!showHistory && (
           <div className="hidden lg:block bg-white px-10 pt-8">
-            <h2 className="text-2xl font-bold text-zinc-900 mb-4">QR코드 생성</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-zinc-900">{t('form.generateQr')}</h2>
+              <LanguageSwitcher />
+            </div>
             <TabBar activeTab={activeTab} onTabChange={handleTabChange} />
           </div>
         )}
@@ -305,9 +313,9 @@ export default function Home() {
         )}
 
         {showHistory && (
-          <section className="lg:hidden flex-1 p-5 pb-24" aria-label="생성 히스토리">
+          <section className="lg:hidden flex-1 p-5 pb-24" aria-label={t('history.title')}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-zinc-900">히스토리</h2>
+              <h2 className="text-lg font-bold text-zinc-900">{t('history.title')}</h2>
               {history.length > 0 && (
                 <button
                   onClick={() => {
@@ -316,13 +324,13 @@ export default function Home() {
                   }}
                   className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
                 >
-                  전체 삭제
+                  {t('history.clearAll')}
                 </button>
               )}
             </div>
             {history.length === 0 ? (
               <p className="text-sm text-zinc-400 py-8 text-center">
-                아직 생성된 QR코드가 없습니다
+                {t('history.empty')}
               </p>
             ) : (
               <div className="flex flex-col gap-1">
@@ -339,13 +347,13 @@ export default function Home() {
         )}
 
         {!showHistory && (
-          <section className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-4" aria-label="QR코드 생성기">
+          <section className="flex-1 p-5 lg:px-10 lg:py-8 pb-24 lg:pb-4" aria-label={t('form.generateQr')}>
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
               <div className="flex-1 flex flex-col gap-6">
                 {activeTab === 'url' && (
                   <div className="flex flex-col gap-2">
                     <label htmlFor="qr-input-url" className="text-sm font-semibold text-zinc-700">
-                      URL 입력
+                      {t('form.urlLabel')}
                     </label>
                     <div className="relative">
                       <Link className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -355,7 +363,7 @@ export default function Home() {
                         value={fields.main ?? ''}
                         onChange={(e) => updateField('main', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="https://example.com"
+                        placeholder={t('form.urlPlaceholder')}
                         className={inputWithIconClass}
                       />
                     </div>
@@ -365,13 +373,13 @@ export default function Home() {
                 {activeTab === 'text' && (
                   <div className="flex flex-col gap-2">
                     <label htmlFor="qr-input-text" className="text-sm font-semibold text-zinc-700">
-                      텍스트 입력
+                      {t('form.textLabel')}
                     </label>
                     <textarea
                       id="qr-input-text"
                       value={fields.main ?? ''}
                       onChange={(e) => updateField('main', e.target.value)}
-                      placeholder="텍스트를 입력하세요"
+                      placeholder={t('form.textPlaceholder')}
                       rows={3}
                       className="w-full px-4 py-3 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition resize-none"
                     />
@@ -382,7 +390,7 @@ export default function Home() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-wifi-ssid" className="text-sm font-semibold text-zinc-700">
-                        네트워크 이름 (SSID)
+                        {t('form.wifiSsidLabel')}
                       </label>
                       <div className="relative">
                         <Wifi className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -392,14 +400,14 @@ export default function Home() {
                           value={fields.ssid ?? ''}
                           onChange={(e) => updateField('ssid', e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder="Wi-Fi 네트워크 이름"
+                          placeholder={t('form.wifiSsidPlaceholder')}
                           className={inputWithIconClass}
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-wifi-password" className="text-sm font-semibold text-zinc-700">
-                        비밀번호
+                        {t('form.wifiPasswordLabel')}
                       </label>
                       <input
                         id="qr-wifi-password"
@@ -407,13 +415,13 @@ export default function Home() {
                         value={fields.password ?? ''}
                         onChange={(e) => updateField('password', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Wi-Fi 비밀번호"
+                        placeholder={t('form.wifiPasswordPlaceholder')}
                         className={inputClass}
                       />
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-wifi-enc" className="text-sm font-semibold text-zinc-700">
-                        암호화 방식
+                        {t('form.wifiEncLabel')}
                       </label>
                       <div className="relative">
                         <select
@@ -422,9 +430,9 @@ export default function Home() {
                           onChange={(e) => updateField('encryption', e.target.value)}
                           className="w-full h-12 px-4 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition appearance-none cursor-pointer"
                         >
-                          {wifiEncTypes.map((t) => (
-                            <option key={t} value={t}>
-                              {t === 'nopass' ? '없음 (Open)' : t}
+                          {wifiEncTypes.map((enc) => (
+                            <option key={enc} value={enc}>
+                              {enc === 'nopass' ? t('form.wifiEncNone') : enc}
                             </option>
                           ))}
                         </select>
@@ -438,7 +446,7 @@ export default function Home() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-contact-name" className="text-sm font-semibold text-zinc-700">
-                        이름
+                        {t('form.contactNameLabel')}
                       </label>
                       <div className="relative">
                         <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -448,14 +456,14 @@ export default function Home() {
                           value={fields.name ?? ''}
                           onChange={(e) => updateField('name', e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder="홍길동"
+                          placeholder={t('form.contactNamePlaceholder')}
                           className={inputWithIconClass}
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-contact-tel" className="text-sm font-semibold text-zinc-700">
-                        전화번호
+                        {t('form.contactTelLabel')}
                       </label>
                       <input
                         id="qr-contact-tel"
@@ -463,7 +471,7 @@ export default function Home() {
                         value={fields.tel ?? ''}
                         onChange={(e) => updateField('tel', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="010-1234-5678"
+                        placeholder={t('form.contactTelPlaceholder')}
                         className={inputClass}
                       />
                     </div>
@@ -474,7 +482,7 @@ export default function Home() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-email-addr" className="text-sm font-semibold text-zinc-700">
-                        이메일 주소
+                        {t('form.emailAddrLabel')}
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -484,14 +492,14 @@ export default function Home() {
                           value={fields.email ?? ''}
                           onChange={(e) => updateField('email', e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder="example@email.com"
+                          placeholder={t('form.emailAddrPlaceholder')}
                           className={inputWithIconClass}
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-email-subject" className="text-sm font-semibold text-zinc-700">
-                        제목 (선택)
+                        {t('form.emailSubjectLabel')}
                       </label>
                       <input
                         id="qr-email-subject"
@@ -499,7 +507,7 @@ export default function Home() {
                         value={fields.subject ?? ''}
                         onChange={(e) => updateField('subject', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="이메일 제목"
+                        placeholder={t('form.emailSubjectPlaceholder')}
                         className={inputClass}
                       />
                     </div>
@@ -510,7 +518,7 @@ export default function Home() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-sms-phone" className="text-sm font-semibold text-zinc-700">
-                        전화번호
+                        {t('form.smsPhoneLabel')}
                       </label>
                       <div className="relative">
                         <MessageSquare className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -520,20 +528,20 @@ export default function Home() {
                           value={fields.phone ?? ''}
                           onChange={(e) => updateField('phone', e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder="010-1234-5678"
+                          placeholder={t('form.smsPhonePlaceholder')}
                           className={inputWithIconClass}
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-sms-body" className="text-sm font-semibold text-zinc-700">
-                        메시지 (선택)
+                        {t('form.smsBodyLabel')}
                       </label>
                       <textarea
                         id="qr-sms-body"
                         value={fields.body ?? ''}
                         onChange={(e) => updateField('body', e.target.value)}
-                        placeholder="SMS 메시지 내용"
+                        placeholder={t('form.smsBodyPlaceholder')}
                         rows={3}
                         className="w-full px-4 py-3 rounded-lg border border-zinc-200 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--qr-primary)] focus:border-transparent transition resize-none"
                       />
@@ -545,7 +553,7 @@ export default function Home() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-loc-lat" className="text-sm font-semibold text-zinc-700">
-                        위도 (Latitude)
+                        {t('form.locationLatLabel')}
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -556,14 +564,14 @@ export default function Home() {
                           value={fields.lat ?? ''}
                           onChange={(e) => updateField('lat', e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder="37.5665"
+                          placeholder={t('form.locationLatPlaceholder')}
                           className={inputWithIconClass}
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-loc-lng" className="text-sm font-semibold text-zinc-700">
-                        경도 (Longitude)
+                        {t('form.locationLngLabel')}
                       </label>
                       <input
                         id="qr-loc-lng"
@@ -572,13 +580,13 @@ export default function Home() {
                         value={fields.lng ?? ''}
                         onChange={(e) => updateField('lng', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="126.9780"
+                        placeholder={t('form.locationLngPlaceholder')}
                         className={inputClass}
                       />
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-loc-label" className="text-sm font-semibold text-zinc-700">
-                        장소명 (선택)
+                        {t('form.locationLabelLabel')}
                       </label>
                       <input
                         id="qr-loc-label"
@@ -586,7 +594,7 @@ export default function Home() {
                         value={fields.label ?? ''}
                         onChange={(e) => updateField('label', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="서울시청"
+                        placeholder={t('form.locationLabelPlaceholder')}
                         className={inputClass}
                       />
                     </div>
@@ -597,7 +605,7 @@ export default function Home() {
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-cal-title" className="text-sm font-semibold text-zinc-700">
-                        일정 제목
+                        {t('form.calTitleLabel')}
                       </label>
                       <div className="relative">
                         <CalendarDays className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
@@ -607,14 +615,14 @@ export default function Home() {
                           value={fields.title ?? ''}
                           onChange={(e) => updateField('title', e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder="회의 제목"
+                          placeholder={t('form.calTitlePlaceholder')}
                           className={inputWithIconClass}
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-cal-start" className="text-sm font-semibold text-zinc-700">
-                        시작 일시
+                        {t('form.calStartLabel')}
                       </label>
                       <input
                         id="qr-cal-start"
@@ -626,7 +634,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-cal-end" className="text-sm font-semibold text-zinc-700">
-                        종료 일시 (선택)
+                        {t('form.calEndLabel')}
                       </label>
                       <input
                         id="qr-cal-end"
@@ -638,7 +646,7 @@ export default function Home() {
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="qr-cal-location" className="text-sm font-semibold text-zinc-700">
-                        장소 (선택)
+                        {t('form.calLocationLabel')}
                       </label>
                       <input
                         id="qr-cal-location"
@@ -646,7 +654,7 @@ export default function Home() {
                         value={fields.location ?? ''}
                         onChange={(e) => updateField('location', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="회의실 301호"
+                        placeholder={t('form.calLocationPlaceholder')}
                         className={inputClass}
                       />
                     </div>
@@ -679,7 +687,7 @@ export default function Home() {
                   disabled={!canGenerate || isGenerating}
                   className="w-full h-12 rounded-lg bg-[var(--qr-primary)] text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  {isGenerating ? '생성 중...' : 'QR코드 생성'}
+                  {isGenerating ? t('button.generating') : t('button.generate')}
                 </button>
 
                 <div className="lg:hidden">
@@ -695,7 +703,7 @@ export default function Home() {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-zinc-700">
-                      최근 생성
+                      {t('history.recentTitle')}
                     </h3>
                     {history.length > 0 && (
                       <button
@@ -705,13 +713,13 @@ export default function Home() {
                         }}
                         className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
                       >
-                        전체 삭제
+                        {t('history.clearAll')}
                       </button>
                     )}
                   </div>
                   {history.length === 0 ? (
                     <p className="text-sm text-zinc-400 py-4 text-center">
-                      아직 생성된 QR코드가 없습니다
+                      {t('history.empty')}
                     </p>
                   ) : (
                     <div className="flex flex-col">
@@ -740,30 +748,32 @@ export default function Home() {
           </section>
         )}
 
+        <QrInfoSection />
+        <RelatedTools currentToolId="qr" />
         <footer className="hidden lg:block bg-white border-t border-zinc-200 py-4 px-10">
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-zinc-500">
             <a
               href="/privacy"
               className="hover:text-zinc-700 hover:underline transition-colors"
             >
-              개인정보처리방침
+              {t('footer.privacy')}
             </a>
             <span className="text-zinc-300">|</span>
             <a
               href="/terms"
               className="hover:text-zinc-700 hover:underline transition-colors"
             >
-              이용약관
+              {t('footer.terms')}
             </a>
             <span className="text-zinc-300">|</span>
             <a
               href="mailto:rlawlsdnjswk@gmail.com"
               className="hover:text-zinc-700 hover:underline transition-colors"
             >
-              문의: rlawlsdnjswk@gmail.com
+              {t('footer.contact')}
             </a>
             <span className="text-zinc-300">|</span>
-            <span>© 2025</span>
+            <span>&copy; 2025</span>
           </div>
         </footer>
       </main>

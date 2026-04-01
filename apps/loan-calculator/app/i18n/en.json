@@ -1,0 +1,122 @@
+{
+  "common": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "backToMain": "Back to main page",
+    "lastModified": "Last modified: January 1, 2026",
+    "email": "Email",
+    "won": "KRW",
+    "percent": "%",
+    "manWon": "10K KRW",
+    "eok": "B",
+    "man": "M"
+  },
+  "header": {
+    "title": "Loan Calculator",
+    "subtitle": "2026 Latest Version"
+  },
+  "input": {
+    "sectionTitle": "Loan Details",
+    "principalLabel": "Loan Amount (10K KRW)",
+    "principalUnit": "10K KRW",
+    "principalHelper": "= {amount} KRW ({display} KRW)",
+    "rateLabel": "Annual Rate (%)",
+    "periodLabel": "Loan Period",
+    "yearsUnit": "years",
+    "monthsUnit": "months",
+    "totalMonths": "Total {count} months",
+    "methodLabel": "Repayment Method",
+    "methodInfo": "Method Info",
+    "calculate": "Calculate"
+  },
+  "method": {
+    "equal_payment": "Equal Payment",
+    "equal_principal": "Equal Principal",
+    "bullet": "Bullet Repayment",
+    "desc_equal_payment": "Pay the same amount (principal + interest) each month. The most common method.",
+    "desc_equal_principal": "Repay the same principal each month with decreasing interest. Lower total interest.",
+    "desc_bullet": "Pay only interest monthly and repay the full principal at maturity. Lower monthly burden but higher total interest."
+  },
+  "result": {
+    "title": "Calculation Result",
+    "monthlyPayment": "Monthly Payment",
+    "totalInterest": "Total Interest",
+    "totalPayment": "Total Payment",
+    "interestRatio": "Interest Ratio",
+    "summaryLine": "Principal {principal}0K KRW | {rate}%/yr | {years}yr {months} | {method}",
+    "monthsSuffix": "{count}mo",
+    "rangeTo": "~ {amount} KRW"
+  },
+  "schedule": {
+    "showDetail": "View Schedule ({count} months)",
+    "hideDetail": "Hide Schedule",
+    "month": "Month",
+    "principalPayment": "Principal",
+    "interest": "Interest",
+    "monthlyPayment": "Payment",
+    "remainingBalance": "Balance"
+  },
+  "info": {
+    "title": "Repayment Method Guide",
+    "equalPaymentTitle": "Equal Payment",
+    "equalPaymentDesc": "Easier to plan finances by paying the same amount each month. The most widely used method for mortgage loans.",
+    "equalPrincipalTitle": "Equal Principal",
+    "equalPrincipalDesc": "Higher initial payments that decrease over time, with less total interest than equal payment method.",
+    "bulletTitle": "Bullet Repayment",
+    "bulletDesc": "Lower monthly burden by paying only interest, but highest total interest cost. Commonly used for lease deposit loans."
+  },
+  "footer": {
+    "disclaimer": "This calculator is for reference only. Actual loan conditions may differ from financial institutions."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "metaTitle": "Privacy Policy | Loan Calculator",
+    "metaDesc": "Privacy policy for the Loan Calculator service.",
+    "section1Title": "1. Service Overview",
+    "section1Text": "\"Loan Calculator\" (hereinafter \"Service\") is a free online tool that calculates loan repayment amounts and interest for reference purposes. The Service processes users' personal information to a minimum and manages it in accordance with the following policy.",
+    "section2Title": "2. Personal Information Collected",
+    "section2Text1": "The Service does not require registration, and data entered by users is not stored on servers but processed only within the browser.",
+    "section2Text2": "However, the following visit data may be automatically collected through Google Analytics for service improvement and usage statistics analysis.",
+    "section2Item1": "Page URL visited, access time",
+    "section2Item2": "Browser type, operating system, screen resolution",
+    "section2Item3": "Approximate access region (IP-based, anonymized)",
+    "section2Item4": "Page dwell time, navigation path",
+    "section3Title": "3. Purpose of Collection",
+    "section3Item1": "Understanding service usage and statistical analysis",
+    "section3Item2": "Improving service quality and user experience",
+    "section3Item3": "Error detection and technical issue resolution",
+    "section4Title": "4. Retention Period",
+    "section4Text": "Data collected through Google Analytics is processed in accordance with Google's data retention policy, with a default retention period of 14 months. The Service operator does not maintain a separate personal information database.",
+    "section5Title": "5. Google Analytics Notice",
+    "section5Text": "The Service uses Google Analytics, a web analytics service provided by Google Inc. Google Analytics uses cookies to collect website usage information, and the collected information is transmitted to and stored on Google servers. For more details, please refer to ",
+    "section5Link": "Google Privacy Policy",
+    "section5TextAfter": ".",
+    "section6Title": "6. Cookie Usage Notice",
+    "section6Text": "The Service may use cookies for the operation of Google Analytics and Google AdSense. Cookies are small data files stored in the user's browser, used for service usage analysis and personalized advertising. Users can refuse cookie storage through browser settings, but some features may be restricted in that case.",
+    "section7Title": "7. Contact",
+    "section7Text": "For inquiries regarding personal information processing, please contact us at the email below."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "metaTitle": "Terms of Service | Loan Calculator",
+    "metaDesc": "Terms of service for the Loan Calculator service.",
+    "article1Title": "Article 1 (Purpose)",
+    "article1Text": "These terms aim to establish the conditions and procedures for using \"Loan Calculator\" (hereinafter \"Service\"). The Service provides users with a free online tool for calculating loan repayment amounts and interest for reference purposes.",
+    "article2Title": "Article 2 (Nature of Service)",
+    "article2Text": "All results provided by the Service are for reference purposes only and do not replace professional consultation. Data entered by users is not stored on servers but processed only within the browser.",
+    "article3Title": "Article 3 (Disclaimer)",
+    "article3Item1": "Calculation results provided by the Service are for reference only, and their accuracy or completeness is not guaranteed.",
+    "article3Item2": "Actual loan repayment amounts may vary depending on interest rates and fees of each financial institution. Please verify with the relevant financial institution for loan-related decisions.",
+    "article3Item3": "The Service operator is not responsible for any direct or indirect damages arising from the use of the Service.",
+    "article4Title": "Article 4 (Intellectual Property)",
+    "article4Text": "All intellectual property rights for content included in the Service (design, text, source code, logos, etc.) belong to the Service operator. Users may not reproduce, distribute, modify, or commercially use such content without prior written consent from the Service operator.",
+    "article5Title": "Article 5 (Service Changes and Suspension)",
+    "article5Text": "The Service operator may change or suspend all or part of the Service for operational or technical reasons. The Service operator has no obligation to compensate users for damages resulting from service changes or suspension.",
+    "article6Title": "Article 6 (Advertising)",
+    "article6Text": "The Service may include advertisements such as Google AdSense to cover operating costs. Transactions through advertisements are between the user and the advertiser, and the Service operator is not responsible for them.",
+    "article7Title": "Article 7 (Changes to Terms)",
+    "article7Text": "The Service operator may change these terms within the scope that does not violate relevant laws, and the changed terms take effect upon being posted within the Service.",
+    "article8Title": "Article 8 (Inquiries)",
+    "article8Text": "For inquiries regarding these terms, please contact us at the email below."
+  }
+}

@@ -1,16 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslation } from "../i18n";
 
 interface QuestionCardProps {
   questionNumber: number;
-  questionText: string;
+  questionTextKey: string;
 }
 
 export default function QuestionCard({
   questionNumber,
-  questionText,
+  questionTextKey,
 }: QuestionCardProps) {
+  const { t } = useTranslation();
+  const questionText = t(questionTextKey);
+
   return (
     <motion.div
       className="mx-auto w-full max-w-[800px] rounded-3xl bg-white p-6 shadow-lg md:p-10"
@@ -20,7 +24,7 @@ export default function QuestionCard({
       transition={{ duration: 0.3 }}
       role="heading"
       aria-level={2}
-      aria-label={`질문 ${questionNumber}: ${questionText}`}
+      aria-label={t("quiz.questionAria", { number: questionNumber, text: questionText })}
     >
       <p className="mb-3 text-center text-xl font-bold text-[var(--mbti-primary)]">
         Q{questionNumber}
@@ -29,7 +33,7 @@ export default function QuestionCard({
         {questionText}
       </h2>
       <p className="text-center text-sm text-gray-500">
-        가장 자연스러운 선택을 골라주세요
+        {t("quiz.pickInstruction")}
       </p>
     </motion.div>
   );

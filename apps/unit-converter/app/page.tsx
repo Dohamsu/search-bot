@@ -21,6 +21,10 @@ import {
   type CategoryDef,
 } from "./lib/unitData";
 import { convert, convertToAll, formatNumber } from "./lib/converter";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import UnitInfoSection from "./components/UnitInfoSection";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Ruler,
@@ -35,6 +39,9 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 
 export default function UnitConverterPage() {
+  const { t, locale } = useTranslation();
+  const numberLocale = locale === "ko" ? "ko-KR" : "en-US";
+
   const [activeCategory, setActiveCategory] = useState<CategoryId>("length");
   const [inputValue, setInputValue] = useState<string>("1");
   const [fromUnit, setFromUnit] = useState<string>("km");
@@ -85,21 +92,23 @@ export default function UnitConverterPage() {
     []
   );
 
-  const fromUnitDef = category.units.find((u) => u.id === fromUnit);
-  const toUnitDef = category.units.find((u) => u.id === toUnit);
+  const getUnitLabel = (unitId: string) => t(`units.${unitId}.label`);
+  const getUnitSymbol = (unitId: string) => t(`units.${unitId}.symbol`);
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="border-b border-[var(--unit-border)] bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold font-[family-name:var(--font-space)] text-[var(--unit-primary)]">
-            단위 변환기
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            길이, 무게, 넓이, 부피, 온도, 속도, 데이터, 시간 단위를 빠르게
-            변환하세요
-          </p>
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold font-[family-name:var(--font-space)] text-[var(--unit-primary)]">
+              {t("header.title")}
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {t("header.subtitle")}
+            </p>
+          </div>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -121,7 +130,7 @@ export default function UnitConverterPage() {
                   }`}
                 >
                   {Icon && <Icon className="w-4 h-4" />}
-                  {cat.label}
+                  {t(`categories.${cat.id}`)}
                 </button>
               );
             })}
@@ -134,7 +143,7 @@ export default function UnitConverterPage() {
             {/* From */}
             <div className="flex-1 space-y-2">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                변환할 값
+                {t("converter.fromLabel")}
               </label>
               <div className="flex gap-2">
                 <input
@@ -142,7 +151,7 @@ export default function UnitConverterPage() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   className="flex-1 text-2xl font-bold font-[family-name:var(--font-space)] bg-amber-50 border border-[var(--unit-border)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--unit-primary)] focus:border-transparent transition"
-                  placeholder="0"
+                  placeholder={t("converter.placeholder")}
                 />
                 <div className="relative">
                   <select
@@ -152,7 +161,7 @@ export default function UnitConverterPage() {
                   >
                     {category.units.map((u) => (
                       <option key={u.id} value={u.id}>
-                        {u.symbol}
+                        {getUnitSymbol(u.id)}
                       </option>
                     ))}
                   </select>
@@ -165,7 +174,7 @@ export default function UnitConverterPage() {
             <button
               onClick={handleSwap}
               className="self-center p-3 rounded-full bg-[var(--unit-primary)] text-white hover:bg-amber-700 transition shadow-md hover:shadow-lg"
-              aria-label="단위 교환"
+              aria-label={t("converter.swapAriaLabel")}
             >
               <ArrowLeftRight className="w-5 h-5" />
             </button>
@@ -173,11 +182,11 @@ export default function UnitConverterPage() {
             {/* To */}
             <div className="flex-1 space-y-2">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                변환 결과
+                {t("converter.toLabel")}
               </label>
               <div className="flex gap-2">
                 <div className="flex-1 text-2xl font-bold font-[family-name:var(--font-space)] bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-[var(--unit-success)] truncate">
-                  {formatNumber(result)}
+                  {formatNumber(result, numberLocale)}
                 </div>
                 <div className="relative">
                   <select
@@ -187,7 +196,7 @@ export default function UnitConverterPage() {
                   >
                     {category.units.map((u) => (
                       <option key={u.id} value={u.id}>
-                        {u.symbol}
+                        {getUnitSymbol(u.id)}
                       </option>
                     ))}
                   </select>
@@ -199,11 +208,11 @@ export default function UnitConverterPage() {
 
           {/* Conversion Description */}
           <div className="mt-4 text-center text-sm text-gray-500">
-            {numericValue !== 0 && fromUnitDef && toUnitDef && (
+            {numericValue !== 0 && (
               <span>
-                {formatNumber(numericValue)} {fromUnitDef.symbol} ={" "}
+                {formatNumber(numericValue, numberLocale)} {getUnitSymbol(fromUnit)} ={" "}
                 <span className="font-semibold text-[var(--unit-text)]">
-                  {formatNumber(result)} {toUnitDef.symbol}
+                  {formatNumber(result, numberLocale)} {getUnitSymbol(toUnit)}
                 </span>
               </span>
             )}
@@ -213,7 +222,7 @@ export default function UnitConverterPage() {
         {/* All Conversions Grid */}
         <div className="space-y-3">
           <h2 className="text-lg font-bold font-[family-name:var(--font-space)] text-[var(--unit-text)]">
-            모든 단위 변환 결과
+            {t("allResults.title")}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {category.units.map((unit) => {
@@ -233,13 +242,13 @@ export default function UnitConverterPage() {
                   }`}
                 >
                   <div className="text-xs text-gray-500 mb-1">
-                    {unit.label}
+                    {getUnitLabel(unit.id)}
                   </div>
                   <div className="text-base font-bold font-[family-name:var(--font-space)] truncate">
-                    {val !== undefined ? formatNumber(val) : "—"}
+                    {val !== undefined ? formatNumber(val, numberLocale) : "\u2014"}
                   </div>
                   <div className="text-xs text-gray-400 mt-0.5">
-                    {unit.symbol}
+                    {getUnitSymbol(unit.id)}
                   </div>
                 </button>
               );
@@ -251,20 +260,20 @@ export default function UnitConverterPage() {
         <div className="space-y-3">
           <h2 className="text-lg font-bold font-[family-name:var(--font-space)] flex items-center gap-2 text-[var(--unit-text)]">
             <Zap className="w-5 h-5 text-[var(--unit-primary)]" />
-            빠른 변환
+            {t("quickConvert.title")}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {quickConverts.map((qc) => (
               <button
-                key={qc.label}
+                key={qc.key}
                 onClick={() => handleQuickConvert(qc)}
                 className="text-left p-4 rounded-xl bg-white border border-gray-200 hover:border-[var(--unit-primary)] hover:shadow-md transition-all group"
               >
                 <div className="text-base font-bold font-[family-name:var(--font-space)] group-hover:text-[var(--unit-primary)] transition-colors">
-                  {qc.label}
+                  {t(`quickConverts.${qc.key}.label`)}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {qc.description}
+                  {t(`quickConverts.${qc.key}.description`)}
                 </div>
               </button>
             ))}
@@ -274,62 +283,62 @@ export default function UnitConverterPage() {
         {/* Info Section */}
         <div className="bg-white rounded-2xl border border-[var(--unit-border)] p-6 space-y-4">
           <h2 className="text-lg font-bold font-[family-name:var(--font-space)]">
-            자주 묻는 단위 변환
+            {t("faq.title")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <h3 className="font-semibold text-sm text-[var(--unit-primary)]">
-                1평은 몇 제곱미터(㎡)?
+                {t("faq.pyeong.question")}
               </h3>
               <p className="text-sm text-gray-600">
-                1평은 약 3.3058 ㎡입니다. 부동산에서 자주 쓰이는 면적 단위로,
-                정확히는 400/121 ㎡입니다.
+                {t("faq.pyeong.answer")}
               </p>
             </div>
             <div className="space-y-1">
               <h3 className="font-semibold text-sm text-[var(--unit-primary)]">
-                1근은 몇 kg?
+                {t("faq.geun.question")}
               </h3>
               <p className="text-sm text-gray-600">
-                한국에서 1근은 600g(0.6kg)입니다. 고기나 채소 등 식재료 무게를
-                나타낼 때 주로 사용합니다.
+                {t("faq.geun.answer")}
               </p>
             </div>
             <div className="space-y-1">
               <h3 className="font-semibold text-sm text-[var(--unit-primary)]">
-                섭씨(°C)와 화씨(°F) 변환
+                {t("faq.temperature.question")}
               </h3>
               <p className="text-sm text-gray-600">
-                °F = °C x 9/5 + 32. 예: 0°C = 32°F, 100°C = 212°F. 미국 등에서
-                주로 화씨를 사용합니다.
+                {t("faq.temperature.answer")}
               </p>
             </div>
             <div className="space-y-1">
               <h3 className="font-semibold text-sm text-[var(--unit-primary)]">
-                1마일(mile)은 몇 km?
+                {t("faq.mile.question")}
               </h3>
               <p className="text-sm text-gray-600">
-                1마일은 약 1.6093 km입니다. 미국과 영국 등에서 거리를 나타낼 때
-                사용하는 단위입니다.
+                {t("faq.mile.answer")}
               </p>
             </div>
           </div>
         </div>
       </main>
 
+      <UnitInfoSection />
+
+      <RelatedTools currentToolId="unit" />
+
       {/* Footer */}
       <footer className="border-t border-[var(--unit-border)] bg-white/80 mt-8">
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex gap-4 justify-center text-xs text-gray-400">
             <a href="/privacy" className="hover:text-gray-600 transition">
-              개인정보처리방침
+              {t("footer.privacy")}
             </a>
             <a href="/terms" className="hover:text-gray-600 transition">
-              이용약관
+              {t("footer.terms")}
             </a>
           </div>
           <p className="text-center text-xs text-gray-400 mt-3">
-            &copy; {new Date().getFullYear()} 단위 변환기. All rights reserved.
+            &copy; {new Date().getFullYear()} {t("footer.copyright")}
           </p>
         </div>
       </footer>

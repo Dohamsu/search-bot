@@ -1,0 +1,102 @@
+{
+  "common": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "devTools": "Developer Tools",
+    "toolList": "Tool List",
+    "input": "Input",
+    "result": "Result",
+    "error": "Error",
+    "generate": "Generate",
+    "encode": "Encode",
+    "decode": "Decode",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "footerDesc": "Developer Tools. All processing is done in the browser. No data is sent to any server.",
+    "headerSubtitle": "JSON, Base64, URL, UUID, Hash, Regex, Lorem Ipsum"
+  },
+  "tabs": {
+    "json": "JSON Formatter",
+    "base64": "Base64",
+    "url": "URL Encoding",
+    "uuid": "UUID Generator",
+    "hash": "Hash Generator",
+    "regex": "Regex Tester",
+    "lorem": "Lorem Ipsum"
+  },
+  "json": {
+    "title": "JSON Formatter / Validator",
+    "description": "Format, minify, and validate JSON strings.",
+    "indent": "Indent:",
+    "spaces2": "2 Spaces",
+    "spaces4": "4 Spaces",
+    "format": "Format (Pretty Print)",
+    "minify": "Minify",
+    "validate": "Validate",
+    "validJson": "JSON is valid.",
+    "errorLabel": "Error:",
+    "lineCol": "(Line: {line}, Col: {column})",
+    "placeholder": "{\"key\": \"value\"}"
+  },
+  "base64": {
+    "title": "Base64 Encode / Decode",
+    "description": "Encode/decode text to/from Base64. Supports UTF-8 (including multibyte characters).",
+    "encodeError": "An error occurred during encoding.",
+    "decodeError": "Invalid Base64 string.",
+    "placeholder": "Enter text to encode or decode"
+  },
+  "url": {
+    "title": "URL Encode / Decode",
+    "description": "Encode/decode URL strings.",
+    "mode": "Mode:",
+    "encodeError": "An error occurred during encoding.",
+    "decodeError": "Invalid URL-encoded string.",
+    "placeholder": "https://example.com/path?key=value"
+  },
+  "uuid": {
+    "title": "UUID v4 Generator",
+    "description": "Generate random UUID v4 values.",
+    "count": "Count:",
+    "uppercase": "Uppercase",
+    "hyphen": "Include Hyphens",
+    "resultCount": "Generated ({count})"
+  },
+  "hash": {
+    "title": "Hash Generator",
+    "description": "Generate SHA-1, SHA-256, SHA-384, SHA-512 hashes from input text.",
+    "inputLabel": "Input Text",
+    "placeholder": "Enter text to hash",
+    "generating": "Generating...",
+    "generateHash": "Generate Hash"
+  },
+  "regex": {
+    "title": "Regex Tester",
+    "description": "Test regex patterns in real-time and view match results.",
+    "patternLabel": "Regex Pattern",
+    "examplesLabel": "Common Regex Examples",
+    "testStringLabel": "Test String",
+    "testStringPlaceholder": "Enter a string to test",
+    "highlightLabel": "Match Highlight",
+    "matchResultLabel": "Match Results ({count})",
+    "noMatch": "No matches",
+    "index": "Index: {index}",
+    "groups": "Groups:",
+    "examples": {
+      "email": "Email",
+      "phone": "Phone (US)",
+      "url": "URL",
+      "ipv4": "IPv4",
+      "htmlTag": "HTML Tag",
+      "numbersOnly": "Numbers Only",
+      "koreanOnly": "Korean Only"
+    }
+  },
+  "lorem": {
+    "title": "Lorem Ipsum Generator",
+    "description": "Generate dummy text. Also supports Korean.",
+    "paragraphs": "Paragraphs:",
+    "wordsPerParagraph": "Words per Paragraph:",
+    "korean": "Korean",
+    "htmlTags": "HTML <p> Tags"
+  }
+}

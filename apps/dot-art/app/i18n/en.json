@@ -1,0 +1,115 @@
+{
+  "header": {
+    "subtitle": "Free Dot Art Generator",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "footer": {
+    "title": "Dot Art Studio - Free Dot Art Generator",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "sections": {
+    "photoToDotArt": "Photo to Dot Art",
+    "customizing": "Customization",
+    "preview": "Preview"
+  },
+  "proMode": {
+    "title": "Pro Mode (AI Generation)",
+    "infoTitle": "AI generates an image and automatically converts it to dot art",
+    "infoSub": "Requests are limited for 5 minutes after generation.",
+    "modelSelect": "Select AI Model",
+    "perUse": "/use",
+    "gridLowResHint": "Low-resolution models provide cleaner results for {size}x{size} grids",
+    "prompt": "Prompt",
+    "promptPlaceholder": "e.g. a cute cat, a fire-breathing dragon",
+    "promptHint": "Both Korean and English are supported (Korean is auto-translated)",
+    "generating": "Generating... ({model})",
+    "cooldown": "Available in {time}",
+    "generate": "Generate AI Dot Art",
+    "enterPrompt": "Please enter a prompt",
+    "retryCooldown": "Please try again in {time}",
+    "generateFail": "Generation failed"
+  },
+  "modelOptions": {
+    "fast": "Fast",
+    "balanced": "Balanced",
+    "highQuality": "High Quality",
+    "fastDesc": "DALL-E 2 · 256px · Cheapest",
+    "balancedDesc": "DALL-E 2 · 512px · Good balance",
+    "highQualityDesc": "DALL-E 3 · 1024px · Best quality"
+  },
+  "customizer": {
+    "gridSize": "Grid Size",
+    "colorPalette": "Color Palette",
+    "bgColor": "Background Color",
+    "dotGap": "Dot Gap",
+    "dotShape": "Dot Shape",
+    "square": "Square",
+    "circle": "Circle",
+    "dithering": "Dithering",
+    "ditherNone": "None",
+    "ditherDiffusion": "Diffusion",
+    "ditherPattern": "Pattern",
+    "ditherDescNone": "Diffusion dithering is recommended for photo conversion",
+    "ditherDescDiffusion": "Naturally represents gradients in photos",
+    "ditherDescPattern": "Applies retro crosshatch pattern effect",
+    "edgeEnhance": "Edge Enhancement",
+    "edgeOn": "Edge Detection ON",
+    "edgeOff": "Edge Detection OFF",
+    "outlineOn": "Outline ON",
+    "outlineOff": "Outline OFF",
+    "edgeBothDesc": "Sobel edge-weighted sampling + sprite outline applied",
+    "edgeOnlyDesc": "Preserves sharp boundaries with Sobel edge detection",
+    "outlineOnlyDesc": "Adds dark outlines at color boundaries after conversion",
+    "edgeNoneDesc": "Enable edge detection for sharper photo conversions"
+  },
+  "palette": {
+    "mono": "Mono",
+    "color": "Color"
+  },
+  "preview": {
+    "emptyHint": "Enter text and press the generate button",
+    "thumbPreview": "Thumbnail Preview",
+    "actualPixelSize": "{size}x{size}px · Actual pixel size",
+    "transparentBg": "Export with transparent background",
+    "copied": "Copied",
+    "copy": "Copy",
+    "gifExporting": "Exporting..."
+  },
+  "gifEffects": {
+    "blink": "Blink",
+    "bounce": "Bounce",
+    "rotate": "Rotate",
+    "rainbow": "Rainbow",
+    "fade": "Fade"
+  },
+  "uploader": {
+    "uploadHint": "Drag or click to upload an image",
+    "uploadLimit": "PNG, JPG, WebP, GIF · Max 5MB",
+    "uploadPreviewAlt": "Upload preview",
+    "unsupportedFormat": "Unsupported file format. (PNG, JPG, WebP, GIF)",
+    "fileTooLarge": "File size exceeds 5MB.",
+    "fileReadError": "An error occurred while reading the file.",
+    "imageLoadError": "Unable to load image. Please try another file.",
+    "convertError": "An error occurred during dot art conversion."
+  },
+  "history": {
+    "examples": "Examples",
+    "history": "History",
+    "clearConfirm": "Click again to confirm",
+    "clearAll": "Clear all",
+    "count": "{count}"
+  },
+  "toast": {
+    "photoConverted": "Photo has been converted to dot art!",
+    "aiGenerated": "AI dot art has been generated!",
+    "historyLoaded": "Loaded from history",
+    "clipboardFail": "Failed to copy to clipboard. Please check browser permissions.",
+    "gifFail": "Failed to generate GIF. Please try again."
+  },
+  "errors": {
+    "apiError": "API Error",
+    "imageLoadFail": "Image load failed"
+  }
+}

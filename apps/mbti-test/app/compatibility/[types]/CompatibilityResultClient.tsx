@@ -5,11 +5,12 @@ import { motion } from "framer-motion";
 import { Heart, AlertTriangle, Lightbulb, User, ArrowRight, RotateCcw, Share2, Check } from "lucide-react";
 import type { CompatibilityResult } from "../../lib/compatibility";
 import { shareCompatibility } from "../../lib/webShare";
+import { useTranslation } from "../../i18n";
 
 interface TypeSummary {
   type: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
 }
 
 interface CompatibilityResultClientProps {
@@ -28,7 +29,7 @@ function StarRating({ score }: { score: number }) {
             i <= score ? "text-[#F59E0B]" : "text-gray-300"
           }`}
         >
-          ★
+          {"\u2605"}
         </span>
       ))}
     </div>
@@ -40,28 +41,44 @@ export default function CompatibilityResultClient({
   result1,
   result2,
 }: CompatibilityResultClientProps) {
-  const [shareLabel, setShareLabel] = useState("결과 공유하기");
+  const { t } = useTranslation();
+  const [shareLabel, setShareLabel] = useState<"share" | "copied">("share");
   const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleShare = useCallback(async () => {
+    const shareTitle = t("share.compatTitle", {
+      type1: compatibility.type1,
+      type2: compatibility.type2,
+    });
     const { success, method } = await shareCompatibility(
       compatibility.type1,
       compatibility.type2,
-      compatibility.title
+      shareTitle
     );
 
     if (method === "clipboard" && success) {
-      setShareLabel("링크가 복사되었습니다!");
+      setShareLabel("copied");
       if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
-      shareTimerRef.current = setTimeout(() => setShareLabel("결과 공유하기"), 2000);
+      shareTimerRef.current = setTimeout(() => setShareLabel("share"), 2000);
     }
-  }, [compatibility]);
+  }, [compatibility, t]);
 
-  const isCopied = shareLabel !== "결과 공유하기";
+  const isCopied = shareLabel === "copied";
+  const displayLabel = isCopied ? t("compatibility.linkCopied") : t("compatibility.shareResult");
+
+  // Build description with resolved title params
+  const title1 = t(result1.titleKey);
+  const title2 = t(result2.titleKey);
+  const descriptionText = t(compatibility.descriptionKey, {
+    type1: compatibility.type1,
+    type2: compatibility.type2,
+    title1,
+    title2,
+  });
 
   return (
     <>
-      {/* 별점 + 제목 카드 */}
+      {/* Score + title card */}
       <motion.div
         className="flex flex-col items-center gap-3 rounded-3xl bg-white p-6 shadow-sm"
         initial={{ opacity: 0, y: 20 }}
@@ -79,14 +96,14 @@ export default function CompatibilityResultClient({
         </div>
         <StarRating score={compatibility.score} />
         <p className="font-heading text-lg font-bold text-[var(--mbti-text)]">
-          {compatibility.title}
+          {t(compatibility.titleKey)}
         </p>
         <p className="text-center text-xs text-gray-500">
-          호환성 점수: {compatibility.score} / 5
+          {t("compatibility.compatibilityScore", { score: compatibility.score })}
         </p>
       </motion.div>
 
-      {/* 궁합 설명 */}
+      {/* Description */}
       <motion.div
         className="rounded-3xl bg-white p-6 shadow-sm"
         initial={{ opacity: 0, y: 20 }}
@@ -94,11 +111,11 @@ export default function CompatibilityResultClient({
         transition={{ delay: 0.2 }}
       >
         <p className="text-sm leading-relaxed text-gray-600">
-          {compatibility.description}
+          {descriptionText}
         </p>
       </motion.div>
 
-      {/* 잘 맞는 점 */}
+      {/* Strengths */}
       <motion.div
         className="rounded-3xl bg-white p-6 shadow-sm"
         initial={{ opacity: 0, y: 20 }}
@@ -108,20 +125,20 @@ export default function CompatibilityResultClient({
         <div className="mb-4 flex items-center gap-2">
           <Heart className="h-4 w-4 text-[var(--mbti-secondary)]" />
           <h3 className="font-heading text-base font-bold text-[var(--mbti-text)]">
-            잘 맞는 점
+            {t("compatibility.strengths")}
           </h3>
         </div>
         <div className="flex flex-col gap-3">
-          {compatibility.strengths.map((strength, i) => (
+          {compatibility.strengthKeys.map((key, i) => (
             <div key={i} className="flex items-start gap-3">
               <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#EC4899]" />
-              <span className="text-sm text-[var(--mbti-text)]">{strength}</span>
+              <span className="text-sm text-[var(--mbti-text)]">{t(key)}</span>
             </div>
           ))}
         </div>
       </motion.div>
 
-      {/* 주의할 점 */}
+      {/* Challenges */}
       <motion.div
         className="rounded-3xl bg-white p-6 shadow-sm"
         initial={{ opacity: 0, y: 20 }}
@@ -131,20 +148,20 @@ export default function CompatibilityResultClient({
         <div className="mb-4 flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-[#F59E0B]" />
           <h3 className="font-heading text-base font-bold text-[var(--mbti-text)]">
-            주의할 점
+            {t("compatibility.challenges")}
           </h3>
         </div>
         <div className="flex flex-col gap-3">
-          {compatibility.challenges.map((challenge, i) => (
+          {compatibility.challengeKeys.map((key, i) => (
             <div key={i} className="flex items-start gap-3">
               <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#F59E0B]" />
-              <span className="text-sm text-[var(--mbti-text)]">{challenge}</span>
+              <span className="text-sm text-[var(--mbti-text)]">{t(key)}</span>
             </div>
           ))}
         </div>
       </motion.div>
 
-      {/* 관계 팁 */}
+      {/* Tip */}
       <motion.div
         className="flex items-start gap-4 rounded-3xl bg-[#F3E8FF] p-6"
         initial={{ opacity: 0, y: 20 }}
@@ -156,15 +173,15 @@ export default function CompatibilityResultClient({
         </div>
         <div>
           <p className="mb-1 text-xs font-semibold text-[var(--mbti-primary)]">
-            관계 팁
+            {t("compatibility.relationshipTip")}
           </p>
           <p className="text-sm leading-relaxed text-[var(--mbti-text)]">
-            {compatibility.tip}
+            {t(compatibility.tipKey)}
           </p>
         </div>
       </motion.div>
 
-      {/* 유형 요약 카드 */}
+      {/* Type summary cards */}
       <motion.div
         className="flex flex-col gap-4"
         initial={{ opacity: 0, y: 20 }}
@@ -193,18 +210,18 @@ export default function CompatibilityResultClient({
                 <span className="font-heading text-sm font-bold text-[var(--mbti-text)]">
                   {result.type}
                 </span>
-                <span className="ml-2 text-sm text-gray-500">{result.title}</span>
+                <span className="ml-2 text-sm text-gray-500">{t(result.titleKey)}</span>
               </div>
               <ArrowRight className="ml-auto h-4 w-4 text-gray-400" />
             </div>
             <p className="text-xs leading-relaxed text-gray-500">
-              {result.description}
+              {t(result.descriptionKey, { type: result.type })}
             </p>
           </a>
         ))}
       </motion.div>
 
-      {/* 네비게이션 버튼 */}
+      {/* Navigation buttons */}
       <motion.div
         className="mt-2 flex flex-col gap-3"
         initial={{ opacity: 0, y: 20 }}
@@ -213,13 +230,13 @@ export default function CompatibilityResultClient({
       >
         <motion.button
           onClick={handleShare}
-          aria-label={shareLabel}
+          aria-label={displayLabel}
           className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-8 py-4 text-base font-semibold text-white shadow-lg"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           {isCopied ? <Check className="h-5 w-5" /> : <Share2 className="h-5 w-5" />}
-          {shareLabel}
+          {displayLabel}
         </motion.button>
 
         <a
@@ -227,7 +244,7 @@ export default function CompatibilityResultClient({
           className="flex w-full items-center justify-center gap-2 rounded-full border border-[var(--mbti-primary)] bg-transparent px-8 py-4 text-base font-semibold text-[var(--mbti-primary)] transition-colors hover:bg-[#F3E8FF]"
         >
           <Heart className="h-5 w-5" />
-          다른 궁합 보기
+          {t("compatibility.viewOtherCompat")}
         </a>
 
         <a
@@ -235,7 +252,7 @@ export default function CompatibilityResultClient({
           className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-transparent px-8 py-4 text-base font-medium text-[var(--mbti-text)] transition-colors hover:bg-gray-50"
         >
           <RotateCcw className="h-5 w-5" />
-          테스트 다시하기
+          {t("compatibility.retakeTest")}
         </a>
       </motion.div>
 

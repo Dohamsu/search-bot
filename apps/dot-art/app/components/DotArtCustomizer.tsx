@@ -2,6 +2,7 @@
 
 import { PALETTES } from "../lib/palettes";
 import type { DitherMode } from "../lib/dotArt";
+import { useTranslation } from "../i18n";
 
 export interface CustomizeOptions {
   gridSize: number;
@@ -21,18 +22,25 @@ interface DotArtCustomizerProps {
 
 const GRID_SIZES = [8, 16, 32, 64];
 
-const DITHER_OPTIONS: { value: DitherMode; label: string }[] = [
-  { value: "none", label: "없음" },
-  { value: "floyd-steinberg", label: "확산" },
-  { value: "ordered", label: "패턴" },
-];
-
 export default function DotArtCustomizer({ options, onChange }: DotArtCustomizerProps) {
+  const { t } = useTranslation();
+
+  const DITHER_OPTIONS: { value: DitherMode; label: string }[] = [
+    { value: "none", label: t("customizer.ditherNone") },
+    { value: "floyd-steinberg", label: t("customizer.ditherDiffusion") },
+    { value: "ordered", label: t("customizer.ditherPattern") },
+  ];
+
+  const paletteNameMap: Record<string, string> = {
+    mono: t("palette.mono"),
+    color: t("palette.color"),
+  };
+
   return (
     <div className="space-y-4">
-      {/* 그리드 크기 */}
+      {/* Grid Size */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">그리드 크기</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.gridSize")}</label>
         <div className="flex gap-2">
           {GRID_SIZES.map((size) => (
             <button
@@ -50,9 +58,9 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
         </div>
       </div>
 
-      {/* 색상 팔레트 — 흑백 / 컬러 */}
+      {/* Color Palette */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">색상 팔레트</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.colorPalette")}</label>
         <div className="flex gap-2">
           {PALETTES.map((p) => {
             const active = options.paletteId === p.id;
@@ -75,16 +83,16 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
                     />
                   ))}
                 </div>
-                {p.name}
+                {paletteNameMap[p.id] ?? p.name}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 배경색 */}
+      {/* Background Color */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">배경색</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.bgColor")}</label>
         <div className="flex items-center gap-3">
           <input
             type="color"
@@ -101,10 +109,10 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
         </div>
       </div>
 
-      {/* 도트 간격 & 모양 */}
+      {/* Dot Gap & Shape */}
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">도트 간격</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.dotGap")}</label>
           <div className="flex gap-2">
             {[0, 1, 2].map((g) => (
               <button
@@ -123,7 +131,7 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
         </div>
 
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">도트 모양</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.dotShape")}</label>
           <div className="flex gap-2">
             <button
               onClick={() => onChange({ ...options, dotShape: "square" })}
@@ -133,7 +141,7 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              ■ 사각
+              ■ {t("customizer.square")}
             </button>
             <button
               onClick={() => onChange({ ...options, dotShape: "circle" })}
@@ -143,15 +151,15 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              ● 원형
+              ● {t("customizer.circle")}
             </button>
           </div>
         </div>
       </div>
 
-      {/* 디더링 */}
+      {/* Dithering */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">디더링</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.dithering")}</label>
         <div className="flex gap-2">
           {DITHER_OPTIONS.map((d) => (
             <button
@@ -169,16 +177,16 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
         </div>
         <p className="mt-1 text-xs text-gray-400">
           {options.dither === "floyd-steinberg"
-            ? "사진의 그라데이션을 자연스럽게 표현합니다"
+            ? t("customizer.ditherDescDiffusion")
             : options.dither === "ordered"
-              ? "레트로 크로스해치 패턴 효과를 적용합니다"
-              : "사진 변환 시 확산 디더링을 추천합니다"}
+              ? t("customizer.ditherDescPattern")
+              : t("customizer.ditherDescNone")}
         </p>
       </div>
 
-      {/* 엣지 강조 */}
+      {/* Edge Enhancement */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">엣지 강조</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t("customizer.edgeEnhance")}</label>
         <div className="flex gap-2">
           <button
             onClick={() => onChange({ ...options, edgeEnhance: !options.edgeEnhance })}
@@ -188,7 +196,7 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            {options.edgeEnhance ? "엣지 감지 ON" : "엣지 감지 OFF"}
+            {options.edgeEnhance ? t("customizer.edgeOn") : t("customizer.edgeOff")}
           </button>
           <button
             onClick={() => onChange({ ...options, outline: !options.outline })}
@@ -198,17 +206,17 @@ export default function DotArtCustomizer({ options, onChange }: DotArtCustomizer
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            {options.outline ? "아웃라인 ON" : "아웃라인 OFF"}
+            {options.outline ? t("customizer.outlineOn") : t("customizer.outlineOff")}
           </button>
         </div>
         <p className="mt-1 text-xs text-gray-400">
           {options.edgeEnhance && options.outline
-            ? "Sobel 엣지 가중 샘플링 + 스프라이트 아웃라인 적용"
+            ? t("customizer.edgeBothDesc")
             : options.edgeEnhance
-              ? "Sobel 엣지 감지로 경계를 선명하게 보존합니다"
+              ? t("customizer.edgeOnlyDesc")
               : options.outline
-                ? "변환 후 색상 경계에 어두운 아웃라인을 추가합니다"
-                : "사진 변환 시 엣지 감지를 켜면 선명도가 향상됩니다"}
+                ? t("customizer.outlineOnlyDesc")
+                : t("customizer.edgeNoneDesc")}
         </p>
       </div>
     </div>

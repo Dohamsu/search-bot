@@ -6,6 +6,7 @@ import { TrendingUp, Share2, RotateCcw, Check, Briefcase, Star } from "lucide-re
 import { Heart } from "lucide-react";
 import type { MBTIResult } from "../lib/results";
 import { shareMBTIResult } from "../lib/webShare";
+import { useTranslation } from "../i18n";
 import ResultImageGenerator from "./ResultImageGenerator";
 
 interface ResultClientWrapperProps {
@@ -13,20 +14,23 @@ interface ResultClientWrapperProps {
 }
 
 export default function ResultClientWrapper({ result }: ResultClientWrapperProps) {
-  const [shareLabel, setShareLabel] = useState("결과 공유하기");
+  const { t } = useTranslation();
+  const [shareLabel, setShareLabel] = useState<"share" | "copied">("share");
   const shareTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleShare = useCallback(async () => {
-    const { success, method } = await shareMBTIResult(result.type, result.title);
+    const shareTitle = t("share.resultTitle", { type: result.type, title: t(result.titleKey) });
+    const { success, method } = await shareMBTIResult(result.type, shareTitle);
 
     if (method === "clipboard" && success) {
-      setShareLabel("링크가 복사되었습니다!");
+      setShareLabel("copied");
       if (shareTimerRef.current) clearTimeout(shareTimerRef.current);
-      shareTimerRef.current = setTimeout(() => setShareLabel("결과 공유하기"), 2000);
+      shareTimerRef.current = setTimeout(() => setShareLabel("share"), 2000);
     }
-  }, [result]);
+  }, [result, t]);
 
-  const isCopied = shareLabel !== "결과 공유하기";
+  const isCopied = shareLabel === "copied";
+  const displayLabel = isCopied ? t("result.linkCopied") : t("result.shareResult");
 
   return (
     <>
@@ -37,7 +41,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
         transition={{ delay: 0.2 }}
       >
         <p className="text-sm leading-relaxed text-gray-600">
-          {result.description}
+          {t(result.descriptionKey, { type: result.type })}
         </p>
       </motion.div>
 
@@ -48,10 +52,10 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
         transition={{ delay: 0.3 }}
       >
         <h3 className="font-heading mb-4 text-base font-bold text-[var(--mbti-text)]">
-          핵심 성격 특성
+          {t("result.coreTraits")}
         </h3>
         <div className="flex flex-col gap-3">
-          {result.traits.map((trait, i) => {
+          {result.traitKeys.map((traitKey, i) => {
             const dotColors = ["#8B5CF6", "#EC4899", "#F59E0B", "#10B981"];
             return (
               <div key={i} className="flex items-center gap-3">
@@ -59,7 +63,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
                   className="h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: dotColors[i % dotColors.length] }}
                 />
-                <span className="text-sm text-[var(--mbti-text)]">{trait}</span>
+                <span className="text-sm text-[var(--mbti-text)]">{t(traitKey)}</span>
               </div>
             );
           })}
@@ -75,22 +79,22 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
         <div className="mb-4 flex items-center gap-2">
           <Briefcase className="h-4 w-4 text-[var(--mbti-primary)]" />
           <h3 className="font-heading text-base font-bold text-[var(--mbti-text)]">
-            추천 직업
+            {t("result.recommendedCareers")}
           </h3>
         </div>
         <div className="flex flex-wrap gap-2">
-          {result.careers.map((career) => (
+          {result.careerKeys.map((careerKey) => (
             <span
-              key={career}
+              key={careerKey}
               className="rounded-full bg-[#EDE9FE] px-4 py-1.5 text-sm font-medium text-[var(--mbti-primary)]"
             >
-              {career}
+              {t(careerKey)}
             </span>
           ))}
         </div>
       </motion.div>
 
-      {result.celebrities.length > 0 && (
+      {result.celebrityKeys.length > 0 && (
         <motion.div
           className="rounded-3xl bg-white p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
@@ -100,21 +104,21 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
           <div className="mb-4 flex items-center gap-2">
             <Star className="h-4 w-4 text-[#F59E0B]" />
             <h3 className="font-heading text-base font-bold text-[var(--mbti-text)]">
-              같은 유형 유명인
+              {t("result.sameCelebrities")}
             </h3>
           </div>
           <div className="flex flex-wrap gap-2">
-            {result.celebrities.map((celeb) => (
+            {result.celebrityKeys.map((celebKey) => (
               <span
-                key={celeb}
+                key={celebKey}
                 className="rounded-full bg-[#FEF3C7] px-4 py-1.5 text-sm font-medium text-[#92400E]"
               >
-                {celeb}
+                {t(celebKey)}
               </span>
             ))}
           </div>
           <p className="mt-3 text-xs leading-relaxed text-gray-400">
-            * 공개된 정보 기반 추정이며, 본인이 직접 확인한 것이 아닐 수 있습니다.
+            {t("result.celebrityDisclaimer")}
           </p>
         </motion.div>
       )}
@@ -128,7 +132,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
         <div className="mb-4 flex items-center gap-2">
           <Heart className="h-4 w-4 text-[var(--mbti-secondary)]" />
           <h3 className="font-heading text-base font-bold text-[var(--mbti-text)]">
-            최고의 궁합
+            {t("result.bestCompatibility")}
           </h3>
         </div>
         <div className="flex gap-3">
@@ -143,7 +147,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
           ))}
         </div>
         <a href="/compatibility" className="mt-2 text-sm text-[var(--mbti-primary)] hover:underline">
-          모든 궁합 보기 →
+          {t("result.viewAllCompatibility")}
         </a>
       </motion.div>
 
@@ -157,7 +161,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
           <TrendingUp className="h-6 w-6 text-white" />
         </div>
         <div>
-          <p className="text-sm text-gray-500">전체 인구의 약</p>
+          <p className="text-sm text-gray-500">{t("result.populationPrefix")}</p>
           <p className="font-heading text-xl font-bold text-[var(--mbti-primary)]">
             {result.percentage}%
           </p>
@@ -169,7 +173,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
 
         <motion.button
           onClick={handleShare}
-          aria-label={shareLabel}
+          aria-label={displayLabel}
           className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--mbti-primary)] to-[var(--mbti-secondary)] px-8 py-4 text-base font-semibold text-white shadow-lg"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -178,7 +182,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
           transition={{ delay: 0.6 }}
         >
           {isCopied ? <Check className="h-5 w-5" /> : <Share2 className="h-5 w-5" />}
-          {shareLabel}
+          {displayLabel}
         </motion.button>
 
         <motion.a
@@ -191,7 +195,7 @@ export default function ResultClientWrapper({ result }: ResultClientWrapperProps
           transition={{ delay: 0.7 }}
         >
           <RotateCcw className="h-5 w-5" />
-          다시 테스트하기
+          {t("result.retakeTest")}
         </motion.a>
       </div>
 

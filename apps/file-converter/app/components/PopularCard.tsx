@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRightLeft, Image, ImagePlus } from "lucide-react";
+import { useTranslation } from "../i18n";
 
 interface PopularCardProps {
   from: string;
@@ -30,6 +31,7 @@ export default function PopularCard({
   variant,
   onClick,
 }: PopularCardProps) {
+  const { t } = useTranslation();
   const config = variantConfig[variant];
   const Icon = config.icon;
 
@@ -47,7 +49,7 @@ export default function PopularCard({
         <span className="text-sm font-semibold text-[var(--file-text)]">
           {from} &rarr; {to}
         </span>
-        <span className="text-xs text-[#A8A29E]">인기 변환</span>
+        <span className="text-xs text-[#A8A29E]">{t("popular.label")}</span>
       </div>
     </button>
   );

@@ -174,3 +174,34 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
     ],
   };
 }
+
+export function findAnnualSalaryForMonthlyNet(
+  targetMonthlyNet: number,
+  nonTaxableAmount: number = 100000,
+  dependents: number = 1,
+  childrenUnder20: number = 0
+): number {
+  // Binary search for the annual salary that produces targetMonthlyNet
+  let low = targetMonthlyNet * 12;
+  let high = targetMonthlyNet * 12 * 3;
+
+  for (let i = 0; i < 100; i++) {
+    const mid = Math.round((low + high) / 2);
+    const result = calculateSalary({
+      annualSalary: mid,
+      nonTaxableAmount,
+      dependents,
+      childrenUnder20,
+    });
+
+    if (result.monthlyNetSalary < targetMonthlyNet) {
+      low = mid;
+    } else {
+      high = mid;
+    }
+
+    if (high - low <= 10000) break;
+  }
+
+  return Math.round(high / 10000) * 10000;
+}

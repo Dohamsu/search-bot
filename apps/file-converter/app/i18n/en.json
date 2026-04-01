@@ -1,0 +1,77 @@
+{
+  "common": {
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "nav": {
+    "title": "FileFlow",
+    "subtitle": "Image Converter"
+  },
+  "hero": {
+    "heading": "Free Online File Converter - PNG, JPG, WebP, HEIC Image Conversion"
+  },
+  "dropzone": {
+    "dragText": "Drag files here or",
+    "selectButton": "Select Files",
+    "maxSize": "Max 100MB · PNG, JPG, HEIC, WEBP, GIF",
+    "unsupportedFormat": "Unsupported format",
+    "exceedsMaxSize": "Exceeds 100MB"
+  },
+  "format": {
+    "converting": "Converting...",
+    "convert": "Convert"
+  },
+  "options": {
+    "title": "Convert Options",
+    "quality": "Quality",
+    "smallFile": "Smaller file",
+    "bestQuality": "Best quality",
+    "resize": "Resize",
+    "originalSize": "Original size",
+    "width": "Width (px)",
+    "height": "Height (px)",
+    "auto": "Auto",
+    "maintainRatio": "Maintain aspect ratio"
+  },
+  "fileList": {
+    "title": "File List",
+    "fileCount": "{count} files"
+  },
+  "fileItem": {
+    "done": "Done",
+    "converting": "Converting",
+    "pending": "Pending",
+    "error": "Error",
+    "retry": "Retry",
+    "download": "Download",
+    "delete": "Delete"
+  },
+  "zip": {
+    "creating": "Creating ZIP... {progress}%",
+    "downloadAll": "Download All (ZIP) - {count} files",
+    "error": "An error occurred while creating the ZIP file."
+  },
+  "security": {
+    "message": "100% browser processing - files are never uploaded to a server"
+  },
+  "popular": {
+    "title": "Popular Conversions",
+    "label": "Popular"
+  },
+  "tabs": {
+    "convert": "Convert",
+    "tools": "Tools",
+    "recent": "Recent",
+    "preparing": "Soon",
+    "featurePreparing": "\"{name}\" feature is coming soon"
+  },
+  "errors": {
+    "unsupportedConversion": "{from} -> {to} image conversion is not supported",
+    "conversionError": "An error occurred during conversion",
+    "unsupportedFormat": "{from} → {to} conversion is not supported",
+    "noFiles": "No files to download"
+  }
+}

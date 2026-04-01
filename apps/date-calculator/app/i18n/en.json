@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "title": "Date Calculator | D-Day, Date Difference, Day of Week, Age",
+    "description": "Free D-Day calculation, date difference, add/subtract dates, and age calculator.",
+    "siteName": "Date Calculator"
+  },
+  "header": {
+    "title": "Date Calculator",
+    "subtitle": "D-Day, Date Diff, Age Calculator"
+  },
+  "tabs": {
+    "dday": "D-Day",
+    "diff": "Date Diff",
+    "addSub": "Add/Subtract",
+    "age": "Age"
+  },
+  "dday": {
+    "selectDate": "Select target date",
+    "isToday": "Today is the day!",
+    "daysPassed": "{count} days have passed",
+    "daysLeft": "{count} days remaining",
+    "weekUnit": "Weeks",
+    "monthUnit": "Months",
+    "yearUnit": "Years",
+    "weeksAndDays": "{weeks}w {days}d",
+    "onlyDays": "{days}d",
+    "months": "{count} mo",
+    "years": "{count} yr"
+  },
+  "diff": {
+    "startDate": "Start date",
+    "endDate": "End date",
+    "days": "{count} days",
+    "businessDays": "Business days (excl. Sat/Sun)",
+    "timeDiff": "Time difference",
+    "hours": "{count} hours",
+    "minutes": "{count} min",
+    "seconds": "{count} sec",
+    "yearMonthDay": "{years}y {months}m {days}d"
+  },
+  "addSub": {
+    "baseDate": "Base date",
+    "add": "Add",
+    "subtract": "Subtract",
+    "daysOnly": "Days only",
+    "yearMonthDay": "Y / M / D",
+    "days": "Days",
+    "businessDaysBasis": "Business days (excl. Sat/Sun)",
+    "year": "Years",
+    "month": "Months",
+    "day": "Days",
+    "result": "Result"
+  },
+  "age": {
+    "birthDate": "Date of birth",
+    "manAge": "Age {age}",
+    "koreanAge": "Korean age {age}",
+    "zodiacSuffix": "",
+    "zodiacLabel": "Chinese Zodiac",
+    "happyBirthday": "Happy Birthday!",
+    "birthdayToday": "Today is your birthday!",
+    "daysUntilBirthday": "Until next birthday",
+    "daysCount": "{count} days",
+    "livedTime": "Time lived",
+    "livedDays": "Days",
+    "livedHours": "Hours",
+    "livedMinutes": "Minutes"
+  },
+  "dateFormat": {
+    "full": "{dayName}, {month}/{day}/{year}"
+  },
+  "dayNames": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
+  },
+  "zodiac": {
+    "monkey": "Monkey",
+    "rooster": "Rooster",
+    "dog": "Dog",
+    "pig": "Pig",
+    "rat": "Rat",
+    "ox": "Ox",
+    "tiger": "Tiger",
+    "rabbit": "Rabbit",
+    "dragon": "Dragon",
+    "snake": "Snake",
+    "horse": "Horse",
+    "sheep": "Sheep"
+  },
+  "footer": {
+    "copyright": "Date Calculator",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastModified": "Last modified: January 1, 2026",
+    "section1Title": "1. Service Overview",
+    "section1Text": "\"Date Calculator\" (hereinafter \"Service\") is a free online tool that provides D-Day calculation, date difference, date add/subtract, and more. The Service processes user personal information to a minimum and manages it in accordance with the following policy.",
+    "section2Title": "2. Personal Information Collected",
+    "section2Text1": "The Service does not require registration. Data entered by users is not stored on servers and is processed only within the browser.",
+    "section2Text2": "However, for service improvement and usage statistics analysis, the following visit data may be automatically collected through Google Analytics.",
+    "section2Item1": "Visited page URL, access time",
+    "section2Item2": "Browser type, operating system, screen resolution",
+    "section2Item3": "Approximate access region (IP-based, anonymized)",
+    "section2Item4": "Page dwell time, navigation path",
+    "section3Title": "3. Purpose of Collection",
+    "section3Item1": "Understanding service usage and statistical analysis",
+    "section3Item2": "Improving service quality and user experience",
+    "section3Item3": "Error detection and technical problem resolution",
+    "section4Title": "4. Retention Period",
+    "section4Text": "Data collected through Google Analytics is processed according to Google's data retention policy, with a default retention period of 14 months. The service operator does not maintain a separate personal information database.",
+    "section5Title": "5. Google Analytics Notice",
+    "section5Text": "The Service uses Google Analytics, a web analytics service provided by Google Inc. Google Analytics uses cookies to collect website usage information, which is transmitted to and stored on Google servers. For more details, please refer to the ",
+    "section5LinkText": "Google Privacy Policy",
+    "section5TextAfter": ".",
+    "section6Title": "6. Cookie Usage Notice",
+    "section6Text": "The Service may use cookies for the operation of Google Analytics and Google AdSense. Cookies are small data files stored in the user's browser, used for service usage analysis and personalized advertising. Users may refuse cookie storage through browser settings, but some features may be limited in this case.",
+    "section7Title": "7. Contact",
+    "section7Text": "For inquiries regarding personal information processing, please contact us at the email below.",
+    "email": "Email: ",
+    "backToMain": "Back to main"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastModified": "Last modified: January 1, 2026",
+    "article1Title": "Article 1 (Purpose)",
+    "article1Text": "These terms set forth the conditions and procedures for using \"Date Calculator\" (hereinafter \"Service\"). The Service provides users with free online tools including D-Day calculation, date difference, date add/subtract, and more.",
+    "article2Title": "Article 2 (Nature of Service)",
+    "article2Text": "All results provided by the Service are for reference purposes only and do not replace professional consultation. Data entered by users is not stored on servers and is processed only within the browser.",
+    "article3Title": "Article 3 (Disclaimer)",
+    "article3Item1": "Results provided by the Service are for reference only, and their accuracy or completeness is not guaranteed.",
+    "article3Item2": "Calculation results are for reference only and may differ in special cases such as holidays or leap years.",
+    "article3Item3": "The service operator is not responsible for any direct or indirect damages arising from the use of the Service.",
+    "article4Title": "Article 4 (Intellectual Property)",
+    "article4Text": "All intellectual property rights to content included in the Service (design, text, source code, logos, etc.) belong to the service operator. Users may not reproduce, distribute, modify, or commercially use them without prior written consent from the service operator.",
+    "article5Title": "Article 5 (Service Changes and Suspension)",
+    "article5Text": "The service operator may change or suspend all or part of the Service as needed for operational or technical reasons. The service operator has no obligation to compensate users for damages resulting from service changes or suspension.",
+    "article6Title": "Article 6 (Advertising)",
+    "article6Text": "The Service may include advertisements such as Google AdSense to cover operating costs. Transactions through advertisements are between users and advertisers, and the service operator is not responsible for them.",
+    "article7Title": "Article 7 (Changes to Terms)",
+    "article7Text": "The service operator may change these terms within the scope not violating relevant laws, and the changed terms take effect upon notice within the Service.",
+    "article8Title": "Article 8 (Inquiries)",
+    "article8Text": "For inquiries regarding these terms, please contact us at the email below.",
+    "email": "Email: ",
+    "backToMain": "Back to main"
+  }
+}

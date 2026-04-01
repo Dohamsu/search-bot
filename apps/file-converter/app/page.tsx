@@ -14,6 +14,10 @@ import { convertImage, isImageConversion } from "./lib/converter";
 import type { FileItem } from "./lib/fileUtils";
 import type { ConvertOptions as ConvertOptionsType } from "./lib/converter";
 import { downloadAsZip } from "./lib/zipDownload";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import FileInfoSection from "./components/FileInfoSection";
 
 const popularConversions = [
   { from: "PNG", to: "JPG", variant: "blue" as const },
@@ -35,6 +39,8 @@ export default function Home() {
 
   const [isZipping, setIsZipping] = useState(false);
   const [zipProgress, setZipProgress] = useState(0);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     return () => {
@@ -119,7 +125,7 @@ export default function Home() {
                       ...f,
                       status: "error",
                       progress: 0,
-                      errorMessage: `${file.type} -> ${to} 이미지 변환을 지원하지 않습니다`,
+                      errorMessage: t("errors.unsupportedConversion", { from: file.type, to }),
                     }
                   : f
               )
@@ -129,7 +135,7 @@ export default function Home() {
           setFiles((prev) =>
             prev.map((f) =>
               f.id === file.id
-                ? { ...f, status: "error", progress: 0, errorMessage: "변환 중 오류가 발생했습니다" }
+                ? { ...f, status: "error", progress: 0, errorMessage: t("errors.conversionError") }
                 : f
             )
           );
@@ -142,14 +148,14 @@ export default function Home() {
                   ...f,
                   status: "error",
                   progress: 0,
-                  errorMessage: `${from} → ${to} 변환은 지원하지 않는 형식입니다`,
+                  errorMessage: t("errors.unsupportedFormat", { from, to }),
                 }
               : f
           )
         );
       }
     },
-    []
+    [t]
   );
 
   const handleConvert = useCallback(async () => {
@@ -198,29 +204,30 @@ export default function Home() {
         setZipProgress(progress);
       });
     } catch {
-      alert("ZIP 파일 생성 중 오류가 발생했습니다.");
+      alert(t("zip.error"));
     } finally {
       setIsZipping(false);
       setZipProgress(0);
     }
-  }, [files]);
+  }, [files, t]);
 
   return (
     <main className="flex min-h-screen flex-col bg-[var(--file-bg)]">
       <NavBar />
 
-      <div className="flex md:hidden h-14 items-center justify-center border-b border-[#E7E5E4] bg-white">
+      <div className="flex md:hidden h-14 items-center justify-between border-b border-[#E7E5E4] bg-white px-4">
         <span className="text-lg font-bold text-[var(--file-primary)]">
           FileFlow
         </span>
+        <LanguageSwitcher />
       </div>
 
-      <h1 className="sr-only">무료 온라인 파일 변환기 - PNG, JPG, WebP, HEIC 이미지 변환</h1>
+      <h1 className="sr-only">{t("hero.heading")}</h1>
 
       <BottomTabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="flex flex-1 flex-col md:flex-row gap-8 p-4 md:p-10">
-        <section className="flex flex-1 flex-col gap-6" aria-label="파일 변환">
+        <section className="flex flex-1 flex-col gap-6" aria-label={t("tabs.convert")}>
           <DropZone onFilesAdded={handleFilesAdded} />
 
           <FormatSelector
@@ -261,12 +268,12 @@ export default function Home() {
               {isZipping ? (
                 <>
                   <Loader2 size={18} className="animate-spin" aria-hidden="true" />
-                  <span>ZIP 생성 중... {zipProgress}%</span>
+                  <span>{t("zip.creating", { progress: zipProgress })}</span>
                 </>
               ) : (
                 <>
                   <Archive size={18} aria-hidden="true" />
-                  <span>전체 다운로드 (ZIP) - {doneFiles.length}개 파일</span>
+                  <span>{t("zip.downloadAll", { count: doneFiles.length })}</span>
                 </>
               )}
             </button>
@@ -282,14 +289,14 @@ export default function Home() {
               />
             </div>
             <span className="text-sm font-medium text-[#065F46]">
-              100% 브라우저 처리 - 파일이 서버에 업로드되지 않습니다
+              {t("security.message")}
             </span>
           </div>
         </section>
 
-        <aside className="hidden md:flex w-[280px] shrink-0 flex-col gap-4" aria-label="인기 변환">
+        <aside className="hidden md:flex w-[280px] shrink-0 flex-col gap-4" aria-label={t("popular.title")}>
           <h2 className="text-sm font-semibold text-[var(--file-text)]">
-            인기 변환
+            {t("popular.title")}
           </h2>
           {popularConversions.map((conv) => (
             <PopularCard
@@ -303,27 +310,29 @@ export default function Home() {
         </aside>
       </div>
 
+      <FileInfoSection />
+      <RelatedTools currentToolId="file" />
       <footer className="mt-auto border-t border-[#E7E5E4] bg-transparent py-6 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs text-[#78716C]">
-          <span>© 2025 FileFlow</span>
+          <span>&copy; 2025 FileFlow</span>
           <div className="flex items-center gap-4">
             <a
               href="/privacy"
               className="hover:text-[var(--file-primary)] hover:underline transition-colors"
             >
-              개인정보처리방침
+              {t("common.privacyPolicy")}
             </a>
             <a
               href="/terms"
               className="hover:text-[var(--file-primary)] hover:underline transition-colors"
             >
-              이용약관
+              {t("common.terms")}
             </a>
             <a
               href="mailto:rlawlsdnjswk@gmail.com"
               className="hover:text-[var(--file-primary)] hover:underline transition-colors"
             >
-              문의: rlawlsdnjswk@gmail.com
+              {t("common.contact")}: rlawlsdnjswk@gmail.com
             </a>
           </div>
         </div>

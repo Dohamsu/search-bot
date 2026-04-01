@@ -1,0 +1,122 @@
+{
+  "common": {
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "backToMain": "메인으로 돌아가기",
+    "lastModified": "최종 수정일: 2026년 1월 1일",
+    "email": "이메일",
+    "won": "원",
+    "percent": "%",
+    "manWon": "만원",
+    "eok": "억",
+    "man": "만"
+  },
+  "header": {
+    "title": "대출이자 계산기",
+    "subtitle": "2026 최신 버전"
+  },
+  "input": {
+    "sectionTitle": "대출 정보 입력",
+    "principalLabel": "대출금액 (만원)",
+    "principalUnit": "만원",
+    "principalHelper": "= {amount}원 ({display}원)",
+    "rateLabel": "연이율 (%)",
+    "periodLabel": "대출기간",
+    "yearsUnit": "년",
+    "monthsUnit": "개월",
+    "totalMonths": "총 {count}개월",
+    "methodLabel": "상환방식",
+    "methodInfo": "방식 설명",
+    "calculate": "계산하기"
+  },
+  "method": {
+    "equal_payment": "원리금균등상환",
+    "equal_principal": "원금균등상환",
+    "bullet": "만기일시상환",
+    "desc_equal_payment": "매월 동일한 금액(원금+이자)을 상환합니다. 가장 일반적인 방식입니다.",
+    "desc_equal_principal": "매월 동일한 원금을 상환하고 이자는 점차 줄어듭니다. 총 이자가 적습니다.",
+    "desc_bullet": "매월 이자만 납부하고 만기에 원금을 일시 상환합니다. 월 부담은 적지만 총 이자가 높습니다."
+  },
+  "result": {
+    "title": "계산 결과",
+    "monthlyPayment": "월 상환액",
+    "totalInterest": "총 이자",
+    "totalPayment": "총 상환액",
+    "interestRatio": "이자 비율",
+    "summaryLine": "대출원금 {principal}만원 | 연 {rate}% | {years}년 {months} | {method}",
+    "monthsSuffix": "{count}개월",
+    "rangeTo": "~ {amount}원"
+  },
+  "schedule": {
+    "showDetail": "상세 스케줄 보기 ({count}개월)",
+    "hideDetail": "상세 스케줄 닫기",
+    "month": "회차",
+    "principalPayment": "상환원금",
+    "interest": "이자",
+    "monthlyPayment": "월상환액",
+    "remainingBalance": "잔금"
+  },
+  "info": {
+    "title": "대출 상환방식 안내",
+    "equalPaymentTitle": "원리금균등상환",
+    "equalPaymentDesc": "매월 동일한 금액을 상환하여 자금 계획을 세우기 쉽습니다. 주택담보대출에서 가장 많이 사용되는 방식입니다.",
+    "equalPrincipalTitle": "원금균등상환",
+    "equalPrincipalDesc": "초기 상환 부담이 크지만 갈수록 줄어들며, 총 이자가 원리금균등보다 적습니다.",
+    "bulletTitle": "만기일시상환",
+    "bulletDesc": "매월 이자만 납부하여 부담은 적지만, 총 이자 부담이 가장 큽니다. 전세자금대출 등에서 사용됩니다."
+  },
+  "footer": {
+    "disclaimer": "본 계산기는 참고용이며, 실제 금융기관의 대출 조건과 다를 수 있습니다."
+  },
+  "privacy": {
+    "title": "개인정보처리방침",
+    "metaTitle": "개인정보처리방침 | 대출이자 계산기",
+    "metaDesc": "대출이자 계산기 서비스의 개인정보처리방침입니다.",
+    "section1Title": "1. 서비스 개요",
+    "section1Text": "\u201c대출이자 계산기\u201d(이하 \u201c서비스\u201d)는 대출 상환액과 이자를 참고용으로 계산하는 무료 온라인 도구입니다. 서비스는 사용자의 개인정보를 최소한으로 처리하며, 아래 방침에 따라 이를 관리합니다.",
+    "section2Title": "2. 처리하는 개인정보 항목",
+    "section2Text1": "서비스는 회원가입을 요구하지 않으며, 사용자가 입력하는 데이터는 서버에 저장되지 않고 브라우저 내에서만 처리됩니다.",
+    "section2Text2": "다만 서비스 개선 및 이용 통계 분석을 위해 Google Analytics를 통해 다음과 같은 방문 데이터를 자동으로 수집할 수 있습니다.",
+    "section2Item1": "방문 페이지 URL, 접속 시간",
+    "section2Item2": "브라우저 종류, 운영체제, 화면 해상도",
+    "section2Item3": "대략적인 접속 지역 (IP 기반, 익명 처리)",
+    "section2Item4": "페이지 체류 시간, 이동 경로",
+    "section3Title": "3. 수집 목적",
+    "section3Item1": "서비스 이용 현황 파악 및 통계 분석",
+    "section3Item2": "서비스 품질 개선 및 사용자 경험 향상",
+    "section3Item3": "오류 탐지 및 기술적 문제 해결",
+    "section4Title": "4. 보유 기간",
+    "section4Text": "Google Analytics를 통해 수집된 데이터는 Google의 데이터 보존 정책에 따라 처리되며, 기본 보존 기간은 14개월입니다. 서비스 운영자는 별도의 개인정보 데이터베이스를 운영하지 않습니다.",
+    "section5Title": "5. Google Analytics 사용 고지",
+    "section5Text": "서비스는 Google Inc.가 제공하는 웹 분석 서비스인 Google Analytics를 사용합니다. Google Analytics는 쿠키를 사용하여 웹사이트 이용 정보를 수집하며, 수집된 정보는 Google 서버에 전송되어 저장됩니다. 자세한 내용은 ",
+    "section5Link": "Google 개인정보처리방침",
+    "section5TextAfter": "을 참고하시기 바랍니다.",
+    "section6Title": "6. 쿠키 사용 안내",
+    "section6Text": "서비스는 Google Analytics 및 Google AdSense의 작동을 위해 쿠키를 사용할 수 있습니다. 쿠키는 사용자의 브라우저에 저장되는 소량의 데이터 파일로, 서비스 이용 분석 및 맞춤형 광고 제공에 활용됩니다. 사용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있으나, 이 경우 일부 기능 이용이 제한될 수 있습니다.",
+    "section7Title": "7. 문의처",
+    "section7Text": "개인정보 처리와 관련한 문의 사항은 아래 이메일로 연락해 주시기 바랍니다."
+  },
+  "terms": {
+    "title": "이용약관",
+    "metaTitle": "이용약관 | 대출이자 계산기",
+    "metaDesc": "대출이자 계산기 서비스의 이용약관입니다.",
+    "article1Title": "제1조 (목적)",
+    "article1Text": "본 약관은 \u201c대출이자 계산기\u201d(이하 \u201c서비스\u201d)의 이용 조건 및 절차에 관한 사항을 정하는 것을 목적으로 합니다. 서비스는 사용자에게 대출 상환액과 이자를 참고용으로 계산하는 무료 온라인 도구를 제공합니다.",
+    "article2Title": "제2조 (서비스의 성격)",
+    "article2Text": "서비스가 제공하는 모든 결과는 참고 목적으로만 제공되며, 전문 상담을 대체하지 않습니다. 사용자가 입력한 데이터는 서버에 저장되지 않고 브라우저 내에서만 처리됩니다.",
+    "article3Title": "제3조 (면책 사항)",
+    "article3Item1": "서비스가 제공하는 계산 결과는 참고용이며, 그 정확성이나 완전성을 보장하지 않습니다.",
+    "article3Item2": "실제 대출 상환액은 금융기관별 이율, 수수료 등에 따라 달라질 수 있습니다. 대출 관련 의사결정은 반드시 해당 금융기관에 확인하시기 바랍니다.",
+    "article3Item3": "서비스 이용으로 인해 발생하는 직접적 또는 간접적 손해에 대해 서비스 운영자는 책임을 지지 않습니다.",
+    "article4Title": "제4조 (지적재산권)",
+    "article4Text": "서비스에 포함된 모든 콘텐츠(디자인, 텍스트, 소스 코드, 로고 등)에 대한 지적재산권은 서비스 운영자에게 귀속됩니다. 사용자는 서비스 운영자의 사전 서면 동의 없이 이를 복제, 배포, 수정, 상업적으로 이용할 수 없습니다.",
+    "article5Title": "제5조 (서비스 변경 및 중단)",
+    "article5Text": "서비스 운영자는 운영상, 기술상의 필요에 따라 서비스의 전부 또는 일부를 변경하거나 중단할 수 있습니다. 서비스 변경 또는 중단에 따른 사용자의 손해에 대해 서비스 운영자는 별도의 보상 의무를 지지 않습니다.",
+    "article6Title": "제6조 (광고)",
+    "article6Text": "서비스는 운영 비용 충당을 위해 Google AdSense 등의 광고를 포함할 수 있습니다. 광고에 의한 거래는 사용자와 광고주 간의 문제이며, 서비스 운영자는 이에 대해 책임을 지지 않습니다.",
+    "article7Title": "제7조 (약관의 변경)",
+    "article7Text": "서비스 운영자는 관련 법령에 위배되지 않는 범위 내에서 본 약관을 변경할 수 있으며, 변경된 약관은 서비스 내에 공지함으로써 효력이 발생합니다.",
+    "article8Title": "제8조 (문의)",
+    "article8Text": "본 약관에 관한 문의 사항은 아래 이메일로 연락해 주시기 바랍니다."
+  }
+}

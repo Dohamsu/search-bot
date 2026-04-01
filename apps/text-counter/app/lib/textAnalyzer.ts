@@ -117,19 +117,42 @@ export interface SnsLimit {
   percentage: number;
 }
 
+/** Translated label set for SNS limits */
+export interface SnsLabels {
+  kakao: string;
+  sms: string;
+  lms: string;
+  twitter: string;
+  instagram: string;
+  charUnit: string;
+  byteUnit: string;
+  weightUnit: string;
+}
+
 /**
  * SNS 글자수 체크
  */
-export function checkSnsLimits(text: string, stats: TextStats): SnsLimit[] {
+export function checkSnsLimits(text: string, stats: TextStats, labels?: SnsLabels): SnsLimit[] {
   // 트위터: 한글/일본어/중국어는 2 weight, 나머지 1 weight, 총 280 weight
   const twitterWeight = calculateTwitterWeight(text);
 
+  const l: SnsLabels = labels ?? {
+    kakao: "카카오톡 메시지",
+    sms: "SMS",
+    lms: "LMS",
+    twitter: "트위터/X",
+    instagram: "인스타그램 캡션",
+    charUnit: "자",
+    byteUnit: "바이트",
+    weightUnit: "가중치",
+  };
+
   return [
     {
-      name: "카카오톡 메시지",
+      name: l.kakao,
       limit: 1000,
       current: stats.charWithSpaces,
-      unit: "자",
+      unit: l.charUnit,
       exceeded: stats.charWithSpaces > 1000,
       percentage:
         stats.charWithSpaces === 0
@@ -137,10 +160,10 @@ export function checkSnsLimits(text: string, stats: TextStats): SnsLimit[] {
           : Math.round((stats.charWithSpaces / 1000) * 100),
     },
     {
-      name: "SMS",
+      name: l.sms,
       limit: 80,
       current: stats.byteEucKr,
-      unit: "바이트",
+      unit: l.byteUnit,
       exceeded: stats.byteEucKr > 80,
       percentage:
         stats.byteEucKr === 0
@@ -148,10 +171,10 @@ export function checkSnsLimits(text: string, stats: TextStats): SnsLimit[] {
           : Math.round((stats.byteEucKr / 80) * 100),
     },
     {
-      name: "LMS",
+      name: l.lms,
       limit: 2000,
       current: stats.byteEucKr,
-      unit: "바이트",
+      unit: l.byteUnit,
       exceeded: stats.byteEucKr > 2000,
       percentage:
         stats.byteEucKr === 0
@@ -159,10 +182,10 @@ export function checkSnsLimits(text: string, stats: TextStats): SnsLimit[] {
           : Math.round((stats.byteEucKr / 2000) * 100),
     },
     {
-      name: "트위터/X",
+      name: l.twitter,
       limit: 280,
       current: twitterWeight,
-      unit: "가중치",
+      unit: l.weightUnit,
       exceeded: twitterWeight > 280,
       percentage:
         twitterWeight === 0
@@ -170,10 +193,10 @@ export function checkSnsLimits(text: string, stats: TextStats): SnsLimit[] {
           : Math.round((twitterWeight / 280) * 100),
     },
     {
-      name: "인스타그램 캡션",
+      name: l.instagram,
       limit: 2200,
       current: stats.charWithSpaces,
-      unit: "자",
+      unit: l.charUnit,
       exceeded: stats.charWithSpaces > 2200,
       percentage:
         stats.charWithSpaces === 0

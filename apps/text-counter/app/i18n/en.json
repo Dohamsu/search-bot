@@ -1,0 +1,63 @@
+{
+  "header": {
+    "title": "Character Counter",
+    "subtitle": "Real-time character / word / byte counter"
+  },
+  "input": {
+    "label": "Text Input",
+    "placeholder": "Type or paste your text here...",
+    "charCount": "{count} chars",
+    "wordCount": "{count} words"
+  },
+  "transform": {
+    "title": "Text Transform Tools",
+    "toUpperCase": "UPPERCASE",
+    "toLowerCase": "lowercase",
+    "trim": "Trim Whitespace",
+    "removeDuplicateSpaces": "Remove Extra Spaces",
+    "removeLineBreaks": "Remove Line Breaks",
+    "copy": "Copy to Clipboard",
+    "copied": "Copied!"
+  },
+  "sns": {
+    "title": "SNS Character Limits",
+    "exceeded": "Over",
+    "kakao": "KakaoTalk Message",
+    "sms": "SMS (Korean)",
+    "lms": "LMS (Korean)",
+    "twitter": "Twitter/X",
+    "instagram": "Instagram Caption",
+    "charUnit": "chars",
+    "byteUnit": "bytes",
+    "weightUnit": "weight"
+  },
+  "stats": {
+    "title": "Text Statistics",
+    "charWithSpaces": "Characters (w/ spaces)",
+    "charWithoutSpaces": "Characters (w/o spaces)",
+    "wordCount": "Word Count",
+    "byteUtf8": "Bytes (UTF-8)",
+    "byteEucKr": "Bytes (EUC-KR)",
+    "lineCount": "Line Count",
+    "sentenceCount": "Sentence Count",
+    "manuscriptPages": "Manuscript Pages",
+    "manuscriptPagesValue": "{count} pages",
+    "manuscriptSubtitle": "200-char manuscript paper",
+    "readingTime": "Reading Time",
+    "readingTimeZero": "0 min",
+    "readingTimeValue": "~{min} min",
+    "readingTimeSubtitle": "Based on 500 chars/min"
+  },
+  "guide": {
+    "title": "Usage Guide",
+    "tip1": "All statistics update in real-time as you type.",
+    "tip2": "Check character limits for each SNS platform.",
+    "tip3": "Use transform tools for case conversion, whitespace removal, and more.",
+    "tip4": "EUC-KR byte count is used for Korean SMS/LMS messaging limits."
+  },
+  "footer": {
+    "copyright": "© 2026 Character Counter. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

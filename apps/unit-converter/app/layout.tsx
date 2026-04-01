@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
+import { LocaleProvider } from "./i18n";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk-var",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
 const inter = Inter({
   variable: "--font-inter-var",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://unitconv.example.com";
+const SITE_URL = "https://unit.onekit.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -158,7 +160,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} antialiased`}
       >
-        {children}
+        <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>
   );

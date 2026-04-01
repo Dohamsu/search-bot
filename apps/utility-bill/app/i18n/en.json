@@ -1,0 +1,120 @@
+{
+  "header": {
+    "title": "Utility Bill Calculator",
+    "subtitle": "Electricity, Water & Gas Bill Estimates"
+  },
+  "tabs": {
+    "electric": "Electricity",
+    "water": "Water",
+    "gas": "Gas"
+  },
+  "disclaimer": "Rates are approximate based on 2026 Korean utility rates. Actual charges may vary by region and provider.",
+  "electric": {
+    "title": "Electricity Bill Calculator",
+    "usageLabel": "Electricity Usage (kWh)",
+    "usagePlaceholder": "e.g. 350",
+    "purposeLabel": "Usage Type",
+    "residential": "Residential (Low Voltage)",
+    "commercial": "Commercial (Class A) I",
+    "seasonLabel": "Season",
+    "seasonOther": "Other (Mar-Jun, Sep-Feb)",
+    "seasonSummer": "Summer (Jul-Aug)",
+    "discountLabel": "Welfare Discount",
+    "discountNone": "None",
+    "discountDisability": "Disability Discount",
+    "discountBasicLiving": "Basic Livelihood Recipient",
+    "discountNextLowest": "Near-Poverty Class",
+    "discountLargeFam": "Large Family Discount",
+    "discountNewborn": "Newborn Family Discount",
+    "calcButton": "Calculate Electricity Bill"
+  },
+  "water": {
+    "title": "Water Bill Calculator",
+    "seoulBasis": "(Based on Seoul rates)",
+    "usageLabel": "Water Usage (m\u00b3)",
+    "usagePlaceholder": "e.g. 20",
+    "purposeLabel": "Usage Type",
+    "household": "Household",
+    "business": "Commercial",
+    "calcButton": "Calculate Water Bill"
+  },
+  "gas": {
+    "title": "City Gas Bill Calculator",
+    "seoulBasis": "(Based on Seoul City Gas rates)",
+    "usageLabel": "Gas Usage (m\u00b3)",
+    "usagePlaceholder": "e.g. 30",
+    "purposeLabel": "Usage Type",
+    "cooking": "Cooking",
+    "heating": "Heating",
+    "calcButton": "Calculate Gas Bill"
+  },
+  "result": {
+    "estimatedElectric": "Estimated Electricity Bill",
+    "estimatedWater": "Estimated Water Bill",
+    "estimatedGas": "Estimated Gas Bill",
+    "won": "KRW",
+    "residentialLabel": "Residential",
+    "commercialLabel": "Commercial",
+    "summerLabel": "Summer",
+    "otherSeasonLabel": "Other Season",
+    "householdLabel": "Household",
+    "businessLabel": "Commercial",
+    "cookingLabel": "Cooking",
+    "heatingLabel": "Heating",
+    "seoulCity": "Seoul",
+    "seoulGas": "Seoul City Gas",
+    "progressiveTiers": "Progressive Tier Breakdown",
+    "usageTiers": "Usage Tier Breakdown",
+    "feeDetail": "Fee Details",
+    "baseFee": "Base Fee",
+    "energyCharge": "Energy Charge",
+    "climateCharge": "Climate & Environment Fee (9 KRW/kWh)",
+    "fuelAdjust": "Fuel Cost Adjustment (5 KRW/kWh)",
+    "welfareDiscount": "Welfare Discount ({label})",
+    "subtotal": "Subtotal",
+    "vat": "VAT (10%)",
+    "elecFund": "Electric Industry Fund (3.7%)",
+    "totalSum": "Grand Total",
+    "waterBaseFee": "Water Supply Base Fee (15mm)",
+    "waterUsageCharge": "Water Supply Usage Fee",
+    "sewerCharge": "Sewage Fee (470 KRW/m\u00b3)",
+    "waterUseFee": "Water Use Surcharge (170 KRW/m\u00b3)",
+    "gasUsageCharge": "Usage Fee ({usage}m\u00b3 \u00d7 {unitPrice} KRW)",
+    "gasConversion": "1m\u00b3 = {mj}MJ \u00d7 {price} KRW/MJ = ",
+    "gasConversionResult": "approx. {unitPrice} KRW/m\u00b3",
+    "commercialTierLabel": "Commercial (Class A) I"
+  },
+  "tips": {
+    "title": "Utility Saving Tips",
+    "electricTitle": "Electricity Savings",
+    "waterTitle": "Water Savings",
+    "gasTitle": "Gas Savings",
+    "electric": [
+      "Using a standby power cutoff multi-tap can save 5-10% on your monthly electricity bill.",
+      "Keep your AC at 26-28\u00b0C. Raising it by 1\u00b0C saves about 7% on cooling costs.",
+      "Switching to LED lighting saves about 80% energy compared to incandescent bulbs.",
+      "Avoid opening the refrigerator frequently and keep it at least 10cm from the wall.",
+      "Run your washer and dryer with full loads for maximum efficiency."
+    ],
+    "water": [
+      "A water-saving shower head can reduce water usage by 30-40%.",
+      "Run the washing machine with full loads and set the appropriate water level.",
+      "Using a cup while brushing teeth saves about 12,000L of water per year.",
+      "Washing dishes in a filled basin uses about 50% less water than running water.",
+      "Placing a filled water bottle in the toilet tank saves 1-2L per flush."
+    ],
+    "gas": [
+      "Use the boiler's away mode to reduce unnecessary heating.",
+      "Insulation tape on windows/doors and thermal curtains improve heating efficiency.",
+      "Lowering the boiler's hot water temperature reduces gas consumption.",
+      "Covering pots while cooking shortens cooking time and saves gas.",
+      "Regular boiler pipe cleaning improves heating efficiency."
+    ]
+  },
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "footerNote": "This calculator is for reference only. Based on Korean utility rates. Actual charges may vary by region and provider.",
+    "copyright": "\u00a9 2026 Utility Bill Calculator. All rights reserved."
+  }
+}

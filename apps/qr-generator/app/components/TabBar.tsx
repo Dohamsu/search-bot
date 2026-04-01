@@ -1,15 +1,8 @@
 'use client';
 
-const tabs = [
-  { id: 'url', label: 'URL' },
-  { id: 'text', label: '텍스트' },
-  { id: 'wifi', label: 'Wi-Fi' },
-  { id: 'contact', label: '연락처' },
-  { id: 'email', label: '이메일' },
-  { id: 'sms', label: 'SMS' },
-  { id: 'location', label: '위치' },
-  { id: 'calendar', label: '일정' },
-];
+import { useTranslation } from '../i18n';
+
+const tabIds = ['url', 'text', 'wifi', 'contact', 'email', 'sms', 'location', 'calendar'] as const;
 
 interface TabBarProps {
   activeTab: string;
@@ -17,21 +10,23 @@ interface TabBarProps {
 }
 
 export default function TabBar({ activeTab, onTabChange }: TabBarProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex border-b border-zinc-200 overflow-x-auto scrollbar-none">
-      {tabs.map((tab) => {
-        const isActive = activeTab === tab.id;
+      {tabIds.map((id) => {
+        const isActive = activeTab === id;
         return (
           <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
+            key={id}
+            onClick={() => onTabChange(id)}
             className={`px-5 py-3 text-sm font-medium transition-colors cursor-pointer whitespace-nowrap ${
               isActive
                 ? 'text-[var(--qr-primary)] border-b-2 border-[var(--qr-primary)]'
                 : 'text-zinc-500 hover:text-zinc-700'
             }`}
           >
-            {tab.label}
+            {t(`tabs.${id}`)}
           </button>
         );
       })}

@@ -1,13 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslation } from "../i18n";
 
 interface ResultHeaderProps {
   type: string;
-  title: string;
+  titleKey: string;
 }
 
-export default function ResultHeader({ type, title }: ResultHeaderProps) {
+export default function ResultHeader({ type, titleKey }: ResultHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       className="flex w-full flex-col items-center gap-3 bg-gradient-to-b from-[#8B5CF6] via-[#EC4899] to-[#F9A8D4] px-6 pb-10 pt-12 md:pb-12 md:pt-16"
@@ -21,7 +24,7 @@ export default function ResultHeader({ type, title }: ResultHeaderProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        테스트 완료!
+        {t("result.testComplete")}
       </motion.p>
 
       <motion.div
@@ -48,7 +51,7 @@ export default function ResultHeader({ type, title }: ResultHeaderProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        {title}
+        {t(titleKey)}
       </motion.h1>
     </motion.div>
   );

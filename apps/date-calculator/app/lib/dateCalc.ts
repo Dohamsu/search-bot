@@ -98,26 +98,44 @@ export function getKoreanTraditionalAge(
   return today.getFullYear() - birthDate.getFullYear() + 1;
 }
 
-/** 띠 (12지신) */
-export function getZodiacAnimal(year: number): {
-  name: string;
-  emoji: string;
-} {
-  const animals: { name: string; emoji: string }[] = [
-    { name: "원숭이", emoji: "🐵" },
-    { name: "닭", emoji: "🐔" },
-    { name: "개", emoji: "🐕" },
-    { name: "돼지", emoji: "🐷" },
-    { name: "쥐", emoji: "🐭" },
-    { name: "소", emoji: "🐂" },
-    { name: "호랑이", emoji: "🐯" },
-    { name: "토끼", emoji: "🐰" },
-    { name: "용", emoji: "🐲" },
-    { name: "뱀", emoji: "🐍" },
-    { name: "말", emoji: "🐴" },
-    { name: "양", emoji: "🐑" },
+type TFunc = (key: string, params?: Record<string, string | number>) => string;
+
+/** 띠 (12지신) — returns a key for the zodiac animal name and its emoji */
+export function getZodiacAnimal(
+  year: number,
+  t?: TFunc
+): { name: string; emoji: string } {
+  const animalKeys = [
+    "monkey",
+    "rooster",
+    "dog",
+    "pig",
+    "rat",
+    "ox",
+    "tiger",
+    "rabbit",
+    "dragon",
+    "snake",
+    "horse",
+    "sheep",
   ];
-  return animals[year % 12];
+  const emojis = [
+    "\uD83D\uDC35", // monkey
+    "\uD83D\uDC14", // rooster
+    "\uD83D\uDC15", // dog
+    "\uD83D\uDC37", // pig
+    "\uD83D\uDC2D", // rat
+    "\uD83D\uDC02", // ox
+    "\uD83D\uDC2F", // tiger
+    "\uD83D\uDC30", // rabbit
+    "\uD83D\uDC32", // dragon
+    "\uD83D\uDC0D", // snake
+    "\uD83D\uDC34", // horse
+    "\uD83D\uDC11", // sheep
+  ];
+  const idx = year % 12;
+  const name = t ? t(`zodiac.${animalKeys[idx]}`) : animalKeys[idx];
+  return { name, emoji: emojis[idx] };
 }
 
 /** 다음 생일까지 남은 일수 */
@@ -168,18 +186,30 @@ export function getDateDifference(
   return { years, months, days };
 }
 
-/** 요일 이름 (한국어) */
-export function getDayName(date: Date): string {
-  const days = [
-    "일요일",
-    "월요일",
-    "화요일",
-    "수요일",
-    "목요일",
-    "금요일",
-    "토요일",
+/** 요일 이름 — returns translated day name via t() */
+export function getDayName(date: Date, t?: TFunc): string {
+  const dayKeys = [
+    "dayNames.sunday",
+    "dayNames.monday",
+    "dayNames.tuesday",
+    "dayNames.wednesday",
+    "dayNames.thursday",
+    "dayNames.friday",
+    "dayNames.saturday",
   ];
-  return days[date.getDay()];
+  const key = dayKeys[date.getDay()];
+  if (t) return t(key);
+  // Fallback to Korean
+  const fallback = [
+    "\uC77C\uC694\uC77C",
+    "\uC6D4\uC694\uC77C",
+    "\uD654\uC694\uC77C",
+    "\uC218\uC694\uC77C",
+    "\uBAA9\uC694\uC77C",
+    "\uAE08\uC694\uC77C",
+    "\uD1A0\uC694\uC77C",
+  ];
+  return fallback[date.getDay()];
 }
 
 /** 날짜를 YYYY-MM-DD 형식 문자열로 변환 */
@@ -190,13 +220,16 @@ export function formatDateToString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-/** 날짜를 한국식 표기로 변환 */
-export function formatDateKorean(date: Date): string {
+/** 날짜를 로케일에 맞게 표기 — uses t() for format and day names */
+export function formatDateKorean(date: Date, t?: TFunc): string {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  const dayName = getDayName(date);
-  return `${year}년 ${month}월 ${day}일 (${dayName})`;
+  const dayName = getDayName(date, t);
+  if (t) {
+    return t("dateFormat.full", { year, month, day, dayName });
+  }
+  return `${year}\uB144 ${month}\uC6D4 ${day}\uC77C (${dayName})`;
 }
 
 /** 숫자에 천 단위 콤마 */

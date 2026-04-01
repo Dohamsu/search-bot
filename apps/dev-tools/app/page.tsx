@@ -27,7 +27,7 @@ import {
   testRegex,
   highlightMatches,
   generateLoremIpsum,
-  REGEX_EXAMPLES,
+  getRegexExamples,
 } from "./lib/devUtils";
 import type {
   JSONValidationResult,
@@ -37,8 +37,12 @@ import type {
   RegexMatch,
   LoremOptions,
 } from "./lib/devUtils";
+import { useTranslation } from "./i18n";
+import LanguageSwitcher from "./i18n/LanguageSwitcher";
+import RelatedTools from "./components/RelatedTools";
+import DevToolsInfoSection from "./components/DevToolsInfoSection";
 
-// ─── 탭 정의 ──────────────────────────────────────
+// ─── Tab definition ──────────────────────────────────────
 
 type ToolTab =
   | "json"
@@ -51,24 +55,25 @@ type ToolTab =
 
 interface TabInfo {
   id: ToolTab;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
 }
 
 const TABS: TabInfo[] = [
-  { id: "json", label: "JSON 포맷터", icon: <Braces size={18} /> },
-  { id: "base64", label: "Base64", icon: <FileKey size={18} /> },
-  { id: "url", label: "URL 인코딩", icon: <Link size={18} /> },
-  { id: "uuid", label: "UUID 생성", icon: <Fingerprint size={18} /> },
-  { id: "hash", label: "해시 생성", icon: <Hash size={18} /> },
-  { id: "regex", label: "정규식 테스트", icon: <Regex size={18} /> },
-  { id: "lorem", label: "Lorem Ipsum", icon: <Type size={18} /> },
+  { id: "json", labelKey: "tabs.json", icon: <Braces size={18} /> },
+  { id: "base64", labelKey: "tabs.base64", icon: <FileKey size={18} /> },
+  { id: "url", labelKey: "tabs.url", icon: <Link size={18} /> },
+  { id: "uuid", labelKey: "tabs.uuid", icon: <Fingerprint size={18} /> },
+  { id: "hash", labelKey: "tabs.hash", icon: <Hash size={18} /> },
+  { id: "regex", labelKey: "tabs.regex", icon: <Regex size={18} /> },
+  { id: "lorem", labelKey: "tabs.lorem", icon: <Type size={18} /> },
 ];
 
-// ─── 복사 버튼 컴포넌트 ─────────────────────────────
+// ─── Copy button component ─────────────────────────────
 
 function CopyButton({ text, className }: { text: string; className?: string }) {
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation();
 
   const handleCopy = useCallback(async () => {
     try {
@@ -98,18 +103,19 @@ function CopyButton({ text, className }: { text: string; className?: string }) {
       } ${className || ""}`}
     >
       {copied ? <Check size={14} /> : <Copy size={14} />}
-      {copied ? "복사됨" : "복사"}
+      {copied ? t("common.copied") : t("common.copy")}
     </button>
   );
 }
 
-// ─── JSON 포맷터 ────────────────────────────────────
+// ─── JSON Formatter ────────────────────────────────────
 
 function JSONTool() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [indent, setIndent] = useState(2);
   const [validation, setValidation] = useState<JSONValidationResult | null>(null);
+  const { t } = useTranslation();
 
   const handleFormat = () => {
     try {
@@ -139,7 +145,7 @@ function JSONTool() {
     const v = validateJSON(input);
     setValidation(v);
     if (v.valid) {
-      setOutput("JSON이 유효합니다.");
+      setOutput(t("json.validJson"));
     } else {
       setOutput("");
     }
@@ -147,49 +153,49 @@ function JSONTool() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">JSON 포맷터 / 검증기</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("json.title")}</h2>
       <p className="text-sm text-slate-500">
-        JSON 문자열을 포맷팅, 압축, 검증할 수 있습니다.
+        {t("json.description")}
       </p>
 
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-600">들여쓰기:</label>
+          <label className="text-sm text-slate-600">{t("json.indent")}</label>
           <select
             value={indent}
             onChange={(e) => setIndent(Number(e.target.value))}
             className="px-2 py-1 border border-slate-300 rounded text-sm"
           >
-            <option value={2}>2 스페이스</option>
-            <option value={4}>4 스페이스</option>
+            <option value={2}>{t("json.spaces2")}</option>
+            <option value={4}>{t("json.spaces4")}</option>
           </select>
         </div>
         <button
           onClick={handleFormat}
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
         >
-          포맷 (Pretty Print)
+          {t("json.format")}
         </button>
         <button
           onClick={handleMinify}
           className="px-4 py-2 bg-slate-600 text-white rounded-md text-sm font-medium hover:bg-slate-700 transition-colors"
         >
-          압축 (Minify)
+          {t("json.minify")}
         </button>
         <button
           onClick={handleValidate}
           className="px-4 py-2 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 transition-colors"
         >
-          검증
+          {t("json.validate")}
         </button>
       </div>
 
       {validation && !validation.valid && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700">
-          <strong>오류:</strong> {validation.error}
+          <strong>{t("json.errorLabel")}</strong> {validation.error}
           {validation.line && (
             <span className="ml-2">
-              (줄: {validation.line}, 열: {validation.column})
+              {t("json.lineCol", { line: validation.line, column: validation.column ?? 0 })}
             </span>
           )}
         </div>
@@ -197,25 +203,25 @@ function JSONTool() {
 
       {validation?.valid && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-md text-sm text-green-700">
-          JSON이 유효합니다.
+          {t("json.validJson")}
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            입력
+            {t("common.input")}
           </label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder='{"key": "value"}'
+            placeholder={t("json.placeholder")}
             className="code-area w-full h-64 p-3 border border-slate-300 rounded-md resize-y text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
           />
         </div>
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-sm font-medium text-slate-700">결과</label>
+            <label className="text-sm font-medium text-slate-700">{t("common.result")}</label>
             {output && <CopyButton text={output} />}
           </div>
           <textarea
@@ -229,19 +235,20 @@ function JSONTool() {
   );
 }
 
-// ─── Base64 인코딩/디코딩 ────────────────────────────
+// ─── Base64 Encode/Decode ────────────────────────────
 
 function Base64Tool() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const handleEncode = () => {
     try {
       setOutput(base64Encode(input));
       setError("");
     } catch {
-      setError("인코딩 중 오류가 발생했습니다.");
+      setError(t("base64.encodeError"));
       setOutput("");
     }
   };
@@ -251,16 +258,16 @@ function Base64Tool() {
       setOutput(base64Decode(input));
       setError("");
     } catch {
-      setError("유효하지 않은 Base64 문자열입니다.");
+      setError(t("base64.decodeError"));
       setOutput("");
     }
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">Base64 인코딩 / 디코딩</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("base64.title")}</h2>
       <p className="text-sm text-slate-500">
-        텍스트를 Base64로 인코딩/디코딩합니다. UTF-8 (한글 등)을 지원합니다.
+        {t("base64.description")}
       </p>
 
       <div className="flex gap-3">
@@ -268,13 +275,13 @@ function Base64Tool() {
           onClick={handleEncode}
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
         >
-          인코딩
+          {t("common.encode")}
         </button>
         <button
           onClick={handleDecode}
           className="px-4 py-2 bg-slate-600 text-white rounded-md text-sm font-medium hover:bg-slate-700 transition-colors"
         >
-          디코딩
+          {t("common.decode")}
         </button>
       </div>
 
@@ -287,18 +294,18 @@ function Base64Tool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            입력
+            {t("common.input")}
           </label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="인코딩 또는 디코딩할 텍스트를 입력하세요"
+            placeholder={t("base64.placeholder")}
             className="code-area w-full h-48 p-3 border border-slate-300 rounded-md resize-y text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
           />
         </div>
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-sm font-medium text-slate-700">결과</label>
+            <label className="text-sm font-medium text-slate-700">{t("common.result")}</label>
             {output && <CopyButton text={output} />}
           </div>
           <textarea
@@ -312,20 +319,21 @@ function Base64Tool() {
   );
 }
 
-// ─── URL 인코딩/디코딩 ──────────────────────────────
+// ─── URL Encode/Decode ──────────────────────────────
 
 function URLTool() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<URLEncodeMode>("component");
   const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   const handleEncode = () => {
     try {
       setOutput(urlEncode(input, mode));
       setError("");
     } catch {
-      setError("인코딩 중 오류가 발생했습니다.");
+      setError(t("url.encodeError"));
       setOutput("");
     }
   };
@@ -335,21 +343,21 @@ function URLTool() {
       setOutput(urlDecode(input, mode));
       setError("");
     } catch {
-      setError("유효하지 않은 URL 인코딩 문자열입니다.");
+      setError(t("url.decodeError"));
       setOutput("");
     }
   };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">URL 인코딩 / 디코딩</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("url.title")}</h2>
       <p className="text-sm text-slate-500">
-        URL 문자열을 인코딩/디코딩합니다.
+        {t("url.description")}
       </p>
 
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-600">모드:</label>
+          <label className="text-sm text-slate-600">{t("url.mode")}</label>
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value as URLEncodeMode)}
@@ -363,13 +371,13 @@ function URLTool() {
           onClick={handleEncode}
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
         >
-          인코딩
+          {t("common.encode")}
         </button>
         <button
           onClick={handleDecode}
           className="px-4 py-2 bg-slate-600 text-white rounded-md text-sm font-medium hover:bg-slate-700 transition-colors"
         >
-          디코딩
+          {t("common.decode")}
         </button>
       </div>
 
@@ -382,18 +390,18 @@ function URLTool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            입력
+            {t("common.input")}
           </label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="https://example.com/path?key=값"
+            placeholder={t("url.placeholder")}
             className="code-area w-full h-48 p-3 border border-slate-300 rounded-md resize-y text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
           />
         </div>
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-sm font-medium text-slate-700">결과</label>
+            <label className="text-sm font-medium text-slate-700">{t("common.result")}</label>
             {output && <CopyButton text={output} />}
           </div>
           <textarea
@@ -407,7 +415,7 @@ function URLTool() {
   );
 }
 
-// ─── UUID 생성기 ────────────────────────────────────
+// ─── UUID Generator ────────────────────────────────────
 
 function UUIDTool() {
   const [count, setCount] = useState(1);
@@ -416,6 +424,7 @@ function UUIDTool() {
     hyphen: true,
   });
   const [uuids, setUuids] = useState<string[]>([]);
+  const { t } = useTranslation();
 
   const handleGenerate = () => {
     const result = generateMultipleUUIDs(count, options);
@@ -424,14 +433,14 @@ function UUIDTool() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">UUID v4 생성기</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("uuid.title")}</h2>
       <p className="text-sm text-slate-500">
-        랜덤 UUID v4를 생성합니다.
+        {t("uuid.description")}
       </p>
 
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-600">생성 개수:</label>
+          <label className="text-sm text-slate-600">{t("uuid.count")}</label>
           <input
             type="number"
             min={1}
@@ -448,7 +457,7 @@ function UUIDTool() {
             onChange={(e) => setOptions({ ...options, uppercase: e.target.checked })}
             className="rounded"
           />
-          대문자
+          {t("uuid.uppercase")}
         </label>
         <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
           <input
@@ -457,13 +466,13 @@ function UUIDTool() {
             onChange={(e) => setOptions({ ...options, hyphen: e.target.checked })}
             className="rounded"
           />
-          하이픈 포함
+          {t("uuid.hyphen")}
         </label>
         <button
           onClick={handleGenerate}
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
         >
-          생성
+          {t("common.generate")}
         </button>
       </div>
 
@@ -471,7 +480,7 @@ function UUIDTool() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-slate-700">
-              생성 결과 ({uuids.length}개)
+              {t("uuid.resultCount", { count: uuids.length })}
             </span>
             <CopyButton text={uuids.join("\n")} />
           </div>
@@ -489,12 +498,13 @@ function UUIDTool() {
   );
 }
 
-// ─── 해시 생성기 ────────────────────────────────────
+// ─── Hash Generator ────────────────────────────────────
 
 function HashTool() {
   const [input, setInput] = useState("");
   const [hashes, setHashes] = useState<Record<HashAlgorithm, string> | null>(null);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handleGenerate = async () => {
     if (!input) return;
@@ -511,19 +521,19 @@ function HashTool() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">해시 생성기</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("hash.title")}</h2>
       <p className="text-sm text-slate-500">
-        입력 텍스트의 SHA-1, SHA-256, SHA-384, SHA-512 해시를 생성합니다.
+        {t("hash.description")}
       </p>
 
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          입력 텍스트
+          {t("hash.inputLabel")}
         </label>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="해시할 텍스트를 입력하세요"
+          placeholder={t("hash.placeholder")}
           className="code-area w-full h-32 p-3 border border-slate-300 rounded-md resize-y text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
         />
       </div>
@@ -533,7 +543,7 @@ function HashTool() {
         disabled={loading || !input}
         className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "생성 중..." : "해시 생성"}
+        {loading ? t("hash.generating") : t("hash.generateHash")}
       </button>
 
       {hashes && (
@@ -562,7 +572,7 @@ function HashTool() {
   );
 }
 
-// ─── 정규식 테스터 ──────────────────────────────────
+// ─── Regex Tester ──────────────────────────────────
 
 function RegexTool() {
   const [pattern, setPattern] = useState("");
@@ -570,12 +580,15 @@ function RegexTool() {
   const [testString, setTestString] = useState("");
   const [matches, setMatches] = useState<RegexMatch[]>([]);
   const [error, setError] = useState("");
+  const { t, locale } = useTranslation();
+
+  const regexExamples = getRegexExamples(locale);
 
   const flagStr = [flags.g && "g", flags.i && "i", flags.m && "m"]
     .filter(Boolean)
     .join("");
 
-  // 실시간 매칭
+  // Real-time matching
   useEffect(() => {
     if (!pattern || !testString) {
       setMatches([]);
@@ -605,14 +618,14 @@ function RegexTool() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">정규식 테스터</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("regex.title")}</h2>
       <p className="text-sm text-slate-500">
-        정규식 패턴을 실시간으로 테스트하고 매치 결과를 확인합니다.
+        {t("regex.description")}
       </p>
 
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          정규식 패턴
+          {t("regex.patternLabel")}
         </label>
         <div className="flex gap-2 items-center">
           <span className="text-slate-400 text-lg">/</span>
@@ -653,16 +666,16 @@ function RegexTool() {
 
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          흔한 정규식 예제
+          {t("regex.examplesLabel")}
         </label>
         <div className="flex flex-wrap gap-2">
-          {REGEX_EXAMPLES.map((ex) => (
+          {regexExamples.map((ex) => (
             <button
-              key={ex.name}
+              key={ex.nameKey}
               onClick={() => handleExample(ex)}
               className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs hover:bg-slate-200 transition-colors"
             >
-              {ex.name}
+              {t(ex.nameKey)}
             </button>
           ))}
         </div>
@@ -670,12 +683,12 @@ function RegexTool() {
 
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          테스트 문자열
+          {t("regex.testStringLabel")}
         </label>
         <textarea
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
-          placeholder="테스트할 문자열을 입력하세요"
+          placeholder={t("regex.testStringPlaceholder")}
           className="w-full h-32 p-3 border border-slate-300 rounded-md resize-y text-sm bg-white focus:ring-2 focus:ring-blue-300 focus:border-blue-400 outline-none"
         />
       </div>
@@ -684,7 +697,7 @@ function RegexTool() {
         <>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              매칭 하이라이트
+              {t("regex.highlightLabel")}
             </label>
             <div className="p-3 bg-white border border-slate-300 rounded-md text-sm whitespace-pre-wrap break-all min-h-[3rem]">
               {segments.map((seg, i) =>
@@ -701,10 +714,10 @@ function RegexTool() {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              매치 결과 ({matches.length}개)
+              {t("regex.matchResultLabel", { count: matches.length })}
             </label>
             {matches.length === 0 ? (
-              <p className="text-sm text-slate-400">매치 없음</p>
+              <p className="text-sm text-slate-400">{t("regex.noMatch")}</p>
             ) : (
               <div className="code-area bg-[var(--dev-code-bg)] text-[var(--dev-code-text)] p-3 rounded-md max-h-60 overflow-y-auto border border-slate-600 text-sm space-y-1">
                 {matches.map((m, i) => (
@@ -714,11 +727,11 @@ function RegexTool() {
                       &quot;{m.match}&quot;
                     </span>{" "}
                     <span className="text-slate-400">
-                      (인덱스: {m.index})
+                      ({t("regex.index", { index: m.index })})
                     </span>
                     {m.groups.length > 0 && (
                       <span className="text-yellow-400 ml-2">
-                        그룹: [{m.groups.map((g) => `"${g}"`).join(", ")}]
+                        {t("regex.groups")} [{m.groups.map((g) => `"${g}"`).join(", ")}]
                       </span>
                     )}
                   </div>
@@ -732,7 +745,7 @@ function RegexTool() {
   );
 }
 
-// ─── Lorem Ipsum 생성기 ─────────────────────────────
+// ─── Lorem Ipsum Generator ─────────────────────────────
 
 function LoremTool() {
   const [options, setOptions] = useState<LoremOptions>({
@@ -742,6 +755,7 @@ function LoremTool() {
     htmlTags: false,
   });
   const [output, setOutput] = useState("");
+  const { t } = useTranslation();
 
   const handleGenerate = () => {
     const result = generateLoremIpsum(options);
@@ -750,14 +764,14 @@ function LoremTool() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">Lorem Ipsum 생성기</h2>
+      <h2 className="text-xl font-bold text-slate-800">{t("lorem.title")}</h2>
       <p className="text-sm text-slate-500">
-        더미 텍스트를 생성합니다. 한국어도 지원합니다.
+        {t("lorem.description")}
       </p>
 
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-600">단락 수:</label>
+          <label className="text-sm text-slate-600">{t("lorem.paragraphs")}</label>
           <input
             type="number"
             min={1}
@@ -773,7 +787,7 @@ function LoremTool() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-slate-600">단락당 단어 수:</label>
+          <label className="text-sm text-slate-600">{t("lorem.wordsPerParagraph")}</label>
           <input
             type="number"
             min={10}
@@ -795,7 +809,7 @@ function LoremTool() {
             onChange={(e) => setOptions({ ...options, korean: e.target.checked })}
             className="rounded"
           />
-          한국어
+          {t("lorem.korean")}
         </label>
         <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
           <input
@@ -806,20 +820,20 @@ function LoremTool() {
             }
             className="rounded"
           />
-          {"HTML <p> 태그"}
+          {t("lorem.htmlTags")}
         </label>
         <button
           onClick={handleGenerate}
           className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
         >
-          생성
+          {t("common.generate")}
         </button>
       </div>
 
       {output && (
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-sm font-medium text-slate-700">결과</label>
+            <label className="text-sm font-medium text-slate-700">{t("common.result")}</label>
             <CopyButton text={output} />
           </div>
           <textarea
@@ -834,11 +848,12 @@ function LoremTool() {
 }
 
 
-// ─── 메인 페이지 ────────────────────────────────────
+// ─── Main Page ────────────────────────────────────
 
 export default function DevToolsPage() {
   const [activeTab, setActiveTab] = useState<ToolTab>("json");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   const renderTool = () => {
     switch (activeTab) {
@@ -861,7 +876,7 @@ export default function DevToolsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* 헤더 */}
+      {/* Header */}
       <header className="bg-[var(--dev-code-bg)] text-white">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -870,25 +885,28 @@ export default function DevToolsPage() {
             </div>
             <div>
               <h1 className="text-lg font-bold font-[family-name:var(--font-space)]">
-                개발자 도구
+                {t("common.devTools")}
               </h1>
               <p className="text-xs text-slate-400">
-                JSON, Base64, URL, UUID, Hash, Regex, Lorem Ipsum
+                {t("common.headerSubtitle")}
               </p>
             </div>
           </div>
-          {/* 모바일 메뉴 버튼 */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-md hover:bg-slate-700 transition-colors"
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-md hover:bg-slate-700 transition-colors"
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full">
-        {/* 모바일 탭 바 */}
+        {/* Mobile tab bar */}
         <div
           className={`lg:hidden ${mobileMenuOpen ? "block" : "hidden"} bg-white border-b border-slate-200`}
         >
@@ -905,17 +923,17 @@ export default function DevToolsPage() {
                 }`}
               >
                 {tab.icon}
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             ))}
           </div>
         </div>
 
-        {/* 데스크톱 사이드바 */}
+        {/* Desktop sidebar */}
         <aside className="hidden lg:block w-56 shrink-0 bg-white border-r border-slate-200 p-3">
           <nav className="space-y-1 sticky top-4">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 py-2">
-              도구 목록
+              {t("common.toolList")}
             </p>
             {TABS.map((tab) => (
               <button
@@ -926,17 +944,20 @@ export default function DevToolsPage() {
                 }`}
               >
                 {tab.icon}
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             ))}
           </nav>
         </aside>
 
-        {/* 메인 콘텐츠 */}
+        {/* Main content */}
         <main className="flex-1 p-4 md:p-6 lg:p-8">{renderTool()}</main>
       </div>
 
-      {/* 푸터 */}
+      <DevToolsInfoSection />
+      <RelatedTools currentToolId="dev" />
+
+      {/* Footer */}
       <footer className="bg-[var(--dev-code-bg)] text-slate-400 mt-auto">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex flex-wrap gap-6 justify-center">
@@ -945,19 +966,18 @@ export default function DevToolsPage() {
                 href="/privacy"
                 className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
               >
-                개인정보처리방침
+                {t("common.privacy")}
               </a>
               <a
                 href="/terms"
                 className="text-sm text-slate-400 hover:text-slate-300 transition-colors"
               >
-                이용약관
+                {t("common.terms")}
               </a>
             </div>
           </div>
           <div className="mt-6 pt-4 border-t border-slate-700 text-xs text-slate-500">
-            &copy; {new Date().getFullYear()} 개발자 도구. 모든 처리는
-            브라우저에서 수행되며, 서버로 데이터가 전송되지 않습니다.
+            &copy; {new Date().getFullYear()} {t("common.footerDesc")}
           </div>
         </div>
       </footer>
